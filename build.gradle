@@ -29,6 +29,18 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    /**
+     * 2024.05.12 by ycm
+     * jpa 추가
+     * */
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    /*
+    * 2024.05.12 by ycm
+    * mysql, h2
+    */
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 tasks.named('test') {
