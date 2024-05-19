@@ -1,6 +1,5 @@
 package com.phytoncide.hikinglog.domain.boards.entity;
 
-import com.phytoncide.hikinglog.domain.member.entity.MemberEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

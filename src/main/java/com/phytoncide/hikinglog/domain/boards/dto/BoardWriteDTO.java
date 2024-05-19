@@ -9,9 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
 
-import java.util.List;
-import java.util.UUID;
-
 @Builder
 @Data
 @AllArgsConstructor
@@ -26,10 +23,8 @@ public class BoardWriteDTO {
 
     private String tag;
 
-    private BoardEntity board;
-
     public BoardEntity toBoardEntity(MemberEntity memberEntity) {
-        board = BoardEntity.builder()
+        BoardEntity board = BoardEntity.builder()
                 .memberEntity(memberEntity)
                 .title(title)
                 .content(content)
@@ -39,9 +34,9 @@ public class BoardWriteDTO {
         return board;
     }
 
-    public ImageEntity toImageEntity(String originalFileName, String storedFileName) {
+    public ImageEntity toImageEntity(BoardEntity boardEntity, String originalFileName, String storedFileName) {
         ImageEntity image = ImageEntity.builder()
-                .boardEntity(board)
+                .boardEntity(boardEntity)
                 .originalImageName(originalFileName)
                 .storedFileName(storedFileName)
                 .build();
