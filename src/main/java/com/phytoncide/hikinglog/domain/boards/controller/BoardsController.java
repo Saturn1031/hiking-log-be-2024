@@ -10,9 +10,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/boards")
@@ -22,9 +24,8 @@ public class BoardsController {
 
     @PostMapping("")
     public String boardWrite(@RequestPart("data") BoardWriteDTO boardWriteDTO,
-                             @ModelAttribute BoardImageUploadDTO boardImageUploadDTO,
+                             @RequestPart(value = "images", required = false) List<MultipartFile> images,
                              @AuthenticationPrincipal AuthDetails authDetails) throws IOException {
-        System.out.println(authDetails);
-        return boardService.createBoard(boardWriteDTO, boardImageUploadDTO, authDetails);
+        return boardService.createBoard(boardWriteDTO, images, authDetails);
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,7 +26,7 @@ public class BoardService {
     private final MemberRepository memberRepository;
     private final ImageRepository imageRepository;
 
-    public String createBoard(BoardWriteDTO boardWriteDTO, BoardImageUploadDTO boardImageUploadDTO, AuthDetails authDetails) throws IOException {
+    public String createBoard(BoardWriteDTO boardWriteDTO, List<MultipartFile> files, AuthDetails authDetails) throws IOException {
         if (boardWriteDTO.getTitle().isEmpty()) {
             return "제목을 작성해주세요.";
         }
@@ -39,16 +40,17 @@ public class BoardService {
         BoardEntity boardEntity = boardWriteDTO.toBoardEntity(memberEntity);
         boardRepository.save(boardEntity);
 
-        if (!boardImageUploadDTO.getImages().isEmpty()) {
-            for (MultipartFile file : boardImageUploadDTO.getImages()) {
-                String originalFileName = file.getOriginalFilename();
+        if (files != null && !files.isEmpty()) {
+            for (MultipartFile file : files) {
+                if (file != null && !file.isEmpty()) {
+                    String originalFileName = file.getOriginalFilename();
 
-                String extention = originalFileName.substring(originalFileName.lastIndexOf("."));
+                    String extention = originalFileName.substring(originalFileName.lastIndexOf("."));
 
-                UUID uuid = UUID.randomUUID();
-                String storedFileName = uuid + "_" + originalFileName;
+                    UUID uuid = UUID.randomUUID();
+                    String storedFileName = uuid + "_" + originalFileName;
 
-                // S3에 파일 저장하는 로직 추가
+                    // S3에 파일 저장하는 로직 추가
 //                InputStream is = file.getInputStream();
 //                byte[] bytes = IOUtils.toByteArray(is);
 //
@@ -69,8 +71,9 @@ public class BoardService {
 //                    is.close();
 //                }
 
-                ImageEntity imageEntity = boardWriteDTO.toImageEntity(originalFileName, storedFileName);
-                imageRepository.save(imageEntity);
+                    ImageEntity imageEntity = boardWriteDTO.toImageEntity(originalFileName, storedFileName);
+                    imageRepository.save(imageEntity);
+                }
             }
         }
 
