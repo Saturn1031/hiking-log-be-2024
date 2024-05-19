@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -78,5 +79,29 @@ public class BoardService {
         }
 
         return "게시글 작성에 성공했습니다.";
+    }
+
+    public String deleteBoard(Integer boardId, AuthDetails authDetails) {
+        Integer userId = authDetails.getMemberEntity().getUid();
+        Integer boardUserId = boardRepository.findById(boardId).get().getMemberEntity().getUid();
+
+        if (!boardUserId.equals(userId)) {
+            return "게시글 삭제 권한이 없습니다.";
+        }
+
+        List<ImageEntity> images = imageRepository.findAllByBoardEntity_Bid(boardId);
+        if (!images.isEmpty()) {
+            for (ImageEntity image: images) {
+                 String filename = image.getStoredFileName();
+                 Integer fileId = image.getIid();
+                 // S3에서 이미지 삭제하는 로직 추가
+
+                 imageRepository.deleteById(fileId);
+            }
+        }
+
+        boardRepository.deleteById(boardId);
+
+        return "게시글 삭제에 성공했습니다.";
     }
 }

@@ -28,4 +28,10 @@ public class BoardsController {
                              @AuthenticationPrincipal AuthDetails authDetails) throws IOException {
         return boardService.createBoard(boardWriteDTO, images, authDetails);
     }
+
+    @DeleteMapping("/{boardId}")
+    public String boardDelete(@PathVariable("boardId") Integer boardId,
+                              @AuthenticationPrincipal AuthDetails authDetails) {
+        return boardService.deleteBoard(boardId, authDetails);
+    }
 }
