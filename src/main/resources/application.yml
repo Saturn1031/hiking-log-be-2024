@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/hikinglog?createDatabaseIfNotExist=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: never
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        hbm2ddl:
+          auto: create
+        default_batch_fetch_size: 1000
+server:
+  port: 8080
+
+#openApi:
+#   serviceKey: "2FK%2BLiX3igCZ0VGxui7olZjXXNYepuHjRnwO0lofDIg0RORmZmyHfuRkFYgdQXQzcrP0fJMEytwHLcx4ZEm%2Bbw%3D%3D"
+#   callBackUrl: "http://apis.data.go.kr/1400000/service/cultureInfoService/"
