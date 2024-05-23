@@ -20,6 +20,6 @@ spring:
 server:
   port: 8080
 
-#openApi:
-#   serviceKey: "2FK%2BLiX3igCZ0VGxui7olZjXXNYepuHjRnwO0lofDIg0RORmZmyHfuRkFYgdQXQzcrP0fJMEytwHLcx4ZEm%2Bbw%3D%3D"
-#   callBackUrl: "http://apis.data.go.kr/1400000/service/cultureInfoService/"
+openApi:
+   serviceKey: "2FK%2BLiX3igCZ0VGxui7olZjXXNYepuHjRnwO0lofDIg0RORmZmyHfuRkFYgdQXQzcrP0fJMEytwHLcx4ZEm%2Bbw%3D%3D"
+   callBackUrl: "http://apis.data.go.kr/1400000/service/cultureInfoService/"
