@@ -20,7 +20,7 @@ public class BoardEntity extends BaseEntity {
     private Integer bid;
 
     @ManyToOne
-    @JoinColumn(name="uid")
+    @JoinColumn(name = "uid")
     private MemberEntity memberEntity;
 
     @Column(name = "title", nullable = false, length = 50)

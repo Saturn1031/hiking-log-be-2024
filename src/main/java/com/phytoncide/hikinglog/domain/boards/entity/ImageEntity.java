@@ -25,7 +25,11 @@ public class ImageEntity {
     @Column(name = "storedFileName", nullable = false, length = 100)
     private String storedFileName;
 
+    @Column(name = "position")
+    private Integer position;
+
     @ManyToOne
-    @JoinColumn(name="bid")
+    @JoinColumn(name = "bid")
     private BoardEntity boardEntity;
+
 }
