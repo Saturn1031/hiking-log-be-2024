@@ -1,18 +1,25 @@
 package com.phytoncide.hikinglog.domain.boards.service;
 
+import com.phytoncide.hikinglog.domain.boards.dto.BoardListResponseDTO;
 import com.phytoncide.hikinglog.domain.boards.dto.BoardWriteDTO;
 import com.phytoncide.hikinglog.domain.boards.entity.BoardEntity;
+import com.phytoncide.hikinglog.domain.boards.entity.CommentEntity;
 import com.phytoncide.hikinglog.domain.boards.entity.ImageEntity;
 import com.phytoncide.hikinglog.domain.boards.repository.BoardRepository;
+import com.phytoncide.hikinglog.domain.boards.repository.CommentRepository;
 import com.phytoncide.hikinglog.domain.boards.repository.ImageRepository;
+import com.phytoncide.hikinglog.domain.boards.repository.LikesRepository;
 import com.phytoncide.hikinglog.domain.member.config.AuthDetails;
 import com.phytoncide.hikinglog.domain.member.entity.MemberEntity;
 import com.phytoncide.hikinglog.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +29,8 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final ImageRepository imageRepository;
+    private final LikesRepository likesRepository;
+    private final CommentRepository commentRepository;
 
     public String createBoard(BoardWriteDTO boardWriteDTO, List<MultipartFile> files, AuthDetails authDetails) throws IOException {
         if (boardWriteDTO.getTitle().isEmpty()) {
@@ -130,9 +139,6 @@ public class BoardService {
             return "내용을 작성해주세요.";
         }
 
-        String email = authDetails.getUsername();
-        MemberEntity memberEntity = memberRepository.findByEmail(email);
-
         BoardEntity boardEntity = boardRepository.findById(boardId).get();
 
         boardEntity.setTitle(boardWriteDTO.getTitle());
@@ -196,5 +202,46 @@ public class BoardService {
         }
 
         return "게시글 수정에 성공했습니다.";
+    }
+
+    public List<BoardListResponseDTO.BoardResponseDTO> readeBoards(Integer limit, Integer pageNumber) {
+
+        Pageable pageable = PageRequest.of(pageNumber, limit);
+        List<BoardEntity> boardEntities = boardRepository.findNextPage(2147483647, pageable);
+
+        List<BoardListResponseDTO.BoardResponseDTO> boards = new ArrayList<>();
+        for (BoardEntity boardEntity : boardEntities) {
+
+            List<String> images = new ArrayList<>();
+            List<ImageEntity> imageEntities = imageRepository.findAllByBoardEntity_Bid(boardEntity.getBid());
+            for (ImageEntity imageEntity : imageEntities) {
+                images.add(imageEntity.getOriginalImageName());
+            }
+
+            Integer likeNum = likesRepository.countByBoardEntity_Bid(boardEntity.getBid()).intValue();
+            boolean liked = likesRepository.existsByBoardEntity_Bid(boardEntity.getBid());
+
+            Integer commentNum = commentRepository.countByBoardEntity_Bid(boardEntity.getBid()).intValue();
+
+            Integer commentid;
+            if (commentRepository.existsByBoardEntity_Bid(boardEntity.getBid())) {
+                List<CommentEntity> comments = commentRepository.findTop1ByOrderByCreatedAtDesc();
+                commentid = comments.get(0).getCid();
+            } else {
+                commentid = -1;
+            }
+
+            boards.add(BoardListResponseDTO.BoardResponseDTO.toDTO(boardEntity, images, likeNum, liked, commentNum, commentid));
+        }
+        return boards;
+    }
+
+    public boolean hasNextBoards(Integer limit, Integer pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, limit);
+        List<BoardEntity> boardEntities = boardRepository.findNextPage(2147483647, pageable);
+
+        List<BoardEntity> nextboardEntities = boardRepository.findNextPage(boardEntities.get(boardEntities.size() - 1).getBid(), pageable);
+
+        return !nextboardEntities.isEmpty();
     }
 }
