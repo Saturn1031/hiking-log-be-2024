@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import java.util.List;
+
 @Builder
 @Data
 @AllArgsConstructor
@@ -23,6 +25,8 @@ public class BoardWriteDTO {
 
     private String tag;
 
+    private List<String> images;
+
     public BoardEntity toBoardEntity(MemberEntity memberEntity) {
         BoardEntity board = BoardEntity.builder()
                 .memberEntity(memberEntity)
@@ -34,11 +38,12 @@ public class BoardWriteDTO {
         return board;
     }
 
-    public ImageEntity toImageEntity(BoardEntity boardEntity, String originalFileName, String storedFileName) {
+    public ImageEntity toImageEntity(BoardEntity boardEntity, String originalFileName, String storedFileName, Integer position) {
         ImageEntity image = ImageEntity.builder()
                 .boardEntity(boardEntity)
                 .originalImageName(originalFileName)
                 .storedFileName(storedFileName)
+                .position(position)
                 .build();
 
         return image;

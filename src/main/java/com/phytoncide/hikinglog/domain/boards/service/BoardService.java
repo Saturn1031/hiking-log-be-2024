@@ -38,16 +38,23 @@ public class BoardService {
         boardRepository.save(boardEntity);
 
         if (files != null && !files.isEmpty()) {
-            for (MultipartFile file : files) {
-                if (file != null && !file.isEmpty()) {
-                    String originalFileName = file.getOriginalFilename();
+            for (String imageName : boardWriteDTO.getImages()) {
+                for (MultipartFile file : files) {
+                    if (file != null && !file.isEmpty()) {
+                        String originalFileName = file.getOriginalFilename();
 
-                    String extention = originalFileName.substring(originalFileName.lastIndexOf("."));
+                        if (!imageName.equals(originalFileName)) {
+                            continue;
+                        }
 
-                    UUID uuid = UUID.randomUUID();
-                    String storedFileName = uuid + "_" + originalFileName;
+                        String extention = originalFileName.substring(originalFileName.lastIndexOf("."));
 
-                    // S3에 파일 저장하는 로직 추가
+                        UUID uuid = UUID.randomUUID();
+                        String storedFileName = uuid + "_" + originalFileName;
+
+                        Integer position = boardWriteDTO.getImages().indexOf(imageName);
+
+                        // S3에 파일 저장하는 로직 추가
 //                InputStream is = file.getInputStream();
 //                byte[] bytes = IOUtils.toByteArray(is);
 //
@@ -68,8 +75,9 @@ public class BoardService {
 //                    is.close();
 //                }
 
-                    ImageEntity imageEntity = boardWriteDTO.toImageEntity(boardEntity, originalFileName, storedFileName);
-                    imageRepository.save(imageEntity);
+                        ImageEntity imageEntity = boardWriteDTO.toImageEntity(boardEntity, originalFileName, storedFileName, position);
+                        imageRepository.save(imageEntity);
+                    }
                 }
             }
         }
@@ -88,9 +96,9 @@ public class BoardService {
             return "게시글 삭제 권한이 없습니다.";
         }
 
-        List<ImageEntity> images = imageRepository.findAllByBoardEntity_Bid(boardId);
-        if (!images.isEmpty()) {
-            for (ImageEntity image: images) {
+        List<ImageEntity> storedImages = imageRepository.findAllByBoardEntity_Bid(boardId);
+        if (!storedImages.isEmpty()) {
+            for (ImageEntity image: storedImages) {
                  String filename = image.getStoredFileName();
                  Integer fileId = image.getIid();
                  // S3에서 이미지 삭제하는 로직 추가
@@ -131,9 +139,9 @@ public class BoardService {
         boardEntity.setContent(boardWriteDTO.getContent());
         boardEntity.setTag(boardWriteDTO.getTag());
 
-        List<ImageEntity> images = imageRepository.findAllByBoardEntity_Bid(boardId);
-        if (!images.isEmpty()) {
-            for (ImageEntity image: images) {
+        List<ImageEntity> storedImages = imageRepository.findAllByBoardEntity_Bid(boardId);
+        if (!storedImages.isEmpty()) {
+            for (ImageEntity image: storedImages) {
                 String filename = image.getStoredFileName();
                 Integer fileId = image.getIid();
                 // S3에서 이미지 삭제하는 로직 추가
@@ -143,16 +151,23 @@ public class BoardService {
         }
 
         if (files != null && !files.isEmpty()) {
-            for (MultipartFile file : files) {
-                if (file != null && !file.isEmpty()) {
-                    String originalFileName = file.getOriginalFilename();
+            for (String imageName : boardWriteDTO.getImages()) {
+                for (MultipartFile file : files) {
+                    if (file != null && !file.isEmpty()) {
+                        String originalFileName = file.getOriginalFilename();
 
-                    String extention = originalFileName.substring(originalFileName.lastIndexOf("."));
+                        if (!imageName.equals(originalFileName)) {
+                            continue;
+                        }
 
-                    UUID uuid = UUID.randomUUID();
-                    String storedFileName = uuid + "_" + originalFileName;
+                        String extention = originalFileName.substring(originalFileName.lastIndexOf("."));
 
-                    // S3에 파일 저장하는 로직 추가
+                        UUID uuid = UUID.randomUUID();
+                        String storedFileName = uuid + "_" + originalFileName;
+
+                        Integer position = boardWriteDTO.getImages().indexOf(imageName);
+
+                        // S3에 파일 저장하는 로직 추가
 //                InputStream is = file.getInputStream();
 //                byte[] bytes = IOUtils.toByteArray(is);
 //
@@ -173,8 +188,9 @@ public class BoardService {
 //                    is.close();
 //                }
 
-                    ImageEntity imageEntity = boardWriteDTO.toImageEntity(boardEntity, originalFileName, storedFileName);
-                    imageRepository.save(imageEntity);
+                        ImageEntity imageEntity = boardWriteDTO.toImageEntity(boardEntity, originalFileName, storedFileName, position);
+                        imageRepository.save(imageEntity);
+                    }
                 }
             }
         }
