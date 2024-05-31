@@ -1,10 +1,13 @@
 package com.phytoncide.hikinglog.domain.member.controller;
 
+import com.phytoncide.hikinglog.base.code.ResponseCode;
+import com.phytoncide.hikinglog.base.dto.ResponseDTO;
 import com.phytoncide.hikinglog.domain.member.Service.MemberService;
 import com.phytoncide.hikinglog.domain.member.config.SecurityConfig;
 import com.phytoncide.hikinglog.domain.member.dto.JoinDTO;
 import com.phytoncide.hikinglog.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +21,12 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/join")
-    public String join(@RequestBody JoinDTO joinDTO) {
-        return memberService.join(joinDTO);
+    public ResponseEntity<ResponseDTO> join(@RequestBody JoinDTO joinDTO) {
+        String res = memberService.join(joinDTO);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_JOIN.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_JOIN, res));
     }
 
     @GetMapping("")
