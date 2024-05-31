@@ -1,5 +1,7 @@
 package com.phytoncide.hikinglog.domain.member.Service;
 
+import com.phytoncide.hikinglog.base.code.ErrorCode;
+import com.phytoncide.hikinglog.base.exception.RegisterException;
 import com.phytoncide.hikinglog.domain.member.config.AuthDetails;
 import com.phytoncide.hikinglog.domain.member.dto.JoinDTO;
 import com.phytoncide.hikinglog.domain.member.entity.MemberEntity;
@@ -19,7 +21,7 @@ public class MemberService implements UserDetailsService {
 
     public String join(JoinDTO joinDTO) {
         if(memberRepository.existsByEmail(joinDTO.getEmail())) {
-            return "존재하는 아이디입니다.";
+            throw new RegisterException(ErrorCode.DUPLICATED_EMAIL);
 
         } else {
             MemberEntity member = MemberEntity.builder()
