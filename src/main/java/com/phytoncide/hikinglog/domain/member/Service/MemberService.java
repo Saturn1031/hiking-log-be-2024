@@ -1,6 +1,7 @@
 package com.phytoncide.hikinglog.domain.member.Service;
 
 import com.phytoncide.hikinglog.base.code.ErrorCode;
+import com.phytoncide.hikinglog.base.exception.MemberNotFoundException;
 import com.phytoncide.hikinglog.base.exception.RegisterException;
 import com.phytoncide.hikinglog.domain.member.config.AuthDetails;
 import com.phytoncide.hikinglog.domain.member.dto.JoinDTO;
@@ -11,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,5 +47,18 @@ public class MemberService implements UserDetailsService {
         MemberEntity memberEntity = memberRepository.findByEmail(email);
         return new AuthDetails(memberEntity);
     }
+
+    public String findEmail(String phone) {
+        Optional<MemberEntity> member;
+        if(memberRepository.findByPhone(phone).isPresent()) {
+            member = memberRepository.findByPhone(phone);
+        } else {
+            throw new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        return member.get().getEmail();
+    }
+
+
 
 }

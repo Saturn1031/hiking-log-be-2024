@@ -15,9 +15,17 @@ public class CustuomExceptionHandler {
 
     @ExceptionHandler(RegisterException.class)
     protected ResponseEntity<ErrorResponseDTO> handleRegisterException(final RegisterException e) {
-        log.error("haddleRegisterException: {}", e.getMessage());
+        log.error("handleRegisterException: {}", e.getMessage());
         return ResponseEntity
                 .status(ErrorCode.DUPLICATED_EMAIL.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.DUPLICATED_EMAIL));
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    protected ResponseEntity<ErrorResponseDTO> handleRegisterException(final MemberNotFoundException e) {
+        log.error("handleMemberNotFoundException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.MEMBER_NOT_FOUND.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.MEMBER_NOT_FOUND));
     }
 }
