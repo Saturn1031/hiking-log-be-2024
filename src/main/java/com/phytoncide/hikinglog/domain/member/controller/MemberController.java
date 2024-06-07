@@ -7,6 +7,8 @@ import com.phytoncide.hikinglog.domain.awsS3.AmazonS3Service;
 import com.phytoncide.hikinglog.domain.member.Service.EmailService;
 import com.phytoncide.hikinglog.domain.member.Service.MemberService;
 import com.phytoncide.hikinglog.domain.member.config.SecurityConfig;
+import com.phytoncide.hikinglog.domain.member.dto.ChangePasswordDTO;
+import com.phytoncide.hikinglog.domain.member.dto.EmailMessage;
 import com.phytoncide.hikinglog.domain.member.dto.JoinDTO;
 import com.phytoncide.hikinglog.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -66,5 +68,28 @@ public class MemberController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_FIND_EMAIL, email));
     }
 
+    @PostMapping("/find-password")
+    public ResponseEntity<ResponseDTO> findPassword(@RequestParam String email) {
+        String password = memberService.findPassword(email);
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(email)
+                .subject("[산행록] 비밀번호 재설정")
+                .message("재설정된 임시 비밀번호: "+password +"\n"+ "해당 임시 비밀번호로 로그인 후 즉시 비밀번호 변경을 부탁드립니다.")
+                .build();
+        emailService.sendMail(emailMessage);
 
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_FIND_PASSWORD.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_FIND_PASSWORD, "비밀번호 임시 변경"));
+
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<ResponseDTO> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+        String res = memberService.changePassword(changePasswordDTO);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_CHANGE_PASSWORD.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_CHANGE_PASSWORD, res));
+    }
 }
