@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phytoncide.hikinglog.base.code.ResponseCode;
 import com.phytoncide.hikinglog.base.dto.ResponseDTO;
 import com.phytoncide.hikinglog.domain.awsS3.AmazonS3Service;
+import com.phytoncide.hikinglog.domain.member.Service.EmailService;
 import com.phytoncide.hikinglog.domain.member.Service.MemberService;
 import com.phytoncide.hikinglog.domain.member.config.SecurityConfig;
 import com.phytoncide.hikinglog.domain.member.dto.JoinDTO;
@@ -23,6 +24,7 @@ import java.io.IOException;
 public class MemberController {
     private final MemberRepository memberRepository;
     private final SecurityConfig securityConfig;
+    private final EmailService emailService;
     private final AmazonS3Service amazonS3Service;
     private final MemberService memberService;
 
@@ -54,4 +56,15 @@ public class MemberController {
 
         return "Current user: " + email;
     }
+
+    @GetMapping("/find-email")
+    public ResponseEntity<ResponseDTO> findEmail(@RequestParam("phone") String phone) {
+        String email = memberService.findEmail(phone);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_FIND_EMAIL.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_FIND_EMAIL, email));
+    }
+
+
 }
