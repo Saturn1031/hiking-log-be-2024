@@ -7,9 +7,7 @@ import com.phytoncide.hikinglog.domain.awsS3.AmazonS3Service;
 import com.phytoncide.hikinglog.domain.member.Service.EmailService;
 import com.phytoncide.hikinglog.domain.member.Service.MemberService;
 import com.phytoncide.hikinglog.domain.member.config.SecurityConfig;
-import com.phytoncide.hikinglog.domain.member.dto.ChangePasswordDTO;
-import com.phytoncide.hikinglog.domain.member.dto.EmailMessage;
-import com.phytoncide.hikinglog.domain.member.dto.JoinDTO;
+import com.phytoncide.hikinglog.domain.member.dto.*;
 import com.phytoncide.hikinglog.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -91,5 +89,36 @@ public class MemberController {
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_CHANGE_PASSWORD.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_CHANGE_PASSWORD, res));
+    }
+
+    @PutMapping("/update-profile")
+    public ResponseEntity<ResponseDTO> updateProfile(@RequestParam("profile") String profileDTO, @RequestParam("image") MultipartFile multipartFile) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("이메일" + authentication.getName());
+
+        ObjectMapper mapper = new ObjectMapper();
+        ProfileDTO mapperProfileDTO = mapper.readValue(profileDTO, ProfileDTO.class);
+
+        String imageFile = amazonS3Service.saveFile(multipartFile);
+        mapperProfileDTO.setImage(imageFile);
+
+        System.out.println("DTO: " + mapperProfileDTO);
+
+        String res = memberService.updateProfile(mapperProfileDTO, authentication.getName());
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_UPDATE_PROFILE.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_UPDATE_PROFILE, res));
+    }
+
+    @GetMapping("profile")
+    public ResponseEntity<ResponseDTO> getProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        GetProfileDTO profile = memberService.getProfile(authentication.getName());
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_GET_PROFILE.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_PROFILE, profile));
     }
 }
