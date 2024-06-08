@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phytoncide.hikinglog.base.code.ResponseCode;
 import com.phytoncide.hikinglog.base.dto.ResponseDTO;
 import com.phytoncide.hikinglog.domain.awsS3.AmazonS3Service;
+import com.phytoncide.hikinglog.domain.member.Service.EmailService;
 import com.phytoncide.hikinglog.domain.member.Service.MemberService;
 import com.phytoncide.hikinglog.domain.member.config.SecurityConfig;
-import com.phytoncide.hikinglog.domain.member.dto.JoinDTO;
+import com.phytoncide.hikinglog.domain.member.dto.*;
 import com.phytoncide.hikinglog.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.io.IOException;
 public class MemberController {
     private final MemberRepository memberRepository;
     private final SecurityConfig securityConfig;
+    private final EmailService emailService;
     private final AmazonS3Service amazonS3Service;
     private final MemberService memberService;
 
@@ -53,5 +55,70 @@ public class MemberController {
         // List<GrantedAuthority> authorities = (List<GrantedAuthority>) authentication.getAuthorities();
 
         return "Current user: " + email;
+    }
+
+    @GetMapping("/find-email")
+    public ResponseEntity<ResponseDTO> findEmail(@RequestParam("phone") String phone) {
+        String email = memberService.findEmail(phone);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_FIND_EMAIL.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_FIND_EMAIL, email));
+    }
+
+    @PostMapping("/find-password")
+    public ResponseEntity<ResponseDTO> findPassword(@RequestParam String email) {
+        String password = memberService.findPassword(email);
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(email)
+                .subject("[산행록] 비밀번호 재설정")
+                .message("재설정된 임시 비밀번호: "+password +"\n"+ "해당 임시 비밀번호로 로그인 후 즉시 비밀번호 변경을 부탁드립니다.")
+                .build();
+        emailService.sendMail(emailMessage);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_FIND_PASSWORD.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_FIND_PASSWORD, "비밀번호 임시 변경"));
+
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<ResponseDTO> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+        String res = memberService.changePassword(changePasswordDTO);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_CHANGE_PASSWORD.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_CHANGE_PASSWORD, res));
+    }
+
+    @PutMapping("/update-profile")
+    public ResponseEntity<ResponseDTO> updateProfile(@RequestParam("profile") String profileDTO, @RequestParam("image") MultipartFile multipartFile) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("이메일" + authentication.getName());
+
+        ObjectMapper mapper = new ObjectMapper();
+        ProfileDTO mapperProfileDTO = mapper.readValue(profileDTO, ProfileDTO.class);
+
+        String imageFile = amazonS3Service.saveFile(multipartFile);
+        mapperProfileDTO.setImage(imageFile);
+
+        System.out.println("DTO: " + mapperProfileDTO);
+
+        String res = memberService.updateProfile(mapperProfileDTO, authentication.getName());
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_UPDATE_PROFILE.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_UPDATE_PROFILE, res));
+    }
+
+    @GetMapping("profile")
+    public ResponseEntity<ResponseDTO> getProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        GetProfileDTO profile = memberService.getProfile(authentication.getName());
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_GET_PROFILE.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_PROFILE, profile));
     }
 }
