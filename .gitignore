@@ -39,3 +39,6 @@ out/
 ### application.yml ###
 /src/main/resources/application.yml
 /src/main/resources/application.properties
+
+### JwtProperties ###
+/src/main/java/com/phytoncide/hikinglog/domain/member/jwt/JwtProperties.java
