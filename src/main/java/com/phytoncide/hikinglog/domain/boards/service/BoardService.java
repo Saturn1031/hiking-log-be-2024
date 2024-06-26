@@ -1,5 +1,6 @@
 package com.phytoncide.hikinglog.domain.boards.service;
 
+import com.phytoncide.hikinglog.domain.awsS3.AmazonS3Service;
 import com.phytoncide.hikinglog.domain.boards.dto.BoardListResponseDTO;
 import com.phytoncide.hikinglog.domain.boards.dto.BoardWriteDTO;
 import com.phytoncide.hikinglog.domain.boards.entity.BoardEntity;
@@ -32,6 +33,8 @@ public class BoardService {
     private final LikesRepository likesRepository;
     private final CommentRepository commentRepository;
 
+    private final AmazonS3Service amazonS3Service;
+
     public String createBoard(BoardWriteDTO boardWriteDTO, List<MultipartFile> files, AuthDetails authDetails) throws IOException {
         if (boardWriteDTO.getTitle().isEmpty()) {
             return "제목을 작성해주세요.";
@@ -56,35 +59,11 @@ public class BoardService {
                             continue;
                         }
 
-                        String extention = originalFileName.substring(originalFileName.lastIndexOf("."));
-
-                        UUID uuid = UUID.randomUUID();
-                        String storedFileName = uuid + "_" + originalFileName;
+                        String imageFileUrl = amazonS3Service.saveFile(file);
 
                         Integer position = boardWriteDTO.getImages().indexOf(imageName);
 
-                        // S3에 파일 저장하는 로직 추가
-//                InputStream is = file.getInputStream();
-//                byte[] bytes = IOUtils.toByteArray(is);
-//
-//                ObjectMetadata metadata = new ObjectMetadata();
-//                metadata.setContentType("image/" + extention);
-//                metadata.setContentLength(bytes.length);
-//                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-//
-//                try{
-//                    PutObjectRequest putObjectRequest =
-//                            new PutObjectRequest(bucketName, storedFileName, byteArrayInputStream, metadata)
-//                                    .withCannedAcl(CannedAccessControlList.PublicRead);
-//                    amazonS3.putObject(putObjectRequest); // put image to S3
-//                }catch (Exception e){
-//                    throw new S3Exception(ErrorCode.PUT_OBJECT_EXCEPTION);
-//                }finally {
-//                    byteArrayInputStream.close();
-//                    is.close();
-//                }
-
-                        ImageEntity imageEntity = boardWriteDTO.toImageEntity(boardEntity, originalFileName, storedFileName, position);
+                        ImageEntity imageEntity = boardWriteDTO.toImageEntity(boardEntity, imageFileUrl, position);
                         imageRepository.save(imageEntity);
                     }
                 }
@@ -108,11 +87,12 @@ public class BoardService {
         List<ImageEntity> storedImages = imageRepository.findAllByBoardEntity_Bid(boardId);
         if (!storedImages.isEmpty()) {
             for (ImageEntity image: storedImages) {
-                 String filename = image.getStoredFileName();
-                 Integer fileId = image.getIid();
-                 // S3에서 이미지 삭제하는 로직 추가
+                Integer fileId = image.getIid();
+                String imageUrl = image.getStoredUrl();
 
-                 imageRepository.deleteById(fileId);
+                amazonS3Service.deleteFile(imageUrl);
+
+                imageRepository.deleteById(fileId);
             }
         }
 
@@ -148,9 +128,10 @@ public class BoardService {
         List<ImageEntity> storedImages = imageRepository.findAllByBoardEntity_Bid(boardId);
         if (!storedImages.isEmpty()) {
             for (ImageEntity image: storedImages) {
-                String filename = image.getStoredFileName();
                 Integer fileId = image.getIid();
-                // S3에서 이미지 삭제하는 로직 추가
+                String imageUrl = image.getStoredUrl();
+
+                amazonS3Service.deleteFile(imageUrl);
 
                 imageRepository.deleteById(fileId);
             }
@@ -166,35 +147,11 @@ public class BoardService {
                             continue;
                         }
 
-                        String extention = originalFileName.substring(originalFileName.lastIndexOf("."));
-
-                        UUID uuid = UUID.randomUUID();
-                        String storedFileName = uuid + "_" + originalFileName;
+                        String imageFileUrl = amazonS3Service.saveFile(file);
 
                         Integer position = boardWriteDTO.getImages().indexOf(imageName);
 
-                        // S3에 파일 저장하는 로직 추가
-//                InputStream is = file.getInputStream();
-//                byte[] bytes = IOUtils.toByteArray(is);
-//
-//                ObjectMetadata metadata = new ObjectMetadata();
-//                metadata.setContentType("image/" + extention);
-//                metadata.setContentLength(bytes.length);
-//                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-//
-//                try{
-//                    PutObjectRequest putObjectRequest =
-//                            new PutObjectRequest(bucketName, storedFileName, byteArrayInputStream, metadata)
-//                                    .withCannedAcl(CannedAccessControlList.PublicRead);
-//                    amazonS3.putObject(putObjectRequest); // put image to S3
-//                }catch (Exception e){
-//                    throw new S3Exception(ErrorCode.PUT_OBJECT_EXCEPTION);
-//                }finally {
-//                    byteArrayInputStream.close();
-//                    is.close();
-//                }
-
-                        ImageEntity imageEntity = boardWriteDTO.toImageEntity(boardEntity, originalFileName, storedFileName, position);
+                        ImageEntity imageEntity = boardWriteDTO.toImageEntity(boardEntity, imageFileUrl, position);
                         imageRepository.save(imageEntity);
                     }
                 }
@@ -215,7 +172,7 @@ public class BoardService {
             List<String> images = new ArrayList<>();
             List<ImageEntity> imageEntities = imageRepository.findAllByBoardEntity_Bid(boardEntity.getBid());
             for (ImageEntity imageEntity : imageEntities) {
-                images.add(imageEntity.getOriginalImageName());
+                images.add(imageEntity.getStoredUrl());
             }
 
             Integer likeNum = likesRepository.countByBoardEntity_Bid(boardEntity.getBid()).intValue();
