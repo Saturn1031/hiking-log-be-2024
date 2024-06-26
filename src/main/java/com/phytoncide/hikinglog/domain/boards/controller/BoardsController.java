@@ -43,10 +43,11 @@ public class BoardsController {
     }
 
     @GetMapping("")
-    public BoardListResponseDTO boardRead(@RequestBody CursorPageRequestDto cursorPageRequestDto) {
+    public BoardListResponseDTO boardRead(@RequestBody CursorPageRequestDto cursorPageRequestDto,
+                                          @AuthenticationPrincipal AuthDetails authDetails) {
         Integer size = cursorPageRequestDto.getSize();
         Integer page = cursorPageRequestDto.getPage();
-        List<BoardListResponseDTO.BoardResponseDTO> boardList = boardService.readeBoards(size, page);
+        List<BoardListResponseDTO.BoardResponseDTO> boardList = boardService.readeBoards(size, page, authDetails);
 
         if (!boardService.hasNextBoards(size, page)) {
             return BoardListResponseDTO.builder()
