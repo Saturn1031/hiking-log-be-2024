@@ -38,11 +38,10 @@ public class BoardWriteDTO {
         return board;
     }
 
-    public ImageEntity toImageEntity(BoardEntity boardEntity, String originalFileName, String storedFileName, Integer position) {
+    public ImageEntity toImageEntity(BoardEntity boardEntity, String storedUrl, Integer position) {
         ImageEntity image = ImageEntity.builder()
                 .boardEntity(boardEntity)
-                .originalImageName(originalFileName)
-                .storedFileName(storedFileName)
+                .storedUrl(storedUrl)
                 .position(position)
                 .build();
 
