@@ -16,6 +16,7 @@ import com.phytoncide.hikinglog.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -161,7 +162,7 @@ public class BoardService {
         return "게시글 수정에 성공했습니다.";
     }
 
-    public List<BoardListResponseDTO.BoardResponseDTO> readeBoards(Integer limit, Integer pageNumber) {
+    public List<BoardListResponseDTO.BoardResponseDTO> readeBoards(Integer limit, Integer pageNumber, AuthDetails authDetails) {
 
         Pageable pageable = PageRequest.of(pageNumber, limit);
         List<BoardEntity> boardEntities = boardRepository.findNextPage(2147483647, pageable);
@@ -176,13 +177,13 @@ public class BoardService {
             }
 
             Integer likeNum = likesRepository.countByBoardEntity_Bid(boardEntity.getBid()).intValue();
-            boolean liked = likesRepository.existsByBoardEntity_Bid(boardEntity.getBid());
+            boolean liked = likesRepository.existsByBoardEntity_BidAndMemberEntity_Uid(boardEntity.getBid(), authDetails.getMemberEntity().getUid());
 
             Integer commentNum = commentRepository.countByBoardEntity_Bid(boardEntity.getBid()).intValue();
 
             Integer commentid;
             if (commentRepository.existsByBoardEntity_Bid(boardEntity.getBid())) {
-                List<CommentEntity> comments = commentRepository.findTop1ByOrderByCreatedAtDesc();
+                List<CommentEntity> comments = commentRepository.findAllByBoardEntity_Bid(boardEntity.getBid(), Sort.by(Sort.Direction.DESC, "createdAt"));
                 commentid = comments.get(0).getCid();
             } else {
                 commentid = -1;
@@ -197,6 +198,9 @@ public class BoardService {
         Pageable pageable = PageRequest.of(pageNumber, limit);
         List<BoardEntity> boardEntities = boardRepository.findNextPage(2147483647, pageable);
 
+        if (boardEntities.size() == 0) {
+            return false;
+        }
         List<BoardEntity> nextboardEntities = boardRepository.findNextPage(boardEntities.get(boardEntities.size() - 1).getBid(), pageable);
 
         return !nextboardEntities.isEmpty();
