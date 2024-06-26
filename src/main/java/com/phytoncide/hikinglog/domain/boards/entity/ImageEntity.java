@@ -19,17 +19,14 @@ public class ImageEntity {
     @Column(name = "iid")
     private Integer iid;
 
-    @Column(name = "originalImageName", nullable = false, length = 100)
-    private String originalImageName;
+    @Column(name = "storedUrl", nullable = false, columnDefinition = "text")
+    private String storedUrl;
 
-    @Column(name = "storedFileName", nullable = false, length = 100)
-    private String storedFileName;
-
-    @Column(name = "position")
+    @Column(name = "position", nullable = false)
     private Integer position;
 
     @ManyToOne
-    @JoinColumn(name = "bid")
+    @JoinColumn(name = "bid", nullable = false)
     private BoardEntity boardEntity;
 
 }

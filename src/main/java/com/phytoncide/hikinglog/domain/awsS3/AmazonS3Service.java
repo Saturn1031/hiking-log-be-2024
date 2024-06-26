@@ -1,5 +1,6 @@
 package com.phytoncide.hikinglog.domain.awsS3;
 
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,13 @@ public class AmazonS3Service {
             }
         }
         return storeFileResult;
+    }
+
+    public void deleteFile(String fileUrl) {
+        String splitStr = ".com/";
+        String fileName = fileUrl.substring(fileUrl.lastIndexOf(splitStr) + splitStr.length());
+
+        amazonS3Client.deleteObject(bucket, fileName);
     }
 
     private String extractExt(String originalFilename) {
