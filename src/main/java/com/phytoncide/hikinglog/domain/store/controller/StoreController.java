@@ -47,6 +47,19 @@ public class StoreController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_RESTAURANT_LIST, jsonObject));
     }
 
+    @GetMapping("/search-stay")
+    public ResponseEntity<ResponseDTO> searchStayList(
+            @RequestParam("keyword") String keyword
+    ) throws IOException, ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(storeService.searchAccommodationList(keyword));
+
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_SEARCH_ACCOMMODATION_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_SEARCH_ACCOMMODATION_LIST, jsonObject));
+    }
+
 
 
 }
