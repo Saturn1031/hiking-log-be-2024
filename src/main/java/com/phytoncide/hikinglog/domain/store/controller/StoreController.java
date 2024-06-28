@@ -33,6 +33,20 @@ public class StoreController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_ACCOMMODATION_LIST, jsonObject));
     }
 
+    @GetMapping("/restaurant-list")
+    public ResponseEntity<ResponseDTO> getRestaurantList(
+            @RequestParam("longitude") String longitude,
+            @RequestParam("latitude") String latitude
+    ) throws IOException, ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(storeService.getRestaurantList(longitude, latitude));
+
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_GET_RESTAURANT_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_RESTAURANT_LIST, jsonObject));
+    }
+
 
 
 }

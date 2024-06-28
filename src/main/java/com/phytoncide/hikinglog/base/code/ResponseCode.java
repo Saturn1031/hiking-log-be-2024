@@ -15,7 +15,9 @@ public enum ResponseCode {
     SUCCESS_FIND_PASSWORD(HttpStatus.OK, "비밀번호를 찾았습니다."),
     SUCCESS_UPDATE_PROFILE(HttpStatus.OK, "프로필 정보를 업데이트 했습니다."),
     SUCCESS_GET_PROFILE(HttpStatus.OK, "프로필을 조회했습니다."),
+
     SUCCESS_GET_ACCOMMODATION_LIST(HttpStatus.OK, "숙소 목록을 조회했습니다."),
+    SUCCESS_GET_RESTAURANT_LIST(HttpStatus.OK, "식당 목록을 조회했습니다."),
     ;
 
     private final HttpStatus status;
