@@ -27,11 +27,6 @@ public class StoreService {
     // 숙박 시설 목록 반환
     public String getAccommodationList(String longitude, String latitude) throws IOException, ParseException {
 
-        StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B551011/KorService1/searchStay1");
-        urlBuilder.append("?"+ URLEncoder.encode("MobileOS", "UTF-8") + "=" + URLEncoder.encode("AND", "UTF-8"));
-        urlBuilder.append("&"+ URLEncoder.encode("MobileApp", "UTF-8") + "=" + URLEncoder.encode(""));
-
-        StringBuilder result = new StringBuilder();
         String urlStr = callBackUrl + "locationBasedList1?" +
                 "MobileOS=AND" +
                 "&MobileApp=hikingLog" +
@@ -40,6 +35,39 @@ public class StoreService {
                 "&mapY=" + latitude +//latitude:위도 37.6525631765458
                 "&radius=5000" +
                 "&contentTypeId=32" + //숙박:32 음식: 39
+                "&serviceKey=" + serviceKey;
+        URL url = new URL(urlStr);
+
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Content-type", "application/json");
+        urlConnection.setRequestProperty("Accept", "application/json");
+
+        BufferedReader br;
+
+        br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(br);
+
+        br.close();
+        urlConnection.disconnect();
+
+        return jsonObject.toJSONString();
+
+    }
+
+    // 식당 목록 반환
+    public String getRestaurantList(String longitude, String latitude) throws IOException, ParseException {
+
+        String urlStr = callBackUrl + "locationBasedList1?" +
+                "MobileOS=AND" +
+                "&MobileApp=hikingLog" +
+                "&_type=json" +
+                "&mapX=" + longitude +//longitude:경도 127.01612551862054
+                "&mapY=" + latitude +//latitude:위도 37.6525631765458
+                "&radius=5000" +
+                "&contentTypeId=39" + //숙박:32 음식: 39
                 "&serviceKey=" + serviceKey;
         URL url = new URL(urlStr);
 
