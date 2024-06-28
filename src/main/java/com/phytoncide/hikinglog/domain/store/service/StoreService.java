@@ -90,4 +90,35 @@ public class StoreService {
 
     }
 
+    //숙박 검색 (상세)
+    public String searchAccommodationList(String keyword) throws IOException, ParseException {
+
+        String urlStr = callBackUrl + "searchKeyword1?" +
+                "MobileOS=AND" +
+                "&MobileApp=hikingLog" +
+                "&_type=json" +
+                "&keyword=" + URLEncoder.encode(keyword, "UTF-8") +
+                "&contentTypeId=32" + //숙박:32 음식: 39
+                "&serviceKey=" + serviceKey;
+        URL url = new URL(urlStr);
+
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Content-type", "application/json");
+        urlConnection.setRequestProperty("Accept", "application/json");
+
+        BufferedReader br;
+
+        br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(br);
+
+        br.close();
+        urlConnection.disconnect();
+
+        return jsonObject.toJSONString();
+
+    }
+
 }
