@@ -10,6 +10,7 @@ import com.phytoncide.hikinglog.domain.member.config.SecurityConfig;
 import com.phytoncide.hikinglog.domain.member.dto.*;
 import com.phytoncide.hikinglog.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,7 +29,7 @@ public class MemberController {
     private final AmazonS3Service amazonS3Service;
     private final MemberService memberService;
 
-    @PostMapping("/join")
+    @PostMapping(value ="/join", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO> join(@RequestParam("user") String joinDTO, @RequestParam("image") MultipartFile multipartFile) throws IOException {
 
         ObjectMapper mapper = new ObjectMapper();
