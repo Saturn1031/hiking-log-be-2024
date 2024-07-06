@@ -45,18 +45,18 @@ public class MemberController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_JOIN, res));
     }
 
-    @GetMapping("")
-    public String getCurrentUser() {
-        // 현재 로그인한 사용자의 Authentication 객체를 가져옵니다.
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 사용자 정보를 얻습니다.
-        String email = authentication.getName();
-        // 사용자의 권한 등 다른 정보도 가져올 수 있습니다.
-        // List<GrantedAuthority> authorities = (List<GrantedAuthority>) authentication.getAuthorities();
-
-        return "Current user: " + email;
-    }
+//    @GetMapping("")
+//    public String getCurrentUser() {
+//        // 현재 로그인한 사용자의 Authentication 객체를 가져옵니다.
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        // 사용자 정보를 얻습니다.
+//        String email = authentication.getName();
+//        // 사용자의 권한 등 다른 정보도 가져올 수 있습니다.
+//        // List<GrantedAuthority> authorities = (List<GrantedAuthority>) authentication.getAuthorities();
+//
+//        return "Current user: " + email;
+//    }
 
     @GetMapping("/find-email")
     public ResponseEntity<ResponseDTO> findEmail(@RequestParam("phone") String phone) {
@@ -85,7 +85,8 @@ public class MemberController {
 
     @PostMapping("/change-password")
     public ResponseEntity<ResponseDTO> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
-        String res = memberService.changePassword(changePasswordDTO);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String res = memberService.changePassword(authentication.getName(), changePasswordDTO);
 
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_CHANGE_PASSWORD.getStatus().value())

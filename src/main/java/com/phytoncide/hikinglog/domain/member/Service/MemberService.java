@@ -2,6 +2,7 @@ package com.phytoncide.hikinglog.domain.member.Service;
 
 import com.phytoncide.hikinglog.base.code.ErrorCode;
 import com.phytoncide.hikinglog.base.exception.MemberNotFoundException;
+import com.phytoncide.hikinglog.base.exception.PasswordNotMatchException;
 import com.phytoncide.hikinglog.base.exception.RegisterException;
 import com.phytoncide.hikinglog.domain.member.config.AuthDetails;
 import com.phytoncide.hikinglog.domain.member.dto.ChangePasswordDTO;
@@ -77,12 +78,18 @@ public class MemberService implements UserDetailsService {
         }
     }
 
-    public String changePassword(ChangePasswordDTO changePasswordDTO) {
-        if (memberRepository.existsByEmail(changePasswordDTO.getEmail())) {
-            MemberEntity member = memberRepository.findByEmail(changePasswordDTO.getEmail());
-            member.setPassword(bCryptPasswordEncoder.encode(changePasswordDTO.getPassword()));
-            memberRepository.save(member);
-            return "비밀번호 교체 성공";
+    public String changePassword(String email, ChangePasswordDTO changePasswordDTO) {
+        if (memberRepository.existsByEmail(email)) {
+            MemberEntity member = memberRepository.findByEmail(email);
+            if(bCryptPasswordEncoder.matches(changePasswordDTO.getOriginPassword(), member.getPassword()))
+            {
+                member.setPassword(bCryptPasswordEncoder.encode(changePasswordDTO.getNewPassword()));
+                memberRepository.save(member);
+                return "비밀번호 교체 성공";
+            }else {
+                throw new PasswordNotMatchException(ErrorCode.PASSWORD_NOT_MATCH);
+            }
+
         } else {
             throw new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
         }

@@ -14,9 +14,9 @@ import org.antlr.v4.runtime.misc.NotNull;
 public class ChangePasswordDTO {
 
     @NotNull
-    private String email;
+    private String originPassword;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotNull
-    private String password;
+    private String newPassword;
 }
