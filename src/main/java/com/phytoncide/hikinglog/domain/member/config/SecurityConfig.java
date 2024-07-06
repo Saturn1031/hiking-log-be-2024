@@ -1,5 +1,6 @@
 package com.phytoncide.hikinglog.domain.member.config;
 
+import com.phytoncide.hikinglog.base.config.AuthenticatedMatchers;
 import com.phytoncide.hikinglog.domain.member.Service.MemberService;
 import com.phytoncide.hikinglog.domain.member.jwt.JwtAuthenticationFilter;
 import com.phytoncide.hikinglog.domain.member.jwt.JwtAuthorizationFilter;
@@ -78,6 +79,7 @@ public class SecurityConfig {
                         .requestMatchers("/**").permitAll()
 //                        .requestMatchers("/login", "/", "/join").permitAll()
 //                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers(AuthenticatedMatchers.swaggerArray).permitAll()
                         .anyRequest().authenticated());
         //세션 설정
         httpSecurity

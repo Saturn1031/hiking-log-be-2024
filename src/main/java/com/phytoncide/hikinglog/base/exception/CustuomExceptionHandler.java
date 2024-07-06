@@ -28,4 +28,12 @@ public class CustuomExceptionHandler {
                 .status(ErrorCode.MEMBER_NOT_FOUND.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.MEMBER_NOT_FOUND));
     }
+
+    @ExceptionHandler(PasswordNotMatchException.class)
+    protected ResponseEntity<ErrorResponseDTO> PasswordNotMatchException(final PasswordNotMatchException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.PASSWORD_NOT_MATCH.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.PASSWORD_NOT_MATCH));
+    }
 }
