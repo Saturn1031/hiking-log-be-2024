@@ -1,10 +1,7 @@
 package com.phytoncide.hikinglog.domain.boards.service;
 
 import com.phytoncide.hikinglog.base.code.ErrorCode;
-import com.phytoncide.hikinglog.base.exception.BoardsContentException;
-import com.phytoncide.hikinglog.base.exception.BoardsDeleteException;
-import com.phytoncide.hikinglog.base.exception.BoardsNotFoundException;
-import com.phytoncide.hikinglog.base.exception.BoardsTitleException;
+import com.phytoncide.hikinglog.base.exception.*;
 import com.phytoncide.hikinglog.domain.awsS3.AmazonS3Service;
 import com.phytoncide.hikinglog.domain.boards.dto.BoardListResponseDTO;
 import com.phytoncide.hikinglog.domain.boards.dto.BoardWriteDTO;
@@ -12,6 +9,7 @@ import com.phytoncide.hikinglog.domain.boards.dto.CommentListResponseDTO;
 import com.phytoncide.hikinglog.domain.boards.entity.BoardEntity;
 import com.phytoncide.hikinglog.domain.boards.entity.CommentEntity;
 import com.phytoncide.hikinglog.domain.boards.entity.ImageEntity;
+import com.phytoncide.hikinglog.domain.boards.entity.LikesEntity;
 import com.phytoncide.hikinglog.domain.boards.repository.BoardRepository;
 import com.phytoncide.hikinglog.domain.boards.repository.CommentRepository;
 import com.phytoncide.hikinglog.domain.boards.repository.ImageRepository;
@@ -240,5 +238,40 @@ public class BoardService {
         List<BoardEntity> nextboardEntities = boardRepository.findNextPage(commentEntities.get(commentEntities.size() - 1).getCid(), pageable);
 
         return !nextboardEntities.isEmpty();
+    }
+
+    public String createLike(Integer boardId, AuthDetails authDetails) {
+        String email = authDetails.getUsername();
+        MemberEntity memberEntity = memberRepository.findByEmail(email);
+        if (boardRepository.findById(boardId).isEmpty()) {
+            throw new BoardsNotFoundException(ErrorCode.BOARD_NOT_FOUND);
+        }
+        BoardEntity boardEntity = boardRepository.findById(boardId).get();
+
+        LikesEntity likesEntity = LikesEntity.builder()
+                .boardEntity(boardEntity)
+                .memberEntity(memberEntity)
+                .build();
+
+        likesRepository.save(likesEntity);
+
+        return "게시글 좋아요 등록에 성공했습니다.";
+    }
+
+    public String deleteLike(Integer boardId, AuthDetails authDetails) {
+        Integer userId = authDetails.getMemberEntity().getUid();
+        if (boardRepository.findById(boardId).isEmpty()) {
+            throw new BoardsNotFoundException(ErrorCode.BOARD_NOT_FOUND);
+        }
+
+        if (!likesRepository.existsByBoardEntity_BidAndMemberEntity_Uid(boardId, userId)) {
+            throw new LikeNotFoundException(ErrorCode.LIKE_NOT_FOUND);
+        }
+
+        LikesEntity likesEntity = likesRepository.findByBoardEntity_BidAndMemberEntity_Uid(boardId, userId);
+
+        likesRepository.delete(likesEntity);
+
+        return "게시글 좋아요 삭제에 성공했습니다.";
     }
 }
