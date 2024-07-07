@@ -68,4 +68,12 @@ public class CustuomExceptionHandler {
                 .status(ErrorCode.CONTENT_IS_EMPTY.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.CONTENT_IS_EMPTY));
     }
+
+    @ExceptionHandler(LikeNotFoundException.class)
+    protected ResponseEntity<ErrorResponseDTO> LikeNotFoundException(final LikeNotFoundException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.LIKE_NOT_FOUND.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.LIKE_NOT_FOUND));
+    }
 }

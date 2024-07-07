@@ -137,4 +137,26 @@ public class BoardsController {
                 .status(ResponseCode.SUCCESS_COMMENT_READ.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_COMMENT_READ, res));
     }
+
+    @PostMapping("/{boardId}/like")
+    public ResponseEntity<ResponseDTO> boardLike(@PathVariable("boardId") Integer boardId,
+                                                 @AuthenticationPrincipal AuthDetails authDetails) throws IOException {
+
+        String res = boardService.createLike(boardId, authDetails);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_BOARD_LIKE.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_BOARD_LIKE, res));
+    }
+
+    @DeleteMapping("/{boardId}/like")
+    public ResponseEntity<ResponseDTO> boardUnlike(@PathVariable("boardId") Integer boardId,
+                                                 @AuthenticationPrincipal AuthDetails authDetails) throws IOException {
+
+        String res = boardService.deleteLike(boardId, authDetails);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_BOARD_UNLIKE.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_BOARD_UNLIKE, res));
+    }
 }

@@ -28,6 +28,8 @@ public enum ResponseCode {
     SUCCESS_COMMENT_WRITE(HttpStatus.OK, "댓글 작성을 성공했습니다."),
     SUCCESS_COMMENT_DELETE(HttpStatus.OK, "댓글 삭제를 성공했습니다."),
     SUCCESS_COMMENT_READ(HttpStatus.OK, "댓글 조회를 성공했습니다."),
+    SUCCESS_BOARD_LIKE(HttpStatus.OK, "게시글 좋아요 등록을 성공했습니다."),
+    SUCCESS_BOARD_UNLIKE(HttpStatus.OK, "게시글 좋아요 삭제를 성공했습니다."),
     ;
 
     private final HttpStatus status;
