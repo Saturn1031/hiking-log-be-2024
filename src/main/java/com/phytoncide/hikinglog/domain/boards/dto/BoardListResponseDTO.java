@@ -28,32 +28,29 @@ public class BoardListResponseDTO {
         private Integer id;
         private String title;
         private String content;
-        private List<String> images;
+        private String image;
         private String tag;
         private Integer likeNum;
         private boolean liked;
         private Integer commentNum;
-        private Integer commentid;
         private Integer userid;
 
         public static BoardResponseDTO toDTO(BoardEntity entity,
-                                             List<String> images,
+                                             String image,
                                              Integer likeNum,
                                              boolean liked,
-                                             Integer commentNum,
-                                             Integer commentid) {
+                                             Integer commentNum) {
             return BoardResponseDTO.builder()
                     .createdAt(entity.getCreatedAt())
                     .updatedAt(entity.getUpdatedAt())
                     .id(entity.getBid())
                     .title(entity.getTitle())
                     .content(entity.getContent())
-                    .images(images)
+                    .image(image)
                     .tag(entity.getTag())
                     .likeNum(likeNum)
                     .liked(liked)
                     .commentNum(commentNum)
-                    .commentid(commentid)
                     .userid(entity.getMemberEntity().getUid())
                     .build();
         }
