@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ImageRepository extends JpaRepository<ImageEntity, Integer> {
     List<ImageEntity> findAllByBoardEntity_Bid(Integer bid);
+
+    ImageEntity findByBoardEntity_Bid(Integer boardId);
 }
