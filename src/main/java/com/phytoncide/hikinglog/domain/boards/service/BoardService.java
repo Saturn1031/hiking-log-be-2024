@@ -1,5 +1,10 @@
 package com.phytoncide.hikinglog.domain.boards.service;
 
+import com.phytoncide.hikinglog.base.code.ErrorCode;
+import com.phytoncide.hikinglog.base.exception.BoardsContentException;
+import com.phytoncide.hikinglog.base.exception.BoardsDeleteException;
+import com.phytoncide.hikinglog.base.exception.BoardsNotFoundException;
+import com.phytoncide.hikinglog.base.exception.BoardsTitleException;
 import com.phytoncide.hikinglog.domain.awsS3.AmazonS3Service;
 import com.phytoncide.hikinglog.domain.boards.dto.BoardListResponseDTO;
 import com.phytoncide.hikinglog.domain.boards.dto.BoardWriteDTO;
@@ -38,12 +43,12 @@ public class BoardService {
 
     private final AmazonS3Service amazonS3Service;
 
-    public String createBoard(BoardWriteDTO boardWriteDTO, List<MultipartFile> files, AuthDetails authDetails) throws IOException {
+    public String createBoard(BoardWriteDTO boardWriteDTO, MultipartFile image, AuthDetails authDetails) throws IOException {
         if (boardWriteDTO.getTitle().isEmpty()) {
-            return "제목을 작성해주세요.";
+            throw new BoardsTitleException(ErrorCode.TITLE_IS_EMPTY);
         }
         if (boardWriteDTO.getContent().isEmpty()) {
-            return "내용을 작성해주세요.";
+            throw new BoardsContentException(ErrorCode.CONTENT_IS_EMPTY);
         }
 
         String email = authDetails.getUsername();
@@ -52,25 +57,11 @@ public class BoardService {
         BoardEntity boardEntity = boardWriteDTO.toBoardEntity(memberEntity);
         boardRepository.save(boardEntity);
 
-        if (files != null && !files.isEmpty()) {
-            for (String imageName : boardWriteDTO.getImages()) {
-                for (MultipartFile file : files) {
-                    if (file != null && !file.isEmpty()) {
-                        String originalFileName = file.getOriginalFilename();
+        if (!image.isEmpty()) {
+            String imageFileUrl = amazonS3Service.saveFile(image);
 
-                        if (!imageName.equals(originalFileName)) {
-                            continue;
-                        }
-
-                        String imageFileUrl = amazonS3Service.saveFile(file);
-
-                        Integer position = boardWriteDTO.getImages().indexOf(imageName);
-
-                        ImageEntity imageEntity = boardWriteDTO.toImageEntity(boardEntity, imageFileUrl, position);
-                        imageRepository.save(imageEntity);
-                    }
-                }
-            }
+            ImageEntity imageEntity = boardWriteDTO.toImageEntity(boardEntity, imageFileUrl);
+            imageRepository.save(imageEntity);
         }
 
         return "게시글 작성에 성공했습니다.";
@@ -79,24 +70,22 @@ public class BoardService {
     public String deleteBoard(Integer boardId, AuthDetails authDetails) {
         Integer userId = authDetails.getMemberEntity().getUid();
         if (boardRepository.findById(boardId).isEmpty()) {
-            return "유효하지 않은 게시글 아이디입니다.";
+            throw new BoardsNotFoundException(ErrorCode.BOARD_NOT_FOUND);
         }
         Integer boardUserId = boardRepository.findById(boardId).get().getMemberEntity().getUid();
 
         if (!boardUserId.equals(userId)) {
-            return "게시글 삭제 권한이 없습니다.";
+            throw new BoardsDeleteException(ErrorCode.NOT_PERMITTED_TO_DELETE);
         }
 
-        List<ImageEntity> storedImages = imageRepository.findAllByBoardEntity_Bid(boardId);
-        if (!storedImages.isEmpty()) {
-            for (ImageEntity image: storedImages) {
-                Integer fileId = image.getIid();
-                String imageUrl = image.getStoredUrl();
+        ImageEntity storedImage = imageRepository.findByBoardEntity_Bid(boardId);
+        if (storedImage != null) {
+            Integer fileId = storedImage.getIid();
+            String imageUrl = storedImage.getStoredUrl();
 
-                amazonS3Service.deleteFile(imageUrl);
+            amazonS3Service.deleteFile(imageUrl);
 
-                imageRepository.deleteById(fileId);
-            }
+            imageRepository.deleteById(fileId);
         }
 
         boardRepository.deleteById(boardId);
@@ -104,22 +93,22 @@ public class BoardService {
         return "게시글 삭제에 성공했습니다.";
     }
 
-    public String updateBoard(Integer boardId, BoardWriteDTO boardWriteDTO, List<MultipartFile> files, AuthDetails authDetails) throws IOException {
+    public String updateBoard(Integer boardId, BoardWriteDTO boardWriteDTO, MultipartFile image, AuthDetails authDetails) throws IOException {
         Integer userId = authDetails.getMemberEntity().getUid();
         if (boardRepository.findById(boardId).isEmpty()) {
-            return "유효하지 않은 게시글 아이디입니다.";
+            throw new BoardsNotFoundException(ErrorCode.BOARD_NOT_FOUND);
         }
         Integer boardUserId = boardRepository.findById(boardId).get().getMemberEntity().getUid();
 
         if (!boardUserId.equals(userId)) {
-            return "게시글 수정 권한이 없습니다.";
+            throw new BoardsDeleteException(ErrorCode.NOT_PERMITTED_TO_DELETE);
         }
 
         if (boardWriteDTO.getTitle().isEmpty()) {
-            return "제목을 작성해주세요.";
+            throw new BoardsTitleException(ErrorCode.TITLE_IS_EMPTY);
         }
         if (boardWriteDTO.getContent().isEmpty()) {
-            return "내용을 작성해주세요.";
+            throw new BoardsContentException(ErrorCode.CONTENT_IS_EMPTY);
         }
 
         BoardEntity boardEntity = boardRepository.findById(boardId).get();
@@ -128,37 +117,21 @@ public class BoardService {
         boardEntity.setContent(boardWriteDTO.getContent());
         boardEntity.setTag(boardWriteDTO.getTag());
 
-        List<ImageEntity> storedImages = imageRepository.findAllByBoardEntity_Bid(boardId);
-        if (!storedImages.isEmpty()) {
-            for (ImageEntity image: storedImages) {
-                Integer fileId = image.getIid();
-                String imageUrl = image.getStoredUrl();
+        ImageEntity storedImage = imageRepository.findByBoardEntity_Bid(boardId);
+        if (storedImage != null) {
+            Integer fileId = storedImage.getIid();
+            String imageUrl = storedImage.getStoredUrl();
 
-                amazonS3Service.deleteFile(imageUrl);
+            amazonS3Service.deleteFile(imageUrl);
 
-                imageRepository.deleteById(fileId);
-            }
+            imageRepository.deleteById(fileId);
         }
 
-        if (files != null && !files.isEmpty()) {
-            for (String imageName : boardWriteDTO.getImages()) {
-                for (MultipartFile file : files) {
-                    if (file != null && !file.isEmpty()) {
-                        String originalFileName = file.getOriginalFilename();
+        if (!image.isEmpty()) {
+            String imageFileUrl = amazonS3Service.saveFile(image);
 
-                        if (!imageName.equals(originalFileName)) {
-                            continue;
-                        }
-
-                        String imageFileUrl = amazonS3Service.saveFile(file);
-
-                        Integer position = boardWriteDTO.getImages().indexOf(imageName);
-
-                        ImageEntity imageEntity = boardWriteDTO.toImageEntity(boardEntity, imageFileUrl, position);
-                        imageRepository.save(imageEntity);
-                    }
-                }
-            }
+            ImageEntity imageEntity = boardWriteDTO.toImageEntity(boardEntity, imageFileUrl);
+            imageRepository.save(imageEntity);
         }
 
         return "게시글 수정에 성공했습니다.";
@@ -172,26 +145,14 @@ public class BoardService {
         List<BoardListResponseDTO.BoardResponseDTO> boards = new ArrayList<>();
         for (BoardEntity boardEntity : boardEntities) {
 
-            List<String> images = new ArrayList<>();
-            List<ImageEntity> imageEntities = imageRepository.findAllByBoardEntity_Bid(boardEntity.getBid());
-            for (ImageEntity imageEntity : imageEntities) {
-                images.add(imageEntity.getStoredUrl());
-            }
+            ImageEntity imageEntity = imageRepository.findByBoardEntity_Bid(boardEntity.getBid());
 
             Integer likeNum = likesRepository.countByBoardEntity_Bid(boardEntity.getBid()).intValue();
             boolean liked = likesRepository.existsByBoardEntity_BidAndMemberEntity_Uid(boardEntity.getBid(), authDetails.getMemberEntity().getUid());
 
             Integer commentNum = commentRepository.countByBoardEntity_Bid(boardEntity.getBid()).intValue();
 
-            Integer commentid;
-            if (commentRepository.existsByBoardEntity_Bid(boardEntity.getBid())) {
-                List<CommentEntity> comments = commentRepository.findAllByBoardEntity_Bid(boardEntity.getBid(), Sort.by(Sort.Direction.DESC, "createdAt"));
-                commentid = comments.get(0).getCid();
-            } else {
-                commentid = -1;
-            }
-
-            boards.add(BoardListResponseDTO.BoardResponseDTO.toDTO(boardEntity, images, likeNum, liked, commentNum, commentid));
+            boards.add(BoardListResponseDTO.BoardResponseDTO.toDTO(boardEntity, imageEntity.getStoredUrl(), likeNum, liked, commentNum));
         }
         return boards;
     }
@@ -200,7 +161,7 @@ public class BoardService {
         Pageable pageable = PageRequest.of(pageNumber, limit);
         List<BoardEntity> boardEntities = boardRepository.findNextPage(2147483647, pageable);
 
-        if (boardEntities.size() == 0) {
+        if (boardEntities.isEmpty()) {
             return false;
         }
         List<BoardEntity> nextboardEntities = boardRepository.findNextPage(boardEntities.get(boardEntities.size() - 1).getBid(), pageable);
@@ -211,10 +172,13 @@ public class BoardService {
     public String createComment(Integer boardId, String content, AuthDetails authDetails) {
         String email = authDetails.getUsername();
         MemberEntity memberEntity = memberRepository.findByEmail(email);
+        if (boardRepository.findById(boardId).isEmpty()) {
+            throw new BoardsNotFoundException(ErrorCode.BOARD_NOT_FOUND);
+        }
         Optional<BoardEntity> boardEntity = boardRepository.findById(boardId);
 
         if (content.isEmpty()) {
-            return "댓글 내용을 작성해주세요.";
+            throw new BoardsContentException(ErrorCode.CONTENT_IS_EMPTY);
         }
 
         CommentEntity commentEntity = CommentEntity.builder()
@@ -228,11 +192,17 @@ public class BoardService {
         return "댓글 작성에 성공했습니다.";
     }
 
-    public String deleteComment(Integer commentId, AuthDetails authDetails) {
+    public String deleteComment(Integer boardId, Integer commentId, AuthDetails authDetails) {
         Integer userId = authDetails.getMemberEntity().getUid();
+        if (boardRepository.findById(boardId).isEmpty()) {
+            throw new BoardsNotFoundException(ErrorCode.BOARD_NOT_FOUND);
+        }
+        if (commentRepository.findById(commentId).isEmpty()) {
+            throw new BoardsNotFoundException(ErrorCode.BOARD_NOT_FOUND);
+        }
         Integer commentUserId = commentRepository.findById(commentId).get().getMemberEntity().getUid();
         if (!commentUserId.equals(userId)) {
-            return "댓글 삭제 권한이 없습니다.";
+            throw new BoardsDeleteException(ErrorCode.NOT_PERMITTED_TO_DELETE);
         }
 
         commentRepository.deleteById(commentId);
@@ -243,6 +213,9 @@ public class BoardService {
     public List<CommentListResponseDTO.CommentResponseDTO> readeComments(Integer boardId, Integer limit, Integer pageNumber, AuthDetails authDetails) {
 
         Pageable pageable = PageRequest.of(pageNumber, limit);
+        if (boardRepository.findById(boardId).isEmpty()) {
+            throw new BoardsNotFoundException(ErrorCode.BOARD_NOT_FOUND);
+        }
         BoardEntity boardEntity = boardRepository.findById(boardId).get();
         List<CommentEntity> commentEntities = commentRepository.findNextPage(2147483647, pageable, boardEntity);
 
@@ -255,10 +228,13 @@ public class BoardService {
 
     public boolean hasNextComments(Integer boardId, Integer limit, Integer pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber, limit);
+        if (boardRepository.findById(boardId).isEmpty()) {
+            throw new BoardsNotFoundException(ErrorCode.BOARD_NOT_FOUND);
+        }
         BoardEntity boardEntity = boardRepository.findById(boardId).get();
         List<CommentEntity> commentEntities = commentRepository.findNextPage(2147483647, pageable, boardEntity);
 
-        if (commentEntities.size() == 0) {
+        if (commentEntities.isEmpty()) {
             return false;
         }
         List<BoardEntity> nextboardEntities = boardRepository.findNextPage(commentEntities.get(commentEntities.size() - 1).getCid(), pageable);

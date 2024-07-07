@@ -22,9 +22,6 @@ public class ImageEntity {
     @Column(name = "storedUrl", nullable = false, columnDefinition = "text")
     private String storedUrl;
 
-    @Column(name = "position", nullable = false)
-    private Integer position;
-
     @ManyToOne
     @JoinColumn(name = "bid", nullable = false)
     private BoardEntity boardEntity;
