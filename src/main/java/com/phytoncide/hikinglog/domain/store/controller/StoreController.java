@@ -73,6 +73,30 @@ public class StoreController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_SEARCH_RESTAURANT_LIST, jsonObject));
     }
 
+    @GetMapping("/detail-stay")
+    public ResponseEntity<ResponseDTO> getStayDetail(
+            @RequestParam("contentId") String contentId
+    ) throws IOException, ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(storeService.getAccommodationDetail(contentId));
 
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_GET_ACCOMMODATION_DETAIL.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_ACCOMMODATION_DETAIL, jsonObject));
+    }
+
+    @GetMapping("/detail-restaurant")
+    public ResponseEntity<ResponseDTO> getRestaurantDetail(
+            @RequestParam("contentId") String contentId
+    ) throws IOException, ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(storeService.getRestaurantDetail(contentId));
+
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_GET_RESTAURANT_DETAIL.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_RESTAURANT_DETAIL, jsonObject));
+    }
 
 }

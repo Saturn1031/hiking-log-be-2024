@@ -17,7 +17,9 @@ public enum ResponseCode {
     SUCCESS_GET_PROFILE(HttpStatus.OK, "프로필을 조회했습니다."),
 
     SUCCESS_GET_ACCOMMODATION_LIST(HttpStatus.OK, "숙소 목록을 조회했습니다."),
+    SUCCESS_GET_ACCOMMODATION_DETAIL(HttpStatus.OK, "숙소 상세를 조회했습니다."),
     SUCCESS_GET_RESTAURANT_LIST(HttpStatus.OK, "식당 목록을 조회했습니다."),
+    SUCCESS_GET_RESTAURANT_DETAIL(HttpStatus.OK, "식당 상세를 조회했습니다."),
     SUCCESS_SEARCH_ACCOMMODATION_LIST(HttpStatus.OK, "숙소를 검색했습니다."),
     SUCCESS_SEARCH_RESTAURANT_LIST(HttpStatus.OK, "식당을 검색했습니다."),
     ;
