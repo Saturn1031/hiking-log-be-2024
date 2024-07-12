@@ -24,6 +24,16 @@ public enum ResponseCode {
     SUCCESS_SEARCH_RESTAURANT_LIST(HttpStatus.OK, "식당을 검색했습니다."),
     SUCCESS_GET_STORE_LIST(HttpStatus.OK, "등산용품점 온라인몰 목록을 조회했습니다."),
     SUCCESS_GET_STORE_DETAIL(HttpStatus.OK, "등산용품점 온라인몰 상세를 조회했습니다."),
+  
+    SUCCESS_BOARD_WRITE(HttpStatus.OK, "게시글 작성을 성공했습니다."),
+    SUCCESS_BOARD_DELETE(HttpStatus.OK, "게시글 삭제를 성공했습니다."),
+    SUCCESS_BOARD_UPDATE(HttpStatus.OK, "게시글 수정을 성공했습니다."),
+    SUCCESS_BOARD_READ(HttpStatus.OK, "게시글 조회를 성공했습니다."),
+    SUCCESS_COMMENT_WRITE(HttpStatus.OK, "댓글 작성을 성공했습니다."),
+    SUCCESS_COMMENT_DELETE(HttpStatus.OK, "댓글 삭제를 성공했습니다."),
+    SUCCESS_COMMENT_READ(HttpStatus.OK, "댓글 조회를 성공했습니다."),
+    SUCCESS_BOARD_LIKE(HttpStatus.OK, "게시글 좋아요 등록을 성공했습니다."),
+    SUCCESS_BOARD_UNLIKE(HttpStatus.OK, "게시글 좋아요 삭제를 성공했습니다."),
     ;
 
     private final HttpStatus status;

@@ -25,8 +25,6 @@ public class BoardWriteDTO {
 
     private String tag;
 
-    private List<String> images;
-
     public BoardEntity toBoardEntity(MemberEntity memberEntity) {
         BoardEntity board = BoardEntity.builder()
                 .memberEntity(memberEntity)
@@ -38,11 +36,10 @@ public class BoardWriteDTO {
         return board;
     }
 
-    public ImageEntity toImageEntity(BoardEntity boardEntity, String storedUrl, Integer position) {
+    public ImageEntity toImageEntity(BoardEntity boardEntity, String storedUrl) {
         ImageEntity image = ImageEntity.builder()
                 .boardEntity(boardEntity)
                 .storedUrl(storedUrl)
-                .position(position)
                 .build();
 
         return image;

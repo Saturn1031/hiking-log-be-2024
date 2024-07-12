@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<CommentEntity, Integer> {
-    List<CommentEntity> findAllByBoardEntity_Bid(Integer bid, Sort sort);
-    boolean existsByBoardEntity_Bid(Integer bid);
     Long countByBoardEntity_Bid(Integer bid);
     @Query("SELECT p FROM CommentEntity p WHERE p.id < :cursor AND p.boardEntity = :bid ORDER BY p.id DESC")
     List<CommentEntity> findNextPage(@Param("cursor") Integer cursor, Pageable pageable, @Param("bid") BoardEntity bid);
