@@ -22,6 +22,8 @@ public enum ResponseCode {
     SUCCESS_GET_RESTAURANT_DETAIL(HttpStatus.OK, "식당 상세를 조회했습니다."),
     SUCCESS_SEARCH_ACCOMMODATION_LIST(HttpStatus.OK, "숙소를 검색했습니다."),
     SUCCESS_SEARCH_RESTAURANT_LIST(HttpStatus.OK, "식당을 검색했습니다."),
+    SUCCESS_GET_STORE_LIST(HttpStatus.OK, "등산용품점 온라인몰 목록을 조회했습니다."),
+    SUCCESS_GET_STORE_DETAIL(HttpStatus.OK, "등산용품점 온라인몰 상세를 조회했습니다."),
     ;
 
     private final HttpStatus status;
