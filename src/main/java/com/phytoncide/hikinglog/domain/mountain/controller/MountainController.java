@@ -1,15 +1,11 @@
 package com.phytoncide.hikinglog.domain.mountain.controller;
 
-<<<<<<< HEAD
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-=======
 import com.phytoncide.hikinglog.domain.mountain.service.ApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
->>>>>>> d0931bb ([Feat] Api 연결 및 데이터 받아오기)
 
 import java.io.BufferedReader;
 import java.io.IOException;
