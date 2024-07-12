@@ -36,4 +36,44 @@ public class CustuomExceptionHandler {
                 .status(ErrorCode.PASSWORD_NOT_MATCH.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.PASSWORD_NOT_MATCH));
     }
+
+    @ExceptionHandler(BoardsDeleteException.class)
+    protected ResponseEntity<ErrorResponseDTO> BoardsDeleteException(final BoardsDeleteException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.NOT_PERMITTED_TO_DELETE.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.NOT_PERMITTED_TO_DELETE));
+    }
+
+    @ExceptionHandler(BoardsNotFoundException.class)
+    protected ResponseEntity<ErrorResponseDTO> BoardsNotFoundException(final BoardsNotFoundException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.BOARD_NOT_FOUND.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.BOARD_NOT_FOUND));
+    }
+
+    @ExceptionHandler(BoardsTitleException.class)
+    protected ResponseEntity<ErrorResponseDTO> BoardsTitleException(final BoardsTitleException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.TITLE_IS_EMPTY.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.TITLE_IS_EMPTY));
+    }
+
+    @ExceptionHandler(BoardsContentException.class)
+    protected ResponseEntity<ErrorResponseDTO> BoardsContentException(final BoardsContentException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.CONTENT_IS_EMPTY.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.CONTENT_IS_EMPTY));
+    }
+
+    @ExceptionHandler(LikeNotFoundException.class)
+    protected ResponseEntity<ErrorResponseDTO> LikeNotFoundException(final LikeNotFoundException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.LIKE_NOT_FOUND.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.LIKE_NOT_FOUND));
+    }
 }

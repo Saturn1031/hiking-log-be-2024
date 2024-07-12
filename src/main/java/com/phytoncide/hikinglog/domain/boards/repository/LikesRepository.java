@@ -9,4 +9,5 @@ public interface LikesRepository extends JpaRepository<LikesEntity, Integer> {
     List<LikesEntity> findAllByBoardEntity_Bid(Integer bid);
     boolean existsByBoardEntity_BidAndMemberEntity_Uid(Integer bid, Integer uid);
     Long countByBoardEntity_Bid(Integer bid);
+    LikesEntity findByBoardEntity_BidAndMemberEntity_Uid(Integer bid, Integer uid);
 }
