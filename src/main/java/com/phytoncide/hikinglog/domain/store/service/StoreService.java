@@ -90,7 +90,7 @@ public class StoreService {
 
     }
 
-    //숙박 검색 (상세)
+    //숙박 검색
     public String searchAccommodationList(String keyword) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "searchKeyword1?" +
@@ -121,7 +121,7 @@ public class StoreService {
 
     }
 
-    //숙박 검색 (상세)
+    //식당 검색
     public String searchRestaurantList(String keyword) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "searchKeyword1?" +
@@ -130,6 +130,85 @@ public class StoreService {
                 "&_type=json" +
                 "&keyword=" + URLEncoder.encode(keyword, "UTF-8") +
                 "&contentTypeId=39" + //숙박:32 음식: 39
+                "&serviceKey=" + serviceKey;
+        URL url = new URL(urlStr);
+
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Content-type", "application/json");
+        urlConnection.setRequestProperty("Accept", "application/json");
+
+        BufferedReader br;
+
+        br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(br);
+
+        br.close();
+        urlConnection.disconnect();
+
+        return jsonObject.toJSONString();
+
+    }
+
+    // https://apis.data.go.kr/B551011/KorService1/detailCommon1?MobileOS=AN
+    // D&MobileApp=hikinglog&_type=json
+    // &contentId=1990929&contentTypeId=32&
+    // defaultYN=Y&
+    // firstImageYN=Y&addrinfoYN=Y
+    // &mapinfoYN=Y&overviewYN=Y&serviceKey=Yf7lL5X5DsZt7V0ki07i%2BK1Ot7aHyMpKv3KyjvB5aVTIt35GEyQWOlFbLoTBnN5IbqaLDy5Mc7n%2FpLUnuE7oMw%3D%3D
+
+    //숙박 상세
+    public String getAccommodationDetail(String contentId) throws IOException, ParseException {
+
+        String urlStr = callBackUrl + "detailCommon1?" +
+                "MobileOS=AND" +
+                "&MobileApp=hikingLog" +
+                "&_type=json" +
+                "&contentId=" + contentId +
+                "&contentTypeId=32" + //숙박:32 음식: 39
+                "&defaultYN=Y" +
+                "&firstImageYN=Y" +
+                "&addrinfoYN=Y" +
+                "&mapinfoYN=Y" +
+                "&overviewYN=Y" +
+                "&serviceKey=" + serviceKey;
+        URL url = new URL(urlStr);
+
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Content-type", "application/json");
+        urlConnection.setRequestProperty("Accept", "application/json");
+
+        BufferedReader br;
+
+        br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(br);
+
+        br.close();
+        urlConnection.disconnect();
+
+        return jsonObject.toJSONString();
+
+    }
+
+    // 식당 상세
+    public String getRestaurantDetail(String contentId) throws IOException, ParseException {
+
+        String urlStr = callBackUrl + "detailCommon1?" +
+                "MobileOS=AND" +
+                "&MobileApp=hikingLog" +
+                "&_type=json" +
+                "&contentId=" + contentId +
+                "&contentTypeId=39" + //숙박:32 음식: 39
+                "&defaultYN=Y" +
+                "&firstImageYN=Y" +
+                "&addrinfoYN=Y" +
+                "&mapinfoYN=Y" +
+                "&overviewYN=Y" +
                 "&serviceKey=" + serviceKey;
         URL url = new URL(urlStr);
 
