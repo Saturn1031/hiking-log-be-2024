@@ -4,6 +4,7 @@ import com.phytoncide.hikinglog.base.code.ResponseCode;
 import com.phytoncide.hikinglog.base.dto.ResponseDTO;
 import com.phytoncide.hikinglog.domain.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -73,7 +74,7 @@ public class StoreController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_SEARCH_RESTAURANT_LIST, jsonObject));
     }
 
-    @GetMapping("/detail-stay")
+    @GetMapping("/stay-detail")
     public ResponseEntity<ResponseDTO> getStayDetail(
             @RequestParam("contentId") String contentId
     ) throws IOException, ParseException {
@@ -86,7 +87,7 @@ public class StoreController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_ACCOMMODATION_DETAIL, jsonObject));
     }
 
-    @GetMapping("/detail-restaurant")
+    @GetMapping("/restaurant-detail")
     public ResponseEntity<ResponseDTO> getRestaurantDetail(
             @RequestParam("contentId") String contentId
     ) throws IOException, ParseException {
@@ -97,6 +98,28 @@ public class StoreController {
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_GET_RESTAURANT_DETAIL.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_RESTAURANT_DETAIL, jsonObject));
+    }
+
+    @GetMapping("store-list")
+    public ResponseEntity<ResponseDTO> getOnlineMallList() throws IOException, ParseException {
+        JSONParser parser = new JSONParser();
+        JSONArray jsonArray = (JSONArray) parser.parse(storeService.getOnlineMallList());
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_GET_STORE_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_STORE_LIST, jsonArray));
+    }
+
+    @GetMapping("store-detail")
+    public ResponseEntity<ResponseDTO> getOnlineMallDetail(
+            @RequestParam("id") String id
+    ) throws IOException, ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(storeService.getOnlineMallDetail(id));
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_GET_STORE_DETAIL.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_STORE_DETAIL, jsonObject));
     }
 
 }

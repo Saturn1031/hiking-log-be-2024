@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "name": "예스 마운틴",
+    "link": "https://www.yesmountain.com/",
+    "image": ""
+  },
+  {
+    "id": "2",
+    "name": "데카트론",
+    "link": "https://www.decathlon.co.kr/",
+    "image": ""
+  },
+  {
+    "id": "3",
+    "name": "K.VILLAGE",
+    "link": "https://www.k-village.co.kr/main",
+    "image": ""
+  },
+  {
+    "id": "4",
+    "name": "고캠프",
+    "link": "https://www.gocamp.co.kr/shop/main/index.php?&",
+    "image": ""
+  }
+]

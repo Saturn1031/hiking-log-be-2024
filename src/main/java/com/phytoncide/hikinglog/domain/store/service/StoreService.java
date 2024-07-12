@@ -1,10 +1,13 @@
 package com.phytoncide.hikinglog.domain.store.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -13,6 +16,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +29,8 @@ public class StoreService {
 
     @Value("${openApi.stayUrl}")
     private String callBackUrl;
+
+    private static final String FILE_PATH = "src/main/java/com/phytoncide/hikinglog/domain/store/resource/onlineOutdoorMall.json";
 
     // 숙박 시설 목록 반환
     public String getAccommodationList(String longitude, String latitude) throws IOException, ParseException {
@@ -152,13 +160,6 @@ public class StoreService {
 
     }
 
-    // https://apis.data.go.kr/B551011/KorService1/detailCommon1?MobileOS=AN
-    // D&MobileApp=hikinglog&_type=json
-    // &contentId=1990929&contentTypeId=32&
-    // defaultYN=Y&
-    // firstImageYN=Y&addrinfoYN=Y
-    // &mapinfoYN=Y&overviewYN=Y&serviceKey=Yf7lL5X5DsZt7V0ki07i%2BK1Ot7aHyMpKv3KyjvB5aVTIt35GEyQWOlFbLoTBnN5IbqaLDy5Mc7n%2FpLUnuE7oMw%3D%3D
-
     //숙박 상세
     public String getAccommodationDetail(String contentId) throws IOException, ParseException {
 
@@ -231,4 +232,39 @@ public class StoreService {
 
     }
 
+    //등산 용품 온라인 몰 목록
+    public String getOnlineMallList() throws IOException {
+        byte[] jsonData = Files.readAllBytes(Paths.get(FILE_PATH));
+        String jsonString = new String(jsonData, StandardCharsets.UTF_8);
+
+        return jsonString;
+    }
+
+    //등산 용품 온라인 몰 상세
+    public String getOnlineMallDetail(String idNum) throws IOException, ParseException {
+        byte[] jsonData = Files.readAllBytes(Paths.get(FILE_PATH));
+        String jsonString = new String(jsonData, StandardCharsets.UTF_8);
+
+        JSONParser parser = new JSONParser();
+        JSONArray jsonArray = (JSONArray) parser.parse(jsonString);
+
+        // ID가 1인 객체 찾기
+        JSONObject result = null;
+        for (Object obj : jsonArray) {
+            JSONObject jsonObj = (JSONObject) obj;
+            String id = (String) jsonObj.get("id"); // "id" 필드가 Long 타입일 경우
+
+            if (id != null && id.equals(idNum)) {
+                result = jsonObj;
+                break;
+            }
+        }
+
+        // 결과 반환
+        if (result != null) {
+            return result.toJSONString(); // ID가 1인 객체의 JSON 문자열 반환
+        } else {
+            return "ID가 1인 객체를 찾을 수 없습니다.";
+        }
+    }
 }
