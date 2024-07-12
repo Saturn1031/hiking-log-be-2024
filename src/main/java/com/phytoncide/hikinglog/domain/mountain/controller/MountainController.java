@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequestMapping("/api")
-public class ApiController {
+public class MountainController {
 
     @Value("${openApi.serviceKey}")
     private String serviceKey;
