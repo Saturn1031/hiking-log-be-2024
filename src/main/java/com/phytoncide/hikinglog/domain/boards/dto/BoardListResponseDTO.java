@@ -35,6 +35,13 @@ public class BoardListResponseDTO {
         private Integer commentNum;
         private Integer userid;
 
+        public BoardResponseDTO(BoardEntity boardEntity) {
+            this.id = boardEntity.getBid();
+            this.title = boardEntity.getTitle();
+            this.content = boardEntity.getContent();
+            this.userid = boardEntity.getMemberEntity().getUid(); // 예시로 Author의 name을 가져온다고 가정
+        }
+
         public static BoardResponseDTO toDTO(BoardEntity entity,
                                              String image,
                                              Integer likeNum,

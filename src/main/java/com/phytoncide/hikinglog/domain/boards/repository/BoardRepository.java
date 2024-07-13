@@ -11,4 +11,6 @@ import java.util.List;
 public interface BoardRepository extends JpaRepository<BoardEntity, Integer> {
     @Query("SELECT p FROM BoardEntity p WHERE p.id < :cursor ORDER BY p.id DESC")
     List<BoardEntity> findNextPage(@Param("cursor") Integer cursor, Pageable pageable);
+
+
 }
