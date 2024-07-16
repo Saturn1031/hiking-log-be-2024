@@ -29,7 +29,7 @@ public class MountainController {
     ) throws IOException {
         StringBuilder result = new StringBuilder();
         String mountain_name = URLEncoder.encode(mountain_Name, StandardCharsets.UTF_8);
-        String urlStr = callBackUrl + "mntInfoOpenAPI?" +
+        String urlStr = callBackUrl + "mntInfoOpenAPI2?" +
                 "searchWrd=" + mountain_name +
                 "&ServiceKey=" + serviceKey;
         URL url = new URL(urlStr);
