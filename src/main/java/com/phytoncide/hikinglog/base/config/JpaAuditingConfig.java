@@ -1,4 +1,4 @@
-package com.phytoncide.hikinglog.domain.boards.config;
+package com.phytoncide.hikinglog.base.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

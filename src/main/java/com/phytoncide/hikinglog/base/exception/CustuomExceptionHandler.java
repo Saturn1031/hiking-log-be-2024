@@ -76,4 +76,20 @@ public class CustuomExceptionHandler {
                 .status(ErrorCode.LIKE_NOT_FOUND.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.LIKE_NOT_FOUND));
     }
+
+    @ExceptionHandler(BookmarkExistsException.class)
+    protected ResponseEntity<ErrorResponseDTO> BookmarkExistsException(final BookmarkExistsException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.BOOKMARK_EXISTS.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.BOOKMARK_EXISTS));
+    }
+
+    @ExceptionHandler(BookmarkNotFoundException.class)
+    protected ResponseEntity<ErrorResponseDTO> BookmarkNotFoundException(final BookmarkNotFoundException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.BOOKMARK_NOT_FOUND.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.BOOKMARK_NOT_FOUND));
+    }
 }

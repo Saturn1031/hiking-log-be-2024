@@ -18,6 +18,9 @@ public enum ErrorCode {
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 게시글을 찾을 수 없습니다."),
     NOT_PERMITTED_TO_DELETE(HttpStatus.FORBIDDEN, "게시글 삭제 권한이 없습니다."),
     LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "현재 사용자의 해당 게시글 좋아요를 찾을 수 없습니다."),
+
+    BOOKMARK_EXISTS(HttpStatus.BAD_REQUEST, "이미 동일한 북마크가 존재합니다."),
+    BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 북마크를 찾을 수 없습니다."),
     ;
 
     private final HttpStatus status;
