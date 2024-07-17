@@ -34,6 +34,19 @@ public enum ResponseCode {
     SUCCESS_COMMENT_READ(HttpStatus.OK, "댓글 조회를 성공했습니다."),
     SUCCESS_BOARD_LIKE(HttpStatus.OK, "게시글 좋아요 등록을 성공했습니다."),
     SUCCESS_BOARD_UNLIKE(HttpStatus.OK, "게시글 좋아요 삭제를 성공했습니다."),
+
+    SUCCESS_RESTAURANT_BOOKMARK_CREATE(HttpStatus.OK, "음식점 북마크 추가를 성공했습니다."),
+    SUCCESS_ACCOMMODATION_BOOKMARK_CREATE(HttpStatus.OK, "숙박시설 북마크 추가를 성공했습니다."),
+    SUCCESS_ONLINESTORE_BOOKMARK_CREATE(HttpStatus.OK, "등산용품 가게 북마크 추가를 성공했습니다."),
+    SUCCESS_MOUNTAIN_BOOKMARK_CREATE(HttpStatus.OK, "산 북마크 추가를 성공했습니다."),
+    SUCCESS_STORE_BOOKMARK_DELETE(HttpStatus.OK, "가게 북마크 삭제를 성공했습니다."),
+    SUCCESS_ONLINESTORE_BOOKMARK_DELETE(HttpStatus.OK, "등산용품 가게 북마크 삭제를 성공했습니다."),
+    SUCCESS_MOUNTAIN_BOOKMARK_DELETE(HttpStatus.OK, "산 북마크 삭제를 성공했습니다."),
+    SUCCESS_BOOKMARK_READ_ALL(HttpStatus.OK, "전체 북마크 조회를 성공했습니다."),
+    SUCCESS_BOOKMARK_READ_MOUNTAIN(HttpStatus.OK, "산 북마크 조회를 성공했습니다."),
+    SUCCESS_BOOKMARK_READ_RESTAURANT(HttpStatus.OK, "음식점 북마크 조회를 성공했습니다."),
+    SUCCESS_BOOKMARK_READ_ACCOMMODATION(HttpStatus.OK, "숙박시설 북마크 조회를 성공했습니다."),
+    SUCCESS_BOOKMARK_READ_ONLINESTORE(HttpStatus.OK, "등산용품 가게 북마크 조회를 성공했습니다."),
     ;
 
     private final HttpStatus status;
