@@ -76,12 +76,12 @@ public class BoardsController {
                     .boardList(boardList)
                     .hasNext(false)
                     .build();
+        } else {
+            res = BoardListResponseDTO.builder()
+                    .boardList(boardList)
+                    .hasNext(true)
+                    .build();
         }
-
-        res = BoardListResponseDTO.builder()
-                .boardList(boardList)
-                .hasNext(true)
-                .build();
 
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_BOARD_READ.getStatus().value())
