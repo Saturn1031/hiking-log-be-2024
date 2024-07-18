@@ -1,6 +1,10 @@
 package com.phytoncide.hikinglog.domain.store.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.phytoncide.hikinglog.domain.store.dto.AccomoDetailResponseDTO;
+import com.phytoncide.hikinglog.domain.store.dto.AccomoListResponseDTO;
+import com.phytoncide.hikinglog.domain.store.dto.RestaurantDetailResponseDTO;
+import com.phytoncide.hikinglog.domain.store.dto.RestaurantListResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,6 +23,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +39,7 @@ public class StoreService {
     private static final String FILE_PATH = "src/main/java/com/phytoncide/hikinglog/domain/store/resource/onlineOutdoorMall.json";
 
     // 숙박 시설 목록 반환
-    public String getAccommodationList(String longitude, String latitude) throws IOException, ParseException {
+    public List<AccomoListResponseDTO> getAccommodationList(String longitude, String latitude) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "locationBasedList1?" +
                 "MobileOS=AND" +
@@ -61,12 +67,35 @@ public class StoreService {
         br.close();
         urlConnection.disconnect();
 
-        return jsonObject.toJSONString();
+        List<AccomoListResponseDTO> dtoList = new ArrayList<>();
+
+        JSONObject response = (JSONObject) jsonObject.get("response");
+        JSONObject body = (JSONObject) response.get("body");
+        JSONObject items = (JSONObject) body.get("items");
+        JSONArray itemArray = (JSONArray) items.get("item");
+
+        for (Object obj : itemArray) {
+            JSONObject item = (JSONObject) obj;
+
+            AccomoListResponseDTO dto = new AccomoListResponseDTO();
+            dto.setName((String) item.get("title"));
+            dto.setContentId((String) item.get("contentid"));
+            dto.setAdd((String) item.get("addr1"));
+            dto.setImg((String) item.get("firstimage"));
+            dto.setImg2((String) item.get("firstimage2"));
+            dto.setMapX((String) item.get("mapx"));
+            dto.setMapY((String) item.get("mapy"));
+            dto.setTel((String) item.get("tel"));
+
+            dtoList.add(dto);
+        }
+
+        return dtoList;
 
     }
 
     // 식당 목록 반환
-    public String getRestaurantList(String longitude, String latitude) throws IOException, ParseException {
+    public List<RestaurantListResponseDTO> getRestaurantList(String longitude, String latitude) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "locationBasedList1?" +
                 "MobileOS=AND" +
@@ -94,12 +123,35 @@ public class StoreService {
         br.close();
         urlConnection.disconnect();
 
-        return jsonObject.toJSONString();
+        List<RestaurantListResponseDTO> dtoList = new ArrayList<>();
+
+        JSONObject response = (JSONObject) jsonObject.get("response");
+        JSONObject body = (JSONObject) response.get("body");
+        JSONObject items = (JSONObject) body.get("items");
+        JSONArray itemArray = (JSONArray) items.get("item");
+
+        for (Object obj : itemArray) {
+            JSONObject item = (JSONObject) obj;
+
+            RestaurantListResponseDTO dto = new RestaurantListResponseDTO();
+            dto.setName((String) item.get("title"));
+            dto.setContentId((String) item.get("contentid"));
+            dto.setAdd((String) item.get("addr1"));
+            dto.setImg((String) item.get("firstimage"));
+            dto.setImg2((String) item.get("firstimage2"));
+            dto.setMapX((String) item.get("mapx"));
+            dto.setMapY((String) item.get("mapy"));
+            dto.setTel((String) item.get("tel"));
+
+            dtoList.add(dto);
+        }
+
+        return dtoList;
 
     }
 
     //숙박 검색
-    public String searchAccommodationList(String keyword) throws IOException, ParseException {
+    public List<AccomoListResponseDTO> searchAccommodationList(String keyword) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "searchKeyword1?" +
                 "MobileOS=AND" +
@@ -125,12 +177,35 @@ public class StoreService {
         br.close();
         urlConnection.disconnect();
 
-        return jsonObject.toJSONString();
+        List<AccomoListResponseDTO> dtoList = new ArrayList<>();
+
+        JSONObject response = (JSONObject) jsonObject.get("response");
+        JSONObject body = (JSONObject) response.get("body");
+        JSONObject items = (JSONObject) body.get("items");
+        JSONArray itemArray = (JSONArray) items.get("item");
+
+        for (Object obj : itemArray) {
+            JSONObject item = (JSONObject) obj;
+
+            AccomoListResponseDTO dto = new AccomoListResponseDTO();
+            dto.setName((String) item.get("title"));
+            dto.setContentId((String) item.get("contentid"));
+            dto.setAdd((String) item.get("addr1"));
+            dto.setImg((String) item.get("firstimage"));
+            dto.setImg2((String) item.get("firstimage2"));
+            dto.setMapX((String) item.get("mapx"));
+            dto.setMapY((String) item.get("mapy"));
+            dto.setTel((String) item.get("tel"));
+
+            dtoList.add(dto);
+        }
+
+        return dtoList;
 
     }
 
     //식당 검색
-    public String searchRestaurantList(String keyword) throws IOException, ParseException {
+    public List<RestaurantListResponseDTO> searchRestaurantList(String keyword) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "searchKeyword1?" +
                 "MobileOS=AND" +
@@ -156,12 +231,35 @@ public class StoreService {
         br.close();
         urlConnection.disconnect();
 
-        return jsonObject.toJSONString();
+        List<RestaurantListResponseDTO> dtoList = new ArrayList<>();
+
+        JSONObject response = (JSONObject) jsonObject.get("response");
+        JSONObject body = (JSONObject) response.get("body");
+        JSONObject items = (JSONObject) body.get("items");
+        JSONArray itemArray = (JSONArray) items.get("item");
+
+        for (Object obj : itemArray) {
+            JSONObject item = (JSONObject) obj;
+
+            RestaurantListResponseDTO dto = new RestaurantListResponseDTO();
+            dto.setName((String) item.get("title"));
+            dto.setContentId((String) item.get("contentid"));
+            dto.setAdd((String) item.get("addr1"));
+            dto.setImg((String) item.get("firstimage"));
+            dto.setImg2((String) item.get("firstimage2"));
+            dto.setMapX((String) item.get("mapx"));
+            dto.setMapY((String) item.get("mapy"));
+            dto.setTel((String) item.get("tel"));
+
+            dtoList.add(dto);
+        }
+
+        return dtoList;
 
     }
 
     //숙박 상세
-    public String getAccommodationDetail(String contentId) throws IOException, ParseException {
+    public AccomoDetailResponseDTO getAccommodationDetail(String contentId) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "detailCommon1?" +
                 "MobileOS=AND" +
@@ -192,12 +290,30 @@ public class StoreService {
         br.close();
         urlConnection.disconnect();
 
-        return jsonObject.toJSONString();
+        JSONObject response = (JSONObject) jsonObject.get("response");
+        JSONObject body = (JSONObject) response.get("body");
+        JSONObject items = (JSONObject) body.get("items");
+        JSONArray itemArray = (JSONArray) items.get("item");
+
+        JSONObject item = (JSONObject) itemArray.get(0);
+
+        AccomoDetailResponseDTO dto = new AccomoDetailResponseDTO();
+        dto.setName((String) item.get("title"));
+        dto.setContentId((String) item.get("contentid"));
+        dto.setAdd((String) item.get("addr1"));
+        dto.setImg((String) item.get("firstimage"));
+        dto.setImg2((String) item.get("firstimage2"));
+        dto.setMapX((String) item.get("mapx"));
+        dto.setMapY((String) item.get("mapy"));
+        dto.setTel((String) item.get("tel"));
+        dto.setIntro((String) item.get("overview"));
+
+        return dto;
 
     }
 
     // 식당 상세
-    public String getRestaurantDetail(String contentId) throws IOException, ParseException {
+    public RestaurantDetailResponseDTO getRestaurantDetail(String contentId) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "detailCommon1?" +
                 "MobileOS=AND" +
@@ -228,7 +344,25 @@ public class StoreService {
         br.close();
         urlConnection.disconnect();
 
-        return jsonObject.toJSONString();
+        JSONObject response = (JSONObject) jsonObject.get("response");
+        JSONObject body = (JSONObject) response.get("body");
+        JSONObject items = (JSONObject) body.get("items");
+        JSONArray itemArray = (JSONArray) items.get("item");
+
+        JSONObject item = (JSONObject) itemArray.get(0);
+
+        RestaurantDetailResponseDTO dto = new RestaurantDetailResponseDTO();
+        dto.setName((String) item.get("title"));
+        dto.setContentId((String) item.get("contentid"));
+        dto.setAdd((String) item.get("addr1"));
+        dto.setImg((String) item.get("firstimage"));
+        dto.setImg2((String) item.get("firstimage2"));
+        dto.setMapX((String) item.get("mapx"));
+        dto.setMapY((String) item.get("mapy"));
+        dto.setTel((String) item.get("tel"));
+        dto.setIntro((String) item.get("overview"));
+
+        return dto;
 
     }
 
