@@ -2,6 +2,10 @@ package com.phytoncide.hikinglog.domain.store.controller;
 
 import com.phytoncide.hikinglog.base.code.ResponseCode;
 import com.phytoncide.hikinglog.base.dto.ResponseDTO;
+import com.phytoncide.hikinglog.domain.store.dto.AccomoDetailResponseDTO;
+import com.phytoncide.hikinglog.domain.store.dto.AccomoListResponseDTO;
+import com.phytoncide.hikinglog.domain.store.dto.RestaurantDetailResponseDTO;
+import com.phytoncide.hikinglog.domain.store.dto.RestaurantListResponseDTO;
 import com.phytoncide.hikinglog.domain.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
@@ -12,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/store")
@@ -25,13 +30,13 @@ public class StoreController {
             @RequestParam("longitude") String longitude,
             @RequestParam("latitude") String latitude
     ) throws IOException, ParseException {
-        JSONParser parser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) parser.parse(storeService.getAccommodationList(longitude, latitude));
+
+        List<AccomoListResponseDTO> res = storeService.getAccommodationList(longitude, latitude);
 
 
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_GET_ACCOMMODATION_LIST.getStatus().value())
-                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_ACCOMMODATION_LIST, jsonObject));
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_ACCOMMODATION_LIST, res));
     }
 
     @GetMapping("/restaurant-list")
@@ -39,65 +44,63 @@ public class StoreController {
             @RequestParam("longitude") String longitude,
             @RequestParam("latitude") String latitude
     ) throws IOException, ParseException {
-        JSONParser parser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) parser.parse(storeService.getRestaurantList(longitude, latitude));
+
+        List<RestaurantListResponseDTO> res = storeService.getRestaurantList(longitude, latitude);
 
 
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_GET_RESTAURANT_LIST.getStatus().value())
-                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_RESTAURANT_LIST, jsonObject));
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_RESTAURANT_LIST, res));
     }
 
     @GetMapping("/search-stay")
     public ResponseEntity<ResponseDTO> searchStayList(
             @RequestParam("keyword") String keyword
     ) throws IOException, ParseException {
-        JSONParser parser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) parser.parse(storeService.searchAccommodationList(keyword));
+
+        List<AccomoListResponseDTO> res = storeService.searchAccommodationList(keyword);
 
 
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_SEARCH_ACCOMMODATION_LIST.getStatus().value())
-                .body(new ResponseDTO<>(ResponseCode.SUCCESS_SEARCH_ACCOMMODATION_LIST, jsonObject));
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_SEARCH_ACCOMMODATION_LIST, res));
     }
 
     @GetMapping("/search-restaurant")
     public ResponseEntity<ResponseDTO> searchRestaurantList(
             @RequestParam("keyword") String keyword
     ) throws IOException, ParseException {
-        JSONParser parser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) parser.parse(storeService.searchRestaurantList(keyword));
+
+        List<RestaurantListResponseDTO> res = storeService.searchRestaurantList(keyword);
 
 
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_SEARCH_RESTAURANT_LIST.getStatus().value())
-                .body(new ResponseDTO<>(ResponseCode.SUCCESS_SEARCH_RESTAURANT_LIST, jsonObject));
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_SEARCH_RESTAURANT_LIST, res));
     }
 
     @GetMapping("/stay-detail")
     public ResponseEntity<ResponseDTO> getStayDetail(
             @RequestParam("contentId") String contentId
     ) throws IOException, ParseException {
-        JSONParser parser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) parser.parse(storeService.getAccommodationDetail(contentId));
+        AccomoDetailResponseDTO res = storeService.getAccommodationDetail(contentId);
 
 
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_GET_ACCOMMODATION_DETAIL.getStatus().value())
-                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_ACCOMMODATION_DETAIL, jsonObject));
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_ACCOMMODATION_DETAIL, res));
     }
 
     @GetMapping("/restaurant-detail")
     public ResponseEntity<ResponseDTO> getRestaurantDetail(
             @RequestParam("contentId") String contentId
     ) throws IOException, ParseException {
-        JSONParser parser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) parser.parse(storeService.getRestaurantDetail(contentId));
+        RestaurantDetailResponseDTO res = storeService.getRestaurantDetail(contentId);
 
 
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_GET_RESTAURANT_DETAIL.getStatus().value())
-                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_RESTAURANT_DETAIL, jsonObject));
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_RESTAURANT_DETAIL, res));
     }
 
     @GetMapping("store-list")
