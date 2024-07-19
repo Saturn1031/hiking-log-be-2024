@@ -10,9 +10,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api")
@@ -40,10 +42,15 @@ public class MountainController {
             "남덕유산", "황매산", "가야산", "남산제일봉", "계룡산", "한라산"
     );
 
+
+    // 산 정보 목록 검색
+    // 이미지 파일명 경로: www.forest.go.kr/images/data/down/mountain/(결과값)
+
     @GetMapping("/getM/{mountain_Name}")
     public String callApi(
             @PathVariable(value = "mountain_Name") String mountain_Name
     ) throws IOException {
+
         return fetchMountainData(mountain_Name);
     }
 
@@ -62,6 +69,7 @@ public class MountainController {
     }
 
     private String fetchMountainData(String mountain_Name) throws IOException {
+
         StringBuilder result = new StringBuilder();
         String mountain_name = URLEncoder.encode(mountain_Name, StandardCharsets.UTF_8);
         String urlStr = callBackUrl + "mntInfoOpenAPI2?" +
@@ -79,12 +87,14 @@ public class MountainController {
 
         while ((returnLine = br.readLine()) != null) {
             result.append(returnLine).append("\n\r");
+
         }
         br.close();
         urlConnection.disconnect();
 
         return result.toString();
     }
+
 
     // 산 정보 목록 검색
     // 이미지 파일명 경로: www.forest.go.kr/images/data/down/mountain/(결과값)
@@ -118,6 +128,7 @@ public class MountainController {
 //
 //        return result.toString();
 //    }
+
 
     // 숲길 구간 검색
     @GetMapping("/getR/{mountain_Code}")
