@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface MyBoardRepository extends JpaRepository<BoardEntity, Integer> {
-    List<BoardEntity> findByMemberEntityUid(Integer uid, Pageable pageable);
+    List<BoardEntity> findByMemberEntityUid(Integer uid);
 }

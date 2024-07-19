@@ -38,23 +38,15 @@ public class MyBoardService {
         this.amazonS3Service = amazonS3Service;
     }
 
-    public List<BoardListResponseDTO.BoardResponseDTO> readMyBoards(Integer size, Integer page, AuthDetails authDetails) {
+    public List<BoardListResponseDTO.BoardResponseDTO> readMyBoards(AuthDetails authDetails) {
         // 로직을 구현합니다. 예를 들어, 사용자 ID를 기반으로 게시글을 조회하는 로직입니다.
         Integer userId = authDetails.getMemberEntity().getUid();
         // 예시: repository를 통해 사용자 ID로 게시글을 조회합니다.
-        List<BoardEntity> myBoards = boardRepository.findByMemberEntityUid(userId, PageRequest.of(page, size));
+        List<BoardEntity> myBoards = boardRepository.findByMemberEntityUid(userId);
 
         return myBoards.stream()
                 .map(board -> new BoardListResponseDTO.BoardResponseDTO(board))
                 .collect(Collectors.toList());
-    }
-
-    public boolean hasNextMyBoards(Integer size, Integer page, AuthDetails authDetails) {
-        // 다음 페이지가 있는지 확인하는 로직을 구현합니다.
-        Integer userId = authDetails.getMemberEntity().getUid();
-        // 예시: repository를 통해 사용자 ID로 게시글을 조회하여 다음 페이지 유무를 확인합니다.
-        Page<BoardEntity> myBoardsPage = (Page<BoardEntity>) boardRepository.findByMemberEntityUid(userId, PageRequest.of(page + 1, size));
-        return myBoardsPage.hasContent();
     }
 
 }
