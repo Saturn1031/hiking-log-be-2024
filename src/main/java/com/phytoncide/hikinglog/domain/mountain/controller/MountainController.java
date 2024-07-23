@@ -168,9 +168,9 @@ public class MountainController {
             @PathVariable(value = "mountain_Code") String mountain_Code
     ) throws IOException {
         StringBuilder result = new StringBuilder();
-        String mountain_code = URLEncoder.encode(mountain_Code, StandardCharsets.UTF_8);
-        String urlStr = callBackUrl + "mntInfoImgOpenAPI?" +
-                "mntiListNo=" + mountain_code +
+//        String mountain_code = URLEncoder.encode(mountain_Code, StandardCharsets.UTF_8);
+        String urlStr = callBackUrl + "mntInfoImgOpenAPI2?" +
+                "mntiListNo=" + mountain_Code +
                 "&ServiceKey=" + serviceKey;
         URL url = new URL(urlStr);
 
