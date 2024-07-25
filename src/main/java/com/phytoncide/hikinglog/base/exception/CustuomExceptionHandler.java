@@ -37,6 +37,14 @@ public class CustuomExceptionHandler {
                 .body(new ErrorResponseDTO(ErrorCode.PASSWORD_NOT_MATCH));
     }
 
+    @ExceptionHandler(CursorSizeOutOfRangeException.class)
+    protected ResponseEntity<ErrorResponseDTO> CursorSizeOutOfRangeException(final CursorSizeOutOfRangeException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE));
+    }
+
     @ExceptionHandler(BoardsDeleteException.class)
     protected ResponseEntity<ErrorResponseDTO> BoardsDeleteException(final BoardsDeleteException e) {
         log.error("handlePasswordNotMatchException: {}", e.getMessage());
@@ -91,5 +99,69 @@ public class CustuomExceptionHandler {
         return ResponseEntity
                 .status(ErrorCode.BOOKMARK_NOT_FOUND.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.BOOKMARK_NOT_FOUND));
+    }
+
+    @ExceptionHandler(BookmarkMountainNameException.class)
+    protected ResponseEntity<ErrorResponseDTO> BookmarkMountainNameException(final BookmarkMountainNameException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.BOOKMARK_MOUNTAIN_NAME_IS_EMPTY.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.BOOKMARK_MOUNTAIN_NAME_IS_EMPTY));
+    }
+
+    @ExceptionHandler(BookmarkMountainLocationException.class)
+    protected ResponseEntity<ErrorResponseDTO> BookmarkMountainLocationException(final BookmarkMountainLocationException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.BOOKMARK_MOUNTAIN_LOCATION_IS_EMPTY.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.BOOKMARK_MOUNTAIN_LOCATION_IS_EMPTY));
+    }
+
+    @ExceptionHandler(BookmarkStoreNameException.class)
+    protected ResponseEntity<ErrorResponseDTO> BookmarkStoreNameException(final BookmarkStoreNameException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.BOOKMARK_STORE_NAME_IS_EMPTY.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.BOOKMARK_STORE_NAME_IS_EMPTY));
+    }
+
+    @ExceptionHandler(BookmarkStoreLocationException.class)
+    protected ResponseEntity<ErrorResponseDTO> BookmarkStoreLocationException(final BookmarkStoreLocationException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.BOOKMARK_STORE_LOCATION_IS_EMPTY.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.BOOKMARK_STORE_LOCATION_IS_EMPTY));
+    }
+
+    @ExceptionHandler(BookmarkOnlineMallNameException.class)
+    protected ResponseEntity<ErrorResponseDTO> BookmarkOnlineMallNameException(final BookmarkOnlineMallNameException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.BOOKMARK_ONLINEMALL_NAME_IS_EMPTY.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.BOOKMARK_ONLINEMALL_NAME_IS_EMPTY));
+    }
+
+    @ExceptionHandler(BookmarkOnlineMallLinkException.class)
+    protected ResponseEntity<ErrorResponseDTO> BookmarkOnlineMallLinkException(final BookmarkOnlineMallLinkException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.BOOKMARK_ONLINEMALL_LINK_IS_EMPTY.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.BOOKMARK_ONLINEMALL_LINK_IS_EMPTY));
+    }
+
+    @ExceptionHandler(StoreNotFoundException.class)
+    protected ResponseEntity<ErrorResponseDTO> StoreNotFoundException(final StoreNotFoundException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.STORE_NOT_FOUND.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.STORE_NOT_FOUND));
+    }
+
+    @ExceptionHandler(MountainNotFoundException.class)
+    protected ResponseEntity<ErrorResponseDTO> MountainNotFoundException(final MountainNotFoundException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.MOUNTAIN_NOT_FOUND.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.MOUNTAIN_NOT_FOUND));
     }
 }

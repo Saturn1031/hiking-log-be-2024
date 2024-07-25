@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CursorPageRequestDto {
 
-    private Integer size;
+    private Long size;
 
     private Integer page;
 

@@ -34,6 +34,13 @@ public class BookmarksService {
     private final BookmarkRepository bookmarkRepository;
 
     public String restaurantBookmarkCreate(Integer storeId, StoreBookmarkCreateDTO storeBookmarkCreateDto, AuthDetails authDetails) {
+        if (storeBookmarkCreateDto.getName().isEmpty()) {
+            throw new BookmarkStoreNameException(ErrorCode.BOOKMARK_STORE_NAME_IS_EMPTY);
+        }
+        if (storeBookmarkCreateDto.getLocation().isEmpty()) {
+            throw new BookmarkStoreLocationException(ErrorCode.BOOKMARK_STORE_LOCATION_IS_EMPTY);
+        }
+
         String email = authDetails.getUsername();
         MemberEntity memberEntity = memberRepository.findByEmail(email);
 
@@ -55,6 +62,13 @@ public class BookmarksService {
     }
 
     public String accommodationBookmarkCreate(Integer storeId, StoreBookmarkCreateDTO storeBookmarkCreateDto, AuthDetails authDetails) {
+        if (storeBookmarkCreateDto.getName().isEmpty()) {
+            throw new BookmarkStoreNameException(ErrorCode.BOOKMARK_STORE_NAME_IS_EMPTY);
+        }
+        if (storeBookmarkCreateDto.getLocation().isEmpty()) {
+            throw new BookmarkStoreLocationException(ErrorCode.BOOKMARK_STORE_LOCATION_IS_EMPTY);
+        }
+
         String email = authDetails.getUsername();
         MemberEntity memberEntity = memberRepository.findByEmail(email);
 
@@ -76,6 +90,13 @@ public class BookmarksService {
     }
 
     public String onlinestoreBookmarkCreate(Integer storeId, OnlinestoreBookmarkCreateDTO onlinestoreBookmarkCreateDto, AuthDetails authDetails) {
+        if (onlinestoreBookmarkCreateDto.getName().isEmpty()) {
+            throw new BookmarkOnlineMallNameException(ErrorCode.BOOKMARK_ONLINEMALL_NAME_IS_EMPTY);
+        }
+        if (onlinestoreBookmarkCreateDto.getLink().isEmpty()) {
+            throw new BookmarkOnlineMallLinkException(ErrorCode.BOOKMARK_ONLINEMALL_LINK_IS_EMPTY);
+        }
+
         String email = authDetails.getUsername();
         MemberEntity memberEntity = memberRepository.findByEmail(email);
 
@@ -97,6 +118,13 @@ public class BookmarksService {
     }
 
     public String mountainBookmarkCreate(Integer mountainId, MountainBookmarkCreateDTO mountainBookmarkCreateDto, AuthDetails authDetails) {
+        if (mountainBookmarkCreateDto.getName().isEmpty()) {
+            throw new BookmarkMountainNameException(ErrorCode.BOOKMARK_MOUNTAIN_NAME_IS_EMPTY);
+        }
+        if (mountainBookmarkCreateDto.getLocation().isEmpty()) {
+            throw new BookmarkMountainLocationException(ErrorCode.BOOKMARK_MOUNTAIN_LOCATION_IS_EMPTY);
+        }
+
         String email = authDetails.getUsername();
         MemberEntity memberEntity = memberRepository.findByEmail(email);
 
@@ -118,9 +146,14 @@ public class BookmarksService {
     }
 
     public String storeBookmarkDelete(Integer storeId, AuthDetails authDetails) {
+        StoreEntity storeEntity = storeRepository.findByContentId(storeId);
+        if (storeEntity == null) {
+            throw new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND);
+        }
+
         Integer userId = authDetails.getMemberEntity().getUid();
 
-        Integer sId = storeRepository.findByContentId(storeId).getSid();
+        Integer sId = storeEntity.getSid();
 
         BookmarkEntity bookmarkEntity = bookmarkRepository.findByStoreEntity_SidAndMemberEntity_Uid(sId, userId);
 
@@ -134,9 +167,14 @@ public class BookmarksService {
     }
 
     public String onlinestoreBookmarkDelete(Integer storeId, AuthDetails authDetails) {
+        OnlineOutdoorMallEntity storeEntity = onlineOutdoorMallRepository.findByStoreId(storeId);
+        if (storeEntity == null) {
+            throw new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND);
+        }
+
         Integer userId = authDetails.getMemberEntity().getUid();
 
-        Integer oId = onlineOutdoorMallRepository.findByStoreId(storeId).getOid();
+        Integer oId = storeEntity.getOid();
 
         BookmarkEntity bookmarkEntity = bookmarkRepository.findByOnlineOutdoorMallEntity_OidAndMemberEntity_Uid(oId, userId);
 
@@ -150,9 +188,14 @@ public class BookmarksService {
     }
 
     public String mountainBookmarkDelete(Integer mountainId, AuthDetails authDetails) {
+        MountainEntity mountainEntity = mountainRepository.findByMntilistno(mountainId);
+        if (mountainEntity == null) {
+            throw new MountainNotFoundException(ErrorCode.MOUNTAIN_NOT_FOUND);
+        }
+
         Integer userId = authDetails.getMemberEntity().getUid();
 
-        Integer mId = mountainRepository.findByMntilistno(mountainId).getMid();
+        Integer mId = mountainEntity.getMid();
 
         BookmarkEntity bookmarkEntity = bookmarkRepository.findByMountainEntity_MidAndMemberEntity_Uid(mId, userId);
 
@@ -165,7 +208,12 @@ public class BookmarksService {
         return "산 북마크 삭제에 성공했습니다.";
     }
 
-    public List<BookmarkListResponseDTO.BookmarkResponseDTO> readBookmarks(Integer limit, Integer pageNumber, AuthDetails authDetails) {
+    public List<BookmarkListResponseDTO.BookmarkResponseDTO> readBookmarks(Long size, Integer pageNumber, AuthDetails authDetails) {
+        if (size > 2147483647 || size < 1) {
+            throw new CursorSizeOutOfRangeException(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE);
+        }
+        int limit = size.intValue();
+
         Pageable pageable = PageRequest.of(pageNumber, limit);
 
         String email = authDetails.getUsername();
@@ -191,7 +239,12 @@ public class BookmarksService {
         return bookmarks;
     }
 
-    public List<MountainBookmarkListResponseDTO.MountainBookmarkResponseDTO> readBookmarksMountain(Integer limit, Integer pageNumber, AuthDetails authDetails) {
+    public List<MountainBookmarkListResponseDTO.MountainBookmarkResponseDTO> readBookmarksMountain(Long size, Integer pageNumber, AuthDetails authDetails) {
+        if (size > 2147483647 || size < 1) {
+            throw new CursorSizeOutOfRangeException(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE);
+        }
+        int limit = size.intValue();
+
         Pageable pageable = PageRequest.of(pageNumber, limit);
 
         String email = authDetails.getUsername();
@@ -209,7 +262,12 @@ public class BookmarksService {
         return bookmarks;
     }
 
-    public List<StoreBookmarkListResponseDTO.StoreBookmarkResponseDTO> readBookmarksRestaurant(Integer limit, Integer pageNumber, AuthDetails authDetails) {
+    public List<StoreBookmarkListResponseDTO.StoreBookmarkResponseDTO> readBookmarksRestaurant(Long size, Integer pageNumber, AuthDetails authDetails) {
+        if (size > 2147483647 || size < 1) {
+            throw new CursorSizeOutOfRangeException(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE);
+        }
+        int limit = size.intValue();
+
         Pageable pageable = PageRequest.of(pageNumber, limit);
 
         String email = authDetails.getUsername();
@@ -227,7 +285,12 @@ public class BookmarksService {
         return bookmarks;
     }
 
-    public List<StoreBookmarkListResponseDTO.StoreBookmarkResponseDTO> readBookmarksAccommodation(Integer limit, Integer pageNumber, AuthDetails authDetails) {
+    public List<StoreBookmarkListResponseDTO.StoreBookmarkResponseDTO> readBookmarksAccommodation(Long size, Integer pageNumber, AuthDetails authDetails) {
+        if (size > 2147483647 || size < 1) {
+            throw new CursorSizeOutOfRangeException(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE);
+        }
+        int limit = size.intValue();
+
         Pageable pageable = PageRequest.of(pageNumber, limit);
 
         String email = authDetails.getUsername();
@@ -245,7 +308,12 @@ public class BookmarksService {
         return bookmarks;
     }
 
-    public List<OnlinestoreBookmarkListResponseDTO.OnlinestoreBookmarkResponseDTO> readBookmarksOnlinestore(Integer limit, Integer pageNumber, AuthDetails authDetails) {
+    public List<OnlinestoreBookmarkListResponseDTO.OnlinestoreBookmarkResponseDTO> readBookmarksOnlinestore(Long size, Integer pageNumber, AuthDetails authDetails) {
+        if (size > 2147483647 || size < 1) {
+            throw new CursorSizeOutOfRangeException(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE);
+        }
+        int limit = size.intValue();
+
         Pageable pageable = PageRequest.of(pageNumber, limit);
 
         String email = authDetails.getUsername();
@@ -263,7 +331,12 @@ public class BookmarksService {
         return bookmarks;
     }
 
-    public boolean hasNextBookmarks(Integer limit, Integer pageNumber, AuthDetails authDetails) {
+    public boolean hasNextBookmarks(Long size, Integer pageNumber, AuthDetails authDetails) {
+        if (size > 2147483647 || size < 1) {
+            throw new CursorSizeOutOfRangeException(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE);
+        }
+        int limit = size.intValue();
+
         Pageable pageable = PageRequest.of(pageNumber, limit);
 
         String email = authDetails.getUsername();

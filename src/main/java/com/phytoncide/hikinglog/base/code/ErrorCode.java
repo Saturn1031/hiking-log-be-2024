@@ -13,14 +13,25 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유저를 찾을 수 없습니다."),
     PASSWORD_NOT_MATCH(HttpStatus.CONFLICT, "비밀번호가 일치하지 않습니다."),
 
+    CURSOR_SIZE_OUT_OF_RANGE(HttpStatus.BAD_REQUEST, "커서 size 값이 유효하지 않습니다. (유효한 커서 size: 1~2147483647)"),
+
     TITLE_IS_EMPTY(HttpStatus.BAD_REQUEST, "제목이 작성되지 않았습니다."),
     CONTENT_IS_EMPTY(HttpStatus.BAD_REQUEST, "내용이 작성되지 않았습니다."),
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 게시글을 찾을 수 없습니다."),
     NOT_PERMITTED_TO_DELETE(HttpStatus.FORBIDDEN, "게시글 삭제 권한이 없습니다."),
     LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "현재 사용자의 해당 게시글 좋아요를 찾을 수 없습니다."),
 
+    STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 가게를 찾을 수 없습니다."),
+    MOUNTAIN_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 산을 찾을 수 없습니다."),
+
     BOOKMARK_EXISTS(HttpStatus.BAD_REQUEST, "이미 동일한 북마크가 존재합니다."),
     BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 북마크를 찾을 수 없습니다."),
+    BOOKMARK_MOUNTAIN_NAME_IS_EMPTY(HttpStatus.BAD_REQUEST, "산 이름 속성(name)이 작성되지 않았습니다."),
+    BOOKMARK_MOUNTAIN_LOCATION_IS_EMPTY(HttpStatus.BAD_REQUEST, "산 주소 속성(location)이 작성되지 않았습니다."),
+    BOOKMARK_STORE_NAME_IS_EMPTY(HttpStatus.BAD_REQUEST, "가게 이름 속성(sName)이 작성되지 않았습니다."),
+    BOOKMARK_STORE_LOCATION_IS_EMPTY(HttpStatus.BAD_REQUEST, "가게 주소 속성(location)이 작성되지 않았습니다."),
+    BOOKMARK_ONLINEMALL_NAME_IS_EMPTY(HttpStatus.BAD_REQUEST, "등산용품 가게 이름 속성(name)이 작성되지 않았습니다."),
+    BOOKMARK_ONLINEMALL_LINK_IS_EMPTY(HttpStatus.BAD_REQUEST, "등산용품 가게 링크 속성(link)이 작성되지 않았습니다."),
     ;
 
     private final HttpStatus status;

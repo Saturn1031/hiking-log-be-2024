@@ -122,7 +122,7 @@ public class BookmarksController {
             @AuthenticationPrincipal AuthDetails authDetails
     ) {
 
-        Integer size = cursorPageRequestDto.getSize();
+        Long size = cursorPageRequestDto.getSize();
         Integer page = cursorPageRequestDto.getPage();
 
         List<BookmarkListResponseDTO.BookmarkResponseDTO> bookmarkList = bookmarksService.readBookmarks(size, page, authDetails);
@@ -151,7 +151,7 @@ public class BookmarksController {
             @AuthenticationPrincipal AuthDetails authDetails
     ) {
 
-        Integer size = cursorPageRequestDto.getSize();
+        Long size = cursorPageRequestDto.getSize();
         Integer page = cursorPageRequestDto.getPage();
 
         List<MountainBookmarkListResponseDTO.MountainBookmarkResponseDTO> bookmarkList = bookmarksService.readBookmarksMountain(size, page, authDetails);
@@ -180,7 +180,7 @@ public class BookmarksController {
             @AuthenticationPrincipal AuthDetails authDetails
     ) {
 
-        Integer size = cursorPageRequestDto.getSize();
+        Long size = cursorPageRequestDto.getSize();
         Integer page = cursorPageRequestDto.getPage();
 
         List<StoreBookmarkListResponseDTO.StoreBookmarkResponseDTO> bookmarkList = bookmarksService.readBookmarksRestaurant(size, page, authDetails);
@@ -209,7 +209,7 @@ public class BookmarksController {
             @AuthenticationPrincipal AuthDetails authDetails
     ) {
 
-        Integer size = cursorPageRequestDto.getSize();
+        Long size = cursorPageRequestDto.getSize();
         Integer page = cursorPageRequestDto.getPage();
 
         List<StoreBookmarkListResponseDTO.StoreBookmarkResponseDTO> bookmarkList = bookmarksService.readBookmarksAccommodation(size, page, authDetails);
@@ -238,7 +238,7 @@ public class BookmarksController {
             @AuthenticationPrincipal AuthDetails authDetails
     ) {
 
-        Integer size = cursorPageRequestDto.getSize();
+        Long size = cursorPageRequestDto.getSize();
         Integer page = cursorPageRequestDto.getPage();
 
         List<OnlinestoreBookmarkListResponseDTO.OnlinestoreBookmarkResponseDTO> bookmarkList = bookmarksService.readBookmarksOnlinestore(size, page, authDetails);
