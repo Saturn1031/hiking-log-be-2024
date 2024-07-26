@@ -41,6 +41,7 @@ public class BookmarkEntity extends BaseEntity {
     @JoinColumn(name = "oid")
     private OnlineOutdoorMallEntity onlineOutdoorMallEntity;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private BookmarkType bookmarkType;
 

@@ -134,7 +134,11 @@ public class BoardService {
         return "게시글 수정에 성공했습니다.";
     }
 
-    public List<BoardListResponseDTO.BoardResponseDTO> readeBoards(Integer limit, Integer pageNumber, AuthDetails authDetails) {
+    public List<BoardListResponseDTO.BoardResponseDTO> readeBoards(Long size, Integer pageNumber, AuthDetails authDetails) {
+        if (size > 2147483647 || size < 1) {
+            throw new CursorSizeOutOfRangeException(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE);
+        }
+        int limit = size.intValue();
 
         Pageable pageable = PageRequest.of(pageNumber, limit);
         List<BoardEntity> boardEntities = boardRepository.findNextPage(2147483647, pageable);
@@ -154,7 +158,12 @@ public class BoardService {
         return boards;
     }
 
-    public boolean hasNextBoards(Integer limit, Integer pageNumber) {
+    public boolean hasNextBoards(Long size, Integer pageNumber) {
+        if (size > 2147483647 || size < 1) {
+            throw new CursorSizeOutOfRangeException(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE);
+        }
+        int limit = size.intValue();
+
         Pageable pageable = PageRequest.of(pageNumber, limit);
         List<BoardEntity> boardEntities = boardRepository.findNextPage(2147483647, pageable);
 
@@ -207,7 +216,11 @@ public class BoardService {
         return "댓글 삭제에 성공했습니다.";
     }
 
-    public List<CommentListResponseDTO.CommentResponseDTO> readeComments(Integer boardId, Integer limit, Integer pageNumber, AuthDetails authDetails) {
+    public List<CommentListResponseDTO.CommentResponseDTO> readeComments(Integer boardId, Long size, Integer pageNumber, AuthDetails authDetails) {
+        if (size > 2147483647 || size < 1) {
+            throw new CursorSizeOutOfRangeException(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE);
+        }
+        int limit = size.intValue();
 
         Pageable pageable = PageRequest.of(pageNumber, limit);
         if (boardRepository.findById(boardId).isEmpty()) {
@@ -223,7 +236,12 @@ public class BoardService {
         return comments;
     }
 
-    public boolean hasNextComments(Integer boardId, Integer limit, Integer pageNumber) {
+    public boolean hasNextComments(Integer boardId, Long size, Integer pageNumber) {
+        if (size > 2147483647 || size < 1) {
+            throw new CursorSizeOutOfRangeException(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE);
+        }
+        int limit = size.intValue();
+
         Pageable pageable = PageRequest.of(pageNumber, limit);
         if (boardRepository.findById(boardId).isEmpty()) {
             throw new BoardsNotFoundException(ErrorCode.BOARD_NOT_FOUND);

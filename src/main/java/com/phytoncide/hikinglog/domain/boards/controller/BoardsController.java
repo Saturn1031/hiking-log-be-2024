@@ -66,7 +66,7 @@ public class BoardsController {
     @GetMapping("")
     public ResponseEntity<ResponseDTO> boardRead(@RequestBody CursorPageRequestDto cursorPageRequestDto,
                                           @AuthenticationPrincipal AuthDetails authDetails) {
-        Integer size = cursorPageRequestDto.getSize();
+        Long size = cursorPageRequestDto.getSize();
         Integer page = cursorPageRequestDto.getPage();
         List<BoardListResponseDTO.BoardResponseDTO> boardList = boardService.readeBoards(size, page, authDetails);
 
@@ -116,7 +116,7 @@ public class BoardsController {
     public ResponseEntity<ResponseDTO> commentRead(@PathVariable("boardId") Integer boardId,
                                               @RequestBody CursorPageRequestDto cursorPageRequestDto,
                                               @AuthenticationPrincipal AuthDetails authDetails) {
-        Integer size = cursorPageRequestDto.getSize();
+        Long size = cursorPageRequestDto.getSize();
         Integer page = cursorPageRequestDto.getPage();
         List<CommentListResponseDTO.CommentResponseDTO> commentList = boardService.readeComments(boardId, size, page, authDetails);
 
