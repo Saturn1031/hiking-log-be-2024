@@ -78,7 +78,10 @@ public class SecurityConfig {
         //경로별 인가 작업
         httpSecurity
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/**").permitAll()
+                        .requestMatchers("/api/member/join",
+                                "/api/member/login",
+                                "/api/member/find-email",
+                                "/api/member/find-password").permitAll()
 //                        .requestMatchers("/login", "/", "/join").permitAll()
 //                        .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers(AuthenticatedMatchers.swaggerArray).permitAll()
