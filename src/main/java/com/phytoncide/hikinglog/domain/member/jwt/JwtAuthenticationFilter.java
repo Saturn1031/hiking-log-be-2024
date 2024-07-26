@@ -3,6 +3,8 @@ package com.phytoncide.hikinglog.domain.member.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.phytoncide.hikinglog.base.code.ResponseCode;
+import com.phytoncide.hikinglog.base.dto.ResponseDTO;
 import com.phytoncide.hikinglog.domain.member.config.AuthDetails;
 import com.phytoncide.hikinglog.domain.member.dto.LoginDTO;
 import jakarta.servlet.FilterChain;
@@ -10,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,6 +27,10 @@ import java.util.Date;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+
+    {
+        setFilterProcessesUrl("/member/login");
+    }
 
     //인증 요청시에 실행되는 함수 => /login
     @Override
@@ -71,7 +78,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
 
+        ResponseDTO<String> responseDTO =new ResponseDTO<>(
+                ResponseCode.SUCCESS_LOGIN,
+                jwtToken
+        );
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setStatus(HttpServletResponse.SC_OK);
+
         //login 마치면 token을 body로 보내줌
-        response.getWriter().write(String.valueOf(jwtToken));
+        response.getWriter().write(new ObjectMapper().writeValueAsString(responseDTO));
     }
 }

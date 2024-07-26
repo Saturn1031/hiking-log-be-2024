@@ -42,7 +42,8 @@ public class StoreService {
     public List<AccomoListResponseDTO> getAccommodationList(String longitude, String latitude) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "locationBasedList1?" +
-                "MobileOS=AND" +
+                "numOfRows=50" +
+                "&MobileOS=AND" +
                 "&MobileApp=hikingLog" +
                 "&_type=json" +
                 "&mapX=" + longitude +//longitude:경도 127.01612551862054
@@ -98,7 +99,8 @@ public class StoreService {
     public List<RestaurantListResponseDTO> getRestaurantList(String longitude, String latitude) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "locationBasedList1?" +
-                "MobileOS=AND" +
+                "numOfRows=50" +
+                "&MobileOS=AND" +
                 "&MobileApp=hikingLog" +
                 "&_type=json" +
                 "&mapX=" + longitude +//longitude:경도 127.01612551862054
@@ -154,7 +156,8 @@ public class StoreService {
     public List<AccomoListResponseDTO> searchAccommodationList(String keyword) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "searchKeyword1?" +
-                "MobileOS=AND" +
+                "numOfRows=50" +
+                "&MobileOS=AND" +
                 "&MobileApp=hikingLog" +
                 "&_type=json" +
                 "&keyword=" + URLEncoder.encode(keyword, "UTF-8") +
@@ -208,7 +211,8 @@ public class StoreService {
     public List<RestaurantListResponseDTO> searchRestaurantList(String keyword) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "searchKeyword1?" +
-                "MobileOS=AND" +
+                "numOfRows=50" +
+                "&MobileOS=AND" +
                 "&MobileApp=hikingLog" +
                 "&_type=json" +
                 "&keyword=" + URLEncoder.encode(keyword, "UTF-8") +
