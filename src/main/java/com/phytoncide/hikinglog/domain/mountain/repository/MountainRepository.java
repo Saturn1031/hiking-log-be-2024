@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MountainRepository extends JpaRepository<MountainEntity, Integer> {
     MountainEntity findByMntilistno(Integer mntilistno);
-    boolean existsByMName(String mName);
-    MountainEntity findByMName(String mName);
+//    boolean existsByMName(String mName);
+//    MountainEntity findByMName(String mName);
 }
