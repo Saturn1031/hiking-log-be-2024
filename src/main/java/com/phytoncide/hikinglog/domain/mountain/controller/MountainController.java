@@ -35,13 +35,40 @@ public class MountainController {
 
     // 산 정보 목록 검색
     // 이미지 파일명 경로: www.forest.go.kr/images/data/down/mountain/(결과값)
-
     @GetMapping("/getM/{mountain_Name}")
     public String callApi(
             @PathVariable(value = "mountain_Name") String mountain_Name
     ) throws IOException {
 
         return fetchMountainData(mountain_Name);
+    }
+
+    // 산 목록 가져오기
+    @GetMapping("/getM")
+    private String fetchMountainData() throws IOException {
+
+        StringBuilder result = new StringBuilder();
+        String urlStr = callBackUrl + "mntInfoOpenAPI2?" +
+                "pageNo=1&numOfRows=100" +
+                "&ServiceKey=" + serviceKey;
+        URL url = new URL(urlStr);
+
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Content-type", "application/json");
+        urlConnection.setRequestProperty("Accept", "application/json");
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8));
+        String returnLine;
+
+        while ((returnLine = br.readLine()) != null) {
+            result.append(returnLine).append("\n\r");
+
+        }
+        br.close();
+        urlConnection.disconnect();
+
+        return result.toString();
     }
 
     // 100대 명산 목록
