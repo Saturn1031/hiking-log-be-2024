@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final AuthenticationManager authenticationManager;
 
     {
-        setFilterProcessesUrl("/member/login");
+        setFilterProcessesUrl("/api/member/login");
     }
 
     //인증 요청시에 실행되는 함수 => /login
