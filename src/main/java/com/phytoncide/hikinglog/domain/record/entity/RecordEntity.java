@@ -28,8 +28,8 @@ public class RecordEntity {
     @ManyToOne
     private MemberEntity uid;
 
-//    @ManyToOne
-//    private MountainEntity mid;
+    @ManyToOne
+    private MountainEntity mid;
 
     @Column(nullable = false)
     private LocalDate date;
