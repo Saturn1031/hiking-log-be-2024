@@ -19,6 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 
 @RestController
@@ -259,14 +260,14 @@ public class MountainController {
             @RequestBody SearchTrailDTO searchTrailDTO,
             @AuthenticationPrincipal AuthDetails authDetails
     ) throws IOException, ParseException {
-        // 산 주소로 법정동 코드 조회 api
+        // 산 주소로 법정동 코드 조회
         String emdCd = mountainService.searchEmdCd(searchTrailDTO.getMntiadd().trim());
 
-        // 등산로 조회 api
-//        String trail = mountainService.searchTrail(searchTrailDTO.getMntiname(), emdCd);
+        // 등산로 조회
+        ArrayList<ArrayList<Float>> trail = mountainService.searchTrail(searchTrailDTO.getMntiname(), emdCd);
 
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_SEARCH_TRAIL.getStatus().value())
-                .body(new ResponseDTO<>(ResponseCode.SUCCESS_SEARCH_TRAIL, emdCd));
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_SEARCH_TRAIL, trail));
     }
 }

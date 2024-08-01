@@ -23,15 +23,26 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class MountainService {
     private final MountainRepository mountainRepository;
+    private final HttpServletRequest httpServletRequest;
 
-    public MountainService(MountainRepository mountainRepository) {
+    @Value("${openApi.trailServiceKey}")
+    private String trailServiceKey;
+
+    @Value("${openApi.trailUrl}")
+    private String trailUrl;
+
+    public MountainService(MountainRepository mountainRepository, HttpServletRequest httpServletRequest) {
         this.mountainRepository = mountainRepository;
+        this.httpServletRequest = httpServletRequest;
     }
 
     public MountainDTO convertToDTO(){
@@ -148,7 +159,52 @@ public class MountainService {
         return emdCd;
     }
 
-//    public String searchTrail(String mntiname, String emdCd) {
-//
-//    }
+    public ArrayList<ArrayList<Float>> searchTrail(String mntiname, String emdCd) throws IOException, ParseException {
+        String mntinameKor = URLEncoder.encode(mntiname, StandardCharsets.UTF_8);
+        String urlStr = trailUrl + "?"
+                + "request=GetFeature" + "&data=LT_L_FRSTCLIMB" + "&crs=EPSG:4326" + "&format=json&errorformat=json"
+                + "&key=" + trailServiceKey
+                + "&size=1000&page=1"
+                + "&attrfilter=mntn_nm:=:" + mntinameKor + "|emdCd:=:" + emdCd;
+        URL url = new URL(urlStr);
+
+        System.out.println(url);
+
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Content-type", "application/json");
+        urlConnection.setRequestProperty("Accept", "application/json");
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8));
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(br);
+
+        br.close();
+        urlConnection.disconnect();
+
+        JSONObject response = (JSONObject) jsonObject.get("response");
+        JSONObject result = (JSONObject) response.get("result");
+        JSONObject featureCollection = (JSONObject) result.get("featureCollection");
+        JSONArray features = (JSONArray) featureCollection.get("features");
+
+        ArrayList<ArrayList<Float>> trail = new ArrayList<ArrayList<Float>>();
+
+        for (int i = 0; i < features.size(); i++) {
+            JSONObject feature = (JSONObject) features.get(i);
+            JSONObject geometry = (JSONObject) feature.get("geometry");
+            JSONArray coordinates = (JSONArray) geometry.get("coordinates");
+
+            for (int j = 0; j < coordinates.size(); j++) {
+                JSONArray coordinate = (JSONArray) coordinates.get(j);
+
+                for (int k = 0; k < coordinate.size(); k++) {
+                    JSONArray point = (JSONArray) coordinate.get(k);
+                    trail.add(point);
+                }
+            }
+        }
+
+        return trail;
+    }
 }
