@@ -405,4 +405,114 @@ public class StoreService {
             return "ID가 1인 객체를 찾을 수 없습니다.";
         }
     }
+
+    // 관광지 목록
+    public List<AccomoListResponseDTO> getTourList(String longitude, String latitude) throws IOException, ParseException {
+
+        String urlStr = callBackUrl + "locationBasedList1?" +
+                "numOfRows=50" +
+                "&MobileOS=AND" +
+                "&MobileApp=hikingLog" +
+                "&_type=json" +
+                "&mapX=" + longitude +//longitude:경도 127.01612551862054
+                "&mapY=" + latitude +//latitude:위도 37.6525631765458
+                "&radius=5000" +
+                "&contentTypeId=12" + //숙박:32 음식: 39
+                "&serviceKey=" + serviceKey;
+        URL url = new URL(urlStr);
+
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Content-type", "application/json");
+        urlConnection.setRequestProperty("Accept", "application/json");
+
+        BufferedReader br;
+
+        br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(br);
+
+        br.close();
+        urlConnection.disconnect();
+
+        List<AccomoListResponseDTO> dtoList = new ArrayList<>();
+
+        JSONObject response = (JSONObject) jsonObject.get("response");
+        JSONObject body = (JSONObject) response.get("body");
+        JSONObject items = (JSONObject) body.get("items");
+        JSONArray itemArray = (JSONArray) items.get("item");
+
+        for (Object obj : itemArray) {
+            JSONObject item = (JSONObject) obj;
+
+            AccomoListResponseDTO dto = new AccomoListResponseDTO();
+            dto.setName((String) item.get("title"));
+            dto.setContentId((String) item.get("contentid"));
+            dto.setAdd((String) item.get("addr1"));
+            dto.setImg((String) item.get("firstimage"));
+            dto.setImg2((String) item.get("firstimage2"));
+            dto.setMapX((String) item.get("mapx"));
+            dto.setMapY((String) item.get("mapy"));
+            dto.setTel((String) item.get("tel"));
+
+            dtoList.add(dto);
+        }
+
+        return dtoList;
+    }
+
+    //관광지 상세
+    public AccomoDetailResponseDTO getTourDetail(String contentId) throws IOException, ParseException {
+
+        String urlStr = callBackUrl + "detailCommon1?" +
+                "MobileOS=AND" +
+                "&MobileApp=hikingLog" +
+                "&_type=json" +
+                "&contentId=" + contentId +
+                "&contentTypeId=12" + //숙박:32 음식: 39
+                "&defaultYN=Y" +
+                "&firstImageYN=Y" +
+                "&addrinfoYN=Y" +
+                "&mapinfoYN=Y" +
+                "&overviewYN=Y" +
+                "&serviceKey=" + serviceKey;
+        URL url = new URL(urlStr);
+
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Content-type", "application/json");
+        urlConnection.setRequestProperty("Accept", "application/json");
+
+        BufferedReader br;
+
+        br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(br);
+
+        br.close();
+        urlConnection.disconnect();
+
+        JSONObject response = (JSONObject) jsonObject.get("response");
+        JSONObject body = (JSONObject) response.get("body");
+        JSONObject items = (JSONObject) body.get("items");
+        JSONArray itemArray = (JSONArray) items.get("item");
+
+        JSONObject item = (JSONObject) itemArray.get(0);
+
+        AccomoDetailResponseDTO dto = new AccomoDetailResponseDTO();
+        dto.setName((String) item.get("title"));
+        dto.setContentId((String) item.get("contentid"));
+        dto.setAdd((String) item.get("addr1"));
+        dto.setImg((String) item.get("firstimage"));
+        dto.setImg2((String) item.get("firstimage2"));
+        dto.setMapX((String) item.get("mapx"));
+        dto.setMapY((String) item.get("mapy"));
+        dto.setTel((String) item.get("tel"));
+        dto.setIntro((String) item.get("overview"));
+
+        return dto;
+
+    }
 }
