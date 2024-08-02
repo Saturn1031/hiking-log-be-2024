@@ -24,6 +24,8 @@ public enum ResponseCode {
     SUCCESS_SEARCH_RESTAURANT_LIST(HttpStatus.OK, "식당을 검색했습니다."),
     SUCCESS_GET_STORE_LIST(HttpStatus.OK, "등산용품점 온라인몰 목록을 조회했습니다."),
     SUCCESS_GET_STORE_DETAIL(HttpStatus.OK, "등산용품점 온라인몰 상세를 조회했습니다."),
+    SUCCESS_GET_TOUR_LIST(HttpStatus.OK, "관광지 목록을 조회했습니다."),
+    SUCCESS_GET_TOUR_DETAIL(HttpStatus.OK, "관광지 상세를 조회했습니다."),
   
     SUCCESS_BOARD_WRITE(HttpStatus.OK, "게시글 작성을 성공했습니다."),
     SUCCESS_BOARD_DELETE(HttpStatus.OK, "게시글 삭제를 성공했습니다."),
@@ -48,8 +50,8 @@ public enum ResponseCode {
     SUCCESS_BOOKMARK_READ_ACCOMMODATION(HttpStatus.OK, "숙박시설 북마크 조회를 성공했습니다."),
     SUCCESS_BOOKMARK_READ_ONLINESTORE(HttpStatus.OK, "등산용품 가게 북마크 조회를 성공했습니다."),
 
-    SUCCESS_RECORD_HIKINGLOG(HttpStatus.OK, "등산 정보 기록에 성곡했습니다."),
-
+    SUCCESS_RECORD_HIKINGLOG(HttpStatus.OK, "등산 정보 기록에 성공했습니다."),
+    SUCCESS_GET_RECORD_LIST(HttpStatus.OK, "등산 정보 기록 목록 조회를 성공했습니다."),
     SUCCESS_SEARCH_TRAIL(HttpStatus.OK, "등산로 조회를 성공했습니다."),
 
     ;

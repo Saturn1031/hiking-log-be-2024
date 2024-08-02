@@ -125,4 +125,28 @@ public class StoreController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_STORE_DETAIL, jsonObject));
     }
 
+    @GetMapping("/tour-list")
+    public ResponseEntity<ResponseDTO> getTourList(
+            @RequestParam("longitude") String longitude,
+            @RequestParam("latitude") String latitude
+    ) throws IOException, ParseException {
+
+        List<AccomoListResponseDTO> res = storeService.getTourList(longitude, latitude);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_GET_TOUR_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_TOUR_LIST, res));
+    }
+
+    @GetMapping("/tour-detail")
+    public ResponseEntity<ResponseDTO> getTourDetail(
+            @RequestParam("contentId") String contentId
+    ) throws IOException, ParseException {
+        AccomoDetailResponseDTO res = storeService.getTourDetail(contentId);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_GET_TOUR_DETAIL.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_TOUR_DETAIL, res));
+    }
+
 }
