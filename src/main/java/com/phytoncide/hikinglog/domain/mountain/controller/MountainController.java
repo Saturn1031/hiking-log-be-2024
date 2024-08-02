@@ -257,7 +257,7 @@ public class MountainController {
 
     @GetMapping("/getTrail")
     public ResponseEntity<ResponseDTO> getTrail(
-            @RequestBody SearchTrailDTO searchTrailDTO,
+            SearchTrailDTO searchTrailDTO,
             @AuthenticationPrincipal AuthDetails authDetails
     ) throws IOException, ParseException {
         // 산 주소로 법정동 코드 조회
