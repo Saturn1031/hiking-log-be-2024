@@ -1,25 +1,32 @@
 package com.phytoncide.hikinglog.domain.mountain.controller;
 
+import com.phytoncide.hikinglog.base.code.ResponseCode;
+import com.phytoncide.hikinglog.base.dto.ResponseDTO;
+import com.phytoncide.hikinglog.domain.member.config.AuthDetails;
+import com.phytoncide.hikinglog.domain.mountain.dto.SearchTrailDTO;
+import com.phytoncide.hikinglog.domain.mountain.service.MountainService;
+import lombok.RequiredArgsConstructor;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class MountainController {
+    private final MountainService mountainService;
 
     @Value("${openApi.serviceKey}")
     private String serviceKey;
@@ -246,5 +253,21 @@ public class MountainController {
         urlConnection.disconnect();
 
         return result.toString();
+    }
+
+    @GetMapping("/getTrail")
+    public ResponseEntity<ResponseDTO> getTrail(
+            @RequestBody SearchTrailDTO searchTrailDTO,
+            @AuthenticationPrincipal AuthDetails authDetails
+    ) throws IOException, ParseException {
+        // 산 주소로 법정동 코드 조회
+        String emdCd = mountainService.searchEmdCd(searchTrailDTO.getMntiadd().trim());
+
+        // 등산로 조회
+        ArrayList<ArrayList<Float>> trail = mountainService.searchTrail(searchTrailDTO.getMntiname(), emdCd);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_SEARCH_TRAIL.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_SEARCH_TRAIL, trail));
     }
 }
