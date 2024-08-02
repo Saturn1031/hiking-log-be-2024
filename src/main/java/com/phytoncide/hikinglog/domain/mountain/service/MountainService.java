@@ -50,17 +50,18 @@ public class MountainService {
     }
 
     public String saveMountain(SaveMountainDTO saveMountainDTO) {
-            MountainEntity mountain = MountainEntity.builder()
-                    .mntilistno(saveMountainDTO.getMntilistno())
-                    .mName(saveMountainDTO.getMName())
-                    .location(saveMountainDTO.getLocation())
-                    .info(saveMountainDTO.getInfo())
-                    .mntiHigh(saveMountainDTO.getMntiHigh())
-                    .mImage(saveMountainDTO.getMImage())
-                    .build();
+        MountainEntity mountain = MountainEntity.builder()
+                .mntilistno(saveMountainDTO.getMntilistno())
+                .mName(saveMountainDTO.getMName())
+                .location(saveMountainDTO.getLocation())
+                .info(saveMountainDTO.getInfo())
+                .mntiHigh(saveMountainDTO.getMntiHigh())
+                .mImage(saveMountainDTO.getMImage())
+                .build();
 
-            mountainRepository.save(mountain);
-            return "산 저장 성공";
+        mountainRepository.save(mountain);
+        return "산 저장 성공";
+    }
 
     public String searchEmdCd(String mntiadd) throws IOException, ParseException {
         String emdCd = "";
