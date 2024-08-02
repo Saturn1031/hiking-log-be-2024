@@ -118,7 +118,7 @@ public class BookmarksController {
 
     @GetMapping("")
     public ResponseEntity<ResponseDTO> bookmarkReadAll(
-            @RequestBody CursorPageRequestDto cursorPageRequestDto,
+            CursorPageRequestDto cursorPageRequestDto,
             @AuthenticationPrincipal AuthDetails authDetails
     ) {
 
@@ -147,7 +147,7 @@ public class BookmarksController {
 
     @GetMapping("/mountain")
     public ResponseEntity<ResponseDTO> bookmarkReadMountain(
-            @RequestBody CursorPageRequestDto cursorPageRequestDto,
+            CursorPageRequestDto cursorPageRequestDto,
             @AuthenticationPrincipal AuthDetails authDetails
     ) {
 
@@ -176,7 +176,7 @@ public class BookmarksController {
 
     @GetMapping("/restaurant")
     public ResponseEntity<ResponseDTO> bookmarkReadRestaurant(
-            @RequestBody CursorPageRequestDto cursorPageRequestDto,
+            CursorPageRequestDto cursorPageRequestDto,
             @AuthenticationPrincipal AuthDetails authDetails
     ) {
 
@@ -205,7 +205,7 @@ public class BookmarksController {
 
     @GetMapping("/accommodation")
     public ResponseEntity<ResponseDTO> bookmarkReadAccommodation(
-            @RequestBody CursorPageRequestDto cursorPageRequestDto,
+            CursorPageRequestDto cursorPageRequestDto,
             @AuthenticationPrincipal AuthDetails authDetails
     ) {
 
@@ -234,7 +234,7 @@ public class BookmarksController {
 
     @GetMapping("/onlinestore")
     public ResponseEntity<ResponseDTO> bookmarkReadOnlinestore(
-            @RequestBody CursorPageRequestDto cursorPageRequestDto,
+            CursorPageRequestDto cursorPageRequestDto,
             @AuthenticationPrincipal AuthDetails authDetails
     ) {
 
