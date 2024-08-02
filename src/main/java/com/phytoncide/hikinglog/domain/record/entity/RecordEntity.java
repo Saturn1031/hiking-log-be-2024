@@ -35,5 +35,8 @@ public class RecordEntity {
     private LocalDate date;
 
     @Column(nullable = false)
-    private Long time;
+    private long time;
+
+    @Column(nullable = false)
+    private long number;
 }
