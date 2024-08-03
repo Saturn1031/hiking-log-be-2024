@@ -29,16 +29,10 @@ public class MemberController {
     private final AmazonS3Service amazonS3Service;
     private final MemberService memberService;
 
-    @PostMapping(value ="/join", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResponseDTO> join(@RequestParam("user") String joinDTO, @RequestParam("image") MultipartFile multipartFile) throws IOException {
+    @PostMapping("/join")
+    public ResponseEntity<ResponseDTO> join(@RequestBody JoinDTO joinDTO) {
 
-        ObjectMapper mapper = new ObjectMapper();
-        JoinDTO mapperJoinDTO = mapper.readValue(joinDTO, JoinDTO.class);
-
-        String imageFile = amazonS3Service.saveFile(multipartFile);
-        mapperJoinDTO.setImage(imageFile);
-
-        String res = memberService.join(mapperJoinDTO);
+        String res = memberService.join(joinDTO);
 
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_JOIN.getStatus().value())

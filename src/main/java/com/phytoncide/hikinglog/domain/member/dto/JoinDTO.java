@@ -34,7 +34,4 @@ public class JoinDTO {
     @NotNull
     private String phone;
 
-    @NotNull
-    private String image;
-
 }
