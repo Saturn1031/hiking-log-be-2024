@@ -41,7 +41,7 @@ public class MemberService implements UserDetailsService {
                     .birth(joinDTO.getBirth())
                     .sex(joinDTO.getSex())
                     .phone(joinDTO.getPhone())
-                    .image(joinDTO.getImage())
+                    .image("https://hikinglog-bucket.s3.ap-northeast-2.amazonaws.com/logo.png")
                     .build();
             memberRepository.save(member);
             return "회원가입에 성공했습니다.";
