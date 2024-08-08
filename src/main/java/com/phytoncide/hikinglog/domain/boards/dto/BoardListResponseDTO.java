@@ -26,7 +26,6 @@ public class BoardListResponseDTO {
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
         private Integer id;
-        private String title;
         private String content;
         private String image;
         private String tag;
@@ -38,7 +37,6 @@ public class BoardListResponseDTO {
 
         public BoardResponseDTO(BoardEntity boardEntity) {
             this.id = boardEntity.getBid();
-            this.title = boardEntity.getTitle();
             this.content = boardEntity.getContent();
             this.userid = boardEntity.getMemberEntity().getUid(); // 예시로 Author의 name을 가져온다고 가정
         }
@@ -53,7 +51,6 @@ public class BoardListResponseDTO {
                     .createdAt(entity.getCreatedAt())
                     .updatedAt(entity.getUpdatedAt())
                     .id(entity.getBid())
-                    .title(entity.getTitle())
                     .content(entity.getContent())
                     .image(image)
                     .tag(entity.getTag())

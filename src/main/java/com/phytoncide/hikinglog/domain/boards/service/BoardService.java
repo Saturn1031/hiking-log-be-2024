@@ -41,9 +41,6 @@ public class BoardService {
     private final AmazonS3Service amazonS3Service;
 
     public String createBoard(BoardWriteDTO boardWriteDTO, MultipartFile image, AuthDetails authDetails) throws IOException {
-        if (boardWriteDTO.getTitle().isEmpty()) {
-            throw new BoardsTitleException(ErrorCode.TITLE_IS_EMPTY);
-        }
         if (boardWriteDTO.getContent().isEmpty()) {
             throw new BoardsContentException(ErrorCode.CONTENT_IS_EMPTY);
         }
@@ -101,16 +98,12 @@ public class BoardService {
             throw new BoardsDeleteException(ErrorCode.NOT_PERMITTED_TO_DELETE);
         }
 
-        if (boardWriteDTO.getTitle().isEmpty()) {
-            throw new BoardsTitleException(ErrorCode.TITLE_IS_EMPTY);
-        }
         if (boardWriteDTO.getContent().isEmpty()) {
             throw new BoardsContentException(ErrorCode.CONTENT_IS_EMPTY);
         }
 
         BoardEntity boardEntity = boardRepository.findById(boardId).get();
 
-        boardEntity.setTitle(boardWriteDTO.getTitle());
         boardEntity.setContent(boardWriteDTO.getContent());
         boardEntity.setTag(boardWriteDTO.getTag());
 
