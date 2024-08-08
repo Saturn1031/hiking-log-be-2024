@@ -18,9 +18,6 @@ import java.util.List;
 public class BoardWriteDTO {
 
     @NotNull
-    private String title;
-
-    @NotNull
     private String content;
 
     private String tag;
@@ -28,7 +25,6 @@ public class BoardWriteDTO {
     public BoardEntity toBoardEntity(MemberEntity memberEntity) {
         BoardEntity board = BoardEntity.builder()
                 .memberEntity(memberEntity)
-                .title(title)
                 .content(content)
                 .tag(tag)
                 .build();
