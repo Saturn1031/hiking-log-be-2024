@@ -18,8 +18,10 @@ public enum ErrorCode {
     TITLE_IS_EMPTY(HttpStatus.BAD_REQUEST, "제목이 작성되지 않았습니다."),
     CONTENT_IS_EMPTY(HttpStatus.BAD_REQUEST, "내용이 작성되지 않았습니다."),
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 게시글을 찾을 수 없습니다."),
-    NOT_PERMITTED_TO_DELETE(HttpStatus.FORBIDDEN, "게시글 삭제 권한이 없습니다."),
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 댓글을 찾을 수 없습니다."),
+    NOT_PERMITTED_TO_DELETE(HttpStatus.FORBIDDEN, "삭제 권한이 없습니다."),
     LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "현재 사용자의 해당 게시글 좋아요를 찾을 수 없습니다."),
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 알림을 찾을 수 없습니다."),
 
     STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 가게를 찾을 수 없습니다."),
     MOUNTAIN_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 산을 찾을 수 없습니다."),

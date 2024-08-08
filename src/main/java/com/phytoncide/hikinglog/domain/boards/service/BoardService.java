@@ -3,10 +3,7 @@ package com.phytoncide.hikinglog.domain.boards.service;
 import com.phytoncide.hikinglog.base.code.ErrorCode;
 import com.phytoncide.hikinglog.base.exception.*;
 import com.phytoncide.hikinglog.domain.awsS3.AmazonS3Service;
-import com.phytoncide.hikinglog.domain.boards.dto.BoardListResponseDTO;
-import com.phytoncide.hikinglog.domain.boards.dto.BoardWriteDTO;
-import com.phytoncide.hikinglog.domain.boards.dto.CommentListResponseDTO;
-import com.phytoncide.hikinglog.domain.boards.dto.NotificationCreateDTO;
+import com.phytoncide.hikinglog.domain.boards.dto.*;
 import com.phytoncide.hikinglog.domain.boards.entity.*;
 import com.phytoncide.hikinglog.domain.boards.repository.*;
 import com.phytoncide.hikinglog.domain.member.config.AuthDetails;
@@ -124,7 +121,7 @@ public class BoardService {
         return "게시글 수정에 성공했습니다.";
     }
 
-    public BoardListResponseDTO.BoardResponseDTO readeBoard(Integer boardId, AuthDetails authDetails) {
+    public BoardListResponseDTO.BoardResponseDTO readBoard(Integer boardId, AuthDetails authDetails) {
         if (boardRepository.findById(boardId).isEmpty()) {
             throw new BoardsNotFoundException(ErrorCode.BOARD_NOT_FOUND);
         }
@@ -140,7 +137,7 @@ public class BoardService {
         return BoardListResponseDTO.BoardResponseDTO.toDTO(boardEntity, imageEntity.getStoredUrl(), likeNum, liked, commentNum);
     }
 
-    public List<BoardListResponseDTO.BoardResponseDTO> readeBoards(Long size, Integer pageNumber, AuthDetails authDetails) {
+    public List<BoardListResponseDTO.BoardResponseDTO> readBoards(Long size, Integer pageNumber, AuthDetails authDetails) {
         if (size > 2147483647 || size < 1) {
             throw new CursorSizeOutOfRangeException(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE);
         }
@@ -210,7 +207,7 @@ public class BoardService {
             throw new BoardsNotFoundException(ErrorCode.BOARD_NOT_FOUND);
         }
         if (commentRepository.findById(commentId).isEmpty()) {
-            throw new BoardsNotFoundException(ErrorCode.BOARD_NOT_FOUND);
+            throw new CommentNotFoundException(ErrorCode.COMMENT_NOT_FOUND);
         }
         Integer commentUserId = commentRepository.findById(commentId).get().getMemberEntity().getUid();
         if (!commentUserId.equals(userId)) {
@@ -222,7 +219,7 @@ public class BoardService {
         return "댓글 삭제에 성공했습니다.";
     }
 
-    public List<CommentListResponseDTO.CommentResponseDTO> readeComments(Integer boardId, Long size, Integer pageNumber, AuthDetails authDetails) {
+    public List<CommentListResponseDTO.CommentResponseDTO> readComments(Integer boardId, Long size, Integer pageNumber, AuthDetails authDetails) {
         if (size > 2147483647 || size < 1) {
             throw new CursorSizeOutOfRangeException(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE);
         }
@@ -324,5 +321,58 @@ public class BoardService {
         notificationRepository.save(notificationEntity);
 
         return "알림 저장에 성공했습니다.";
+    }
+
+    public List<NotificationListResponseDTO.NotificationResponseDTO> readNotifications(Long size, Integer pageNumber, AuthDetails authDetails) {
+        String email = authDetails.getUsername();
+        MemberEntity memberEntity = memberRepository.findByEmail(email);
+
+        if (size > 2147483647 || size < 1) {
+            throw new CursorSizeOutOfRangeException(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE);
+        }
+        int limit = size.intValue();
+
+        Pageable pageable = PageRequest.of(pageNumber, limit);
+        List<NotificationEntity> notificationEntities = notificationRepository.findNextPage(2147483647, pageable, memberEntity);
+
+        List<NotificationListResponseDTO.NotificationResponseDTO> notifications = new ArrayList<>();
+        for (NotificationEntity notificationEntity : notificationEntities) {
+            notifications.add(NotificationListResponseDTO.NotificationResponseDTO.toDTO(notificationEntity));
+        }
+        return notifications;
+    }
+
+    public boolean hasNextNotifications(MemberEntity memberEntity, Long size, Integer pageNumber) {
+        if (size > 2147483647 || size < 1) {
+            throw new CursorSizeOutOfRangeException(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE);
+        }
+        int limit = size.intValue();
+
+        Pageable pageable = PageRequest.of(pageNumber, limit);
+        List<NotificationEntity> notificationEntities = notificationRepository.findNextPage(2147483647, pageable, memberEntity);
+
+        if (notificationEntities.isEmpty()) {
+            return false;
+        }
+        List<NotificationEntity> nextNotificationEntities = notificationRepository.findNextPage(notificationEntities.get(notificationEntities.size() - 1).getNid(), pageable, memberEntity);
+
+        return !nextNotificationEntities.isEmpty();
+    }
+
+    public String deleteNotification(Integer notificationId, AuthDetails authDetails) {
+        if (notificationRepository.findById(notificationId).isEmpty()) {
+            throw new NotificationNotFoundException(ErrorCode.NOTIFICATION_NOT_FOUND);
+        }
+
+        Integer userId = authDetails.getMemberEntity().getUid();
+
+        Integer notificationUserId = notificationRepository.findById(notificationId).get().getNotifiedUid().getUid();
+        if (!notificationUserId.equals(userId)) {
+            throw new BoardsDeleteException(ErrorCode.NOT_PERMITTED_TO_DELETE);
+        }
+
+        notificationRepository.deleteById(notificationId);
+
+        return "알림 삭제에 성공했습니다.";
     }
 }

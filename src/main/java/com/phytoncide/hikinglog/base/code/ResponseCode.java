@@ -37,6 +37,8 @@ public enum ResponseCode {
     SUCCESS_BOARD_LIKE(HttpStatus.OK, "게시글 좋아요 등록을 성공했습니다."),
     SUCCESS_BOARD_UNLIKE(HttpStatus.OK, "게시글 좋아요 삭제를 성공했습니다."),
     SUCCESS_SAVE_NOTIFICATION(HttpStatus.OK, "알림 저장을 성공했습니다."),
+    SUCCESS_READ_NOTIFICATION(HttpStatus.OK, "알림 조회를 성공했습니다."),
+    SUCCESS_DELETE_NOTIFICATION(HttpStatus.OK, "알림 삭제를 성공했습니다."),
 
     SUCCESS_RESTAURANT_BOOKMARK_CREATE(HttpStatus.OK, "음식점 북마크 추가를 성공했습니다."),
     SUCCESS_ACCOMMODATION_BOOKMARK_CREATE(HttpStatus.OK, "숙박시설 북마크 추가를 성공했습니다."),
