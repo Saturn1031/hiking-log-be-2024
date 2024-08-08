@@ -5,6 +5,9 @@ import com.phytoncide.hikinglog.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "board")
 @Data
@@ -28,5 +31,11 @@ public class BoardEntity extends BaseEntity {
 
     @Column(name = "tag", length = 50)
     private String tag;
+
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentEntity> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LikesEntity> likes = new ArrayList<>();
 
 }
