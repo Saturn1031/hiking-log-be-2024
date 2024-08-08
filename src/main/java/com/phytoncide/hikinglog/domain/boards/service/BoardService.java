@@ -124,6 +124,22 @@ public class BoardService {
         return "게시글 수정에 성공했습니다.";
     }
 
+    public BoardListResponseDTO.BoardResponseDTO readeBoard(Integer boardId, AuthDetails authDetails) {
+        if (boardRepository.findById(boardId).isEmpty()) {
+            throw new BoardsNotFoundException(ErrorCode.BOARD_NOT_FOUND);
+        }
+        BoardEntity boardEntity = boardRepository.findById(boardId).get();
+
+        ImageEntity imageEntity = imageRepository.findByBoardEntity_Bid(boardEntity.getBid());
+
+        Integer likeNum = likesRepository.countByBoardEntity_Bid(boardEntity.getBid()).intValue();
+        boolean liked = likesRepository.existsByBoardEntity_BidAndMemberEntity_Uid(boardEntity.getBid(), authDetails.getMemberEntity().getUid());
+
+        Integer commentNum = commentRepository.countByBoardEntity_Bid(boardEntity.getBid()).intValue();
+
+        return BoardListResponseDTO.BoardResponseDTO.toDTO(boardEntity, imageEntity.getStoredUrl(), likeNum, liked, commentNum);
+    }
+
     public List<BoardListResponseDTO.BoardResponseDTO> readeBoards(Long size, Integer pageNumber, AuthDetails authDetails) {
         if (size > 2147483647 || size < 1) {
             throw new CursorSizeOutOfRangeException(ErrorCode.CURSOR_SIZE_OUT_OF_RANGE);

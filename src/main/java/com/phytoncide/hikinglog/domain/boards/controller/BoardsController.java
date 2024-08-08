@@ -60,8 +60,19 @@ public class BoardsController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_BOARD_UPDATE, res));
     }
 
+    @GetMapping("/{boardId}")
+    public ResponseEntity<ResponseDTO> boardRead(@PathVariable("boardId") Integer boardId,
+                                                 @AuthenticationPrincipal AuthDetails authDetails) {
+
+        BoardListResponseDTO.BoardResponseDTO res = boardService.readeBoard(boardId, authDetails);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_BOARD_READ.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_BOARD_READ, res));
+    }
+
     @GetMapping("")
-    public ResponseEntity<ResponseDTO> boardRead(CursorPageRequestDto cursorPageRequestDto,
+    public ResponseEntity<ResponseDTO> boardsRead(CursorPageRequestDto cursorPageRequestDto,
                                           @AuthenticationPrincipal AuthDetails authDetails) {
         Long size = cursorPageRequestDto.getSize();
         Integer page = cursorPageRequestDto.getPage();
