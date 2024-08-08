@@ -6,20 +6,16 @@ import com.phytoncide.hikinglog.domain.awsS3.AmazonS3Service;
 import com.phytoncide.hikinglog.domain.boards.dto.BoardListResponseDTO;
 import com.phytoncide.hikinglog.domain.boards.dto.BoardWriteDTO;
 import com.phytoncide.hikinglog.domain.boards.dto.CommentListResponseDTO;
-import com.phytoncide.hikinglog.domain.boards.entity.BoardEntity;
-import com.phytoncide.hikinglog.domain.boards.entity.CommentEntity;
-import com.phytoncide.hikinglog.domain.boards.entity.ImageEntity;
-import com.phytoncide.hikinglog.domain.boards.entity.LikesEntity;
-import com.phytoncide.hikinglog.domain.boards.repository.BoardRepository;
-import com.phytoncide.hikinglog.domain.boards.repository.CommentRepository;
-import com.phytoncide.hikinglog.domain.boards.repository.ImageRepository;
-import com.phytoncide.hikinglog.domain.boards.repository.LikesRepository;
+import com.phytoncide.hikinglog.domain.boards.dto.NotificationCreateDTO;
+import com.phytoncide.hikinglog.domain.boards.entity.*;
+import com.phytoncide.hikinglog.domain.boards.repository.*;
 import com.phytoncide.hikinglog.domain.member.config.AuthDetails;
 import com.phytoncide.hikinglog.domain.member.entity.MemberEntity;
 import com.phytoncide.hikinglog.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,6 +33,7 @@ public class BoardService {
     private final ImageRepository imageRepository;
     private final LikesRepository likesRepository;
     private final CommentRepository commentRepository;
+    private final NotificationRepository notificationRepository;
 
     private final AmazonS3Service amazonS3Service;
 
@@ -290,5 +287,33 @@ public class BoardService {
         likesRepository.delete(likesEntity);
 
         return "게시글 좋아요 삭제에 성공했습니다.";
+    }
+
+    public String createNotification(NotificationCreateDTO notificationCreateDTO) {
+        Integer notifiedUserId = notificationCreateDTO.getNotifiedUserId();
+        if (memberRepository.findById(notifiedUserId).isEmpty()) {
+            throw new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        if (notificationCreateDTO.getTitle().isEmpty()) {
+            throw new BoardsTitleException(ErrorCode.TITLE_IS_EMPTY);
+        }
+
+        if (notificationCreateDTO.getContent().isEmpty()) {
+            throw new BoardsContentException(ErrorCode.CONTENT_IS_EMPTY);
+        }
+
+        MemberEntity memberEntity = memberRepository.findById(notifiedUserId).get();
+
+        NotificationEntity notificationEntity = NotificationEntity.builder()
+                .title(notificationCreateDTO.getTitle())
+                .content(notificationCreateDTO.getContent())
+                .url(notificationCreateDTO.getUrl())
+                .notifiedUid(memberEntity)
+                .build();
+
+        notificationRepository.save(notificationEntity);
+
+        return "알림 저장에 성공했습니다.";
     }
 }

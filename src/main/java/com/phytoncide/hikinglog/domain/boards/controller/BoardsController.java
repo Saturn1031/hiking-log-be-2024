@@ -4,10 +4,7 @@ import com.phytoncide.hikinglog.base.code.ErrorCode;
 import com.phytoncide.hikinglog.base.code.ResponseCode;
 import com.phytoncide.hikinglog.base.dto.ResponseDTO;
 import com.phytoncide.hikinglog.base.exception.BoardsNotFoundException;
-import com.phytoncide.hikinglog.domain.boards.dto.BoardListResponseDTO;
-import com.phytoncide.hikinglog.domain.boards.dto.BoardWriteDTO;
-import com.phytoncide.hikinglog.domain.boards.dto.CommentListResponseDTO;
-import com.phytoncide.hikinglog.domain.boards.dto.CursorPageRequestDto;
+import com.phytoncide.hikinglog.domain.boards.dto.*;
 import com.phytoncide.hikinglog.domain.boards.entity.BoardEntity;
 import com.phytoncide.hikinglog.domain.boards.service.BoardService;
 import com.phytoncide.hikinglog.domain.member.config.AuthDetails;
@@ -158,5 +155,15 @@ public class BoardsController {
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_BOARD_UNLIKE.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_BOARD_UNLIKE, res));
+    }
+
+    @PostMapping("/notification")
+    public ResponseEntity<ResponseDTO> notificationCreate(@RequestBody NotificationCreateDTO notificationCreateDTO,
+                                                          @AuthenticationPrincipal AuthDetails authDetails) {
+        String res = boardService.createNotification(notificationCreateDTO);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_SAVE_NOTIFICATION.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_SAVE_NOTIFICATION, res));
     }
 }
