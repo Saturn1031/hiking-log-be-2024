@@ -12,6 +12,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,7 @@ public class MountainService {
     @Value("${openApi.trailUrl}")
     private String trailUrl;
 
+    @Autowired
     public MountainService(MountainRepository mountainRepository, HttpServletRequest httpServletRequest) {
         this.mountainRepository = mountainRepository;
         this.httpServletRequest = httpServletRequest;

@@ -164,4 +164,12 @@ public class CustuomExceptionHandler {
                 .status(ErrorCode.MOUNTAIN_NOT_FOUND.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.MOUNTAIN_NOT_FOUND));
     }
+
+    @ExceptionHandler(RecordNotFoundException.class)
+    protected ResponseEntity<ErrorResponseDTO> RecordNotFoundException(final RecordNotFoundException e) {
+        log.error("RecordNotFoundException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.RECORD_NOT_FOUND.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.RECORD_NOT_FOUND));
+    }
 }

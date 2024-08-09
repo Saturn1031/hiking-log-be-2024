@@ -2,6 +2,7 @@ package com.phytoncide.hikinglog.domain.record.service;
 
 import com.phytoncide.hikinglog.base.code.ErrorCode;
 import com.phytoncide.hikinglog.base.exception.MemberNotFoundException;
+import com.phytoncide.hikinglog.base.exception.RecordNotFoundException;
 import com.phytoncide.hikinglog.base.exception.RegisterException;
 import com.phytoncide.hikinglog.domain.member.entity.MemberEntity;
 import com.phytoncide.hikinglog.domain.member.repository.MemberRepository;
@@ -23,6 +24,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -89,4 +91,37 @@ public class RecordService {
 
         return dtoList;
     }
+
+    public RecordListResponseDTO getRecord(Integer rid) {
+
+        Optional<RecordEntity> record = recordRepository.findByRid(rid);
+
+        RecordListResponseDTO dto = new RecordListResponseDTO();
+        dto.setMName(record.get().getMid().getMName());
+        dto.setNumber(record.get().getNumber());
+        dto.setTime(record.get().getTime());
+        dto.setDate(record.get().getDate());
+
+        return dto;
+    }
+
+    public String deleteRecord(Integer rid) {
+        if (recordRepository.findByRid(rid).isPresent()) {
+            Optional<RecordEntity> findRecord = recordRepository.findByRid(rid);
+            List<RecordEntity> recordUpdateList = recordRepository.findByMidAndUidAndRidGreaterThan(findRecord.get().getMid(), findRecord.get().getUid(), rid);
+
+            for (RecordEntity record: recordUpdateList) {
+                record.setNumber(record.getNumber() - 1);
+            }
+
+            recordRepository.saveAll(recordUpdateList);
+
+            recordRepository.deleteById(rid);
+        } else {
+            throw new RecordNotFoundException(ErrorCode.RECORD_NOT_FOUND);
+        }
+        return "등산 기록 삭제 성공";
+    }
+
+
 }
