@@ -17,4 +17,5 @@ public class SaveMountainDTO {
     private String info;
     private Double mntiHigh;
     private String mImage;
+
 }

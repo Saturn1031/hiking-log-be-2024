@@ -1,5 +1,6 @@
 package com.phytoncide.hikinglog.domain.mountain.entity;
 
+import com.phytoncide.hikinglog.domain.mountain.dto.SaveMountainDTO;
 import com.phytoncide.hikinglog.global.enums.Level;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -42,5 +43,15 @@ public class MountainEntity {
 
     @Column
     private String mImage;
+
+    // SaveMountainDTO를 받아들이는 생성자
+    public MountainEntity(SaveMountainDTO dto) {
+        this.mntilistno = dto.getMntilistno();
+        this.mName = dto.getMName();
+        this.location = dto.getLocation();
+        this.info = dto.getInfo();
+        this.mntiHigh = dto.getMntiHigh();
+        this.mImage = dto.getMImage();
+    }
 
 }
