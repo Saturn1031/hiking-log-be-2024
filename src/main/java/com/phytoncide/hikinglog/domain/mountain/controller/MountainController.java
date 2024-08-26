@@ -4,8 +4,11 @@ import com.phytoncide.hikinglog.base.code.ResponseCode;
 import com.phytoncide.hikinglog.base.dto.ResponseDTO;
 import com.phytoncide.hikinglog.domain.member.config.AuthDetails;
 import com.phytoncide.hikinglog.domain.mountain.dto.SearchTrailDTO;
+import com.phytoncide.hikinglog.domain.mountain.dto.WeatherDTO;
 import com.phytoncide.hikinglog.domain.mountain.service.MountainService;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -269,5 +272,21 @@ public class MountainController {
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_SEARCH_TRAIL.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_SEARCH_TRAIL, trail));
+    }
+
+
+    @GetMapping("/weather")
+    public ResponseEntity<ResponseDTO> getWeather(
+            @RequestParam("longitude") String longitude,
+            @RequestParam("latitude") String latitude
+    ) throws IOException, ParseException {
+//        JSONParser parser = new JSONParser();
+//        JSONObject jsonObject = (JSONObject) parser.parse(mountainService.getRealtimeWeather(longitude, latitude));
+
+        WeatherDTO dto = mountainService.getRealtimeWeather(longitude, latitude);
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_GET_WEATHER.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_WEATHER, dto));
+
     }
 }

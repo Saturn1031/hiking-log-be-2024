@@ -5,8 +5,10 @@ import com.phytoncide.hikinglog.base.exception.RegisterException;
 import com.phytoncide.hikinglog.domain.member.entity.MemberEntity;
 import com.phytoncide.hikinglog.domain.mountain.dto.MountainDTO;
 import com.phytoncide.hikinglog.domain.mountain.dto.SaveMountainDTO;
+import com.phytoncide.hikinglog.domain.mountain.dto.WeatherDTO;
 import com.phytoncide.hikinglog.domain.mountain.entity.MountainEntity;
 import com.phytoncide.hikinglog.domain.mountain.repository.MountainRepository;
+import com.phytoncide.hikinglog.domain.store.dto.AccomoDetailResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,11 +21,11 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +41,12 @@ public class MountainService {
 
     @Value("${openApi.trailUrl}")
     private String trailUrl;
+
+    @Value("${openApi.weatherServiceKey}")
+    private String weatherServiceKey;
+
+    @Value("${openApi.weatherUrl}")
+    private String weatherUrl;
 
     @Autowired
     public MountainService(MountainRepository mountainRepository, HttpServletRequest httpServletRequest) {
@@ -211,5 +219,87 @@ public class MountainService {
         }
 
         return trail;
+    }
+
+    public WeatherDTO getRealtimeWeather(String longitude, String latitude) throws IOException, ParseException {
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formattedDate = currentDate.format(dateFormatter);
+
+        LocalTime currentTime = LocalTime.now();
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmm");
+        String formattedTime = currentTime.format(timeFormatter);
+
+        if(Integer.parseInt(formattedTime) < 611) {
+            Integer nowDate = Integer.parseInt(formattedDate) - 1;
+            formattedDate = String.valueOf(nowDate - 1);
+        }
+
+        String urlStr = weatherUrl + "/getUltraSrtNcst?" +
+                "&serviceKey=" + weatherServiceKey +
+                "&numOfRows=20" +
+                "&pageNo=1" +
+                "&dataType=JSON" +
+                "&base_date="+ formattedDate +
+                "&base_time=0600" +
+                "&nx=55"+
+                "&ny=127";
+        URL url = new URL(urlStr);
+
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Content-type", "application/json");
+        urlConnection.setRequestProperty("Accept", "application/json");
+
+        BufferedReader br;
+
+        br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(br);
+
+        br.close();
+        urlConnection.disconnect();
+
+        JSONObject response = (JSONObject) jsonObject.get("response");
+        JSONObject body = (JSONObject) response.get("body");
+        JSONObject items = (JSONObject) body.get("items");
+        JSONArray itemArray = (JSONArray) items.get("item");
+        JSONObject temperature = (JSONObject) itemArray.get(3); //T1H
+        JSONObject rain = (JSONObject) itemArray.get(0); //PTY
+        JSONObject wind = (JSONObject) itemArray.get(7); //WSD
+
+
+        WeatherDTO dto = new WeatherDTO();
+        dto.setTemperature((String) temperature.get("obsrValue"));
+        dto.setRain(returnRain((String)rain.get("obsrValue")));
+        dto.setWind(returnWind((String)wind.get("obsrValue")));
+
+        return dto;
+
+    }
+
+    public String returnRain(String rainValue) {
+        return switch (rainValue) {
+            case "0" -> "맑음";
+            case "1" -> "비";
+            case "2" -> "비와 눈";
+            case "3" -> "눈";
+            case "4" -> "소나기";
+            case "5" -> "빗방울";
+            case "6" -> "빗방울과 눈날림";
+            case "7" -> "눈날림";
+            default -> "알 수 없음";
+        };
+    }
+
+    public String returnWind(String windValue) {
+        return switch (windValue) {
+            case "0","1","2","3" -> "바람이 약합니다";
+            case "4","5","6","7","8" -> "바람이 약간 강합니다";
+            case "9","10","11","12","13" -> "바람이 강합니다";
+            default -> "바람이 매우 강합니다";
+        };
     }
 }
