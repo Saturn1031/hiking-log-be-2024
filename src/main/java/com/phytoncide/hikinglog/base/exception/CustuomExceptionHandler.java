@@ -165,11 +165,28 @@ public class CustuomExceptionHandler {
                 .body(new ErrorResponseDTO(ErrorCode.MOUNTAIN_NOT_FOUND));
     }
 
+
     @ExceptionHandler(RecordNotFoundException.class)
     protected ResponseEntity<ErrorResponseDTO> RecordNotFoundException(final RecordNotFoundException e) {
         log.error("RecordNotFoundException: {}", e.getMessage());
         return ResponseEntity
                 .status(ErrorCode.RECORD_NOT_FOUND.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.RECORD_NOT_FOUND));
+
+    @ExceptionHandler(NotificationNotFoundException.class)
+    protected ResponseEntity<ErrorResponseDTO> NotificationNotFoundException(final NotificationNotFoundException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.NOTIFICATION_NOT_FOUND.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.NOTIFICATION_NOT_FOUND));
+    }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    protected ResponseEntity<ErrorResponseDTO> CommentNotFoundException(final CommentNotFoundException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.COMMENT_NOT_FOUND.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.COMMENT_NOT_FOUND));
+
     }
 }
