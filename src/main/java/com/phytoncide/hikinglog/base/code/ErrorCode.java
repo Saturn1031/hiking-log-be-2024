@@ -34,6 +34,9 @@ public enum ErrorCode {
     BOOKMARK_STORE_LOCATION_IS_EMPTY(HttpStatus.BAD_REQUEST, "가게 주소 속성(location)이 작성되지 않았습니다."),
     BOOKMARK_ONLINEMALL_NAME_IS_EMPTY(HttpStatus.BAD_REQUEST, "등산용품 가게 이름 속성(name)이 작성되지 않았습니다."),
     BOOKMARK_ONLINEMALL_LINK_IS_EMPTY(HttpStatus.BAD_REQUEST, "등산용품 가게 링크 속성(link)이 작성되지 않았습니다."),
+
+    RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "등산 기록을 찾을 수 없습니다."),
+
     ;
 
     private final HttpStatus status;

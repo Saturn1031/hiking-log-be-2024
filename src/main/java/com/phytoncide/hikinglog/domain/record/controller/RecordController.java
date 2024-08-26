@@ -49,4 +49,26 @@ public class RecordController {
                 .status(ResponseCode.SUCCESS_GET_RECORD_LIST.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_RECORD_LIST, list));
     }
+
+    @GetMapping("/detail")
+    public ResponseEntity<ResponseDTO> getRecord(@RequestParam("id")Integer rid) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        RecordListResponseDTO dto = recordService.getRecord(rid);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_GET_RECORD_DETAIL.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_RECORD_DETAIL, dto));
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseDTO> deleteRecord(@RequestParam("id")Integer rid) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String res = recordService.deleteRecord(rid);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_DELETE_RECORD.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_DELETE_RECORD, res));
+    }
 }
