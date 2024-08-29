@@ -3,6 +3,7 @@ package com.phytoncide.hikinglog.domain.mypage.service;
 import com.phytoncide.hikinglog.domain.mountain.dto.SaveMountainDTO;
 import com.phytoncide.hikinglog.domain.mountain.entity.MountainEntity;
 import com.phytoncide.hikinglog.domain.mountain.repository.MountainRepository;
+import com.phytoncide.hikinglog.domain.record.entity.RecordEntity;
 import com.phytoncide.hikinglog.domain.store.dto.AccomoDetailResponseDTO;
 import com.phytoncide.hikinglog.domain.store.dto.RestaurantDetailResponseDTO;
 import com.phytoncide.hikinglog.domain.store.entity.StoreEntity;
@@ -23,36 +24,17 @@ public class TourService {
     private StoreRepository storeRepository;
 
     public List<String> saveTourData(
-            List<Integer> preHikeMountainIds,
+            String tourTitle,
+            Integer mountainId,
             List<String> preHikeAccomoIds,
             List<String> preHikeRestaurantIds,
-            List<Integer> postHikeMountainIds,
             List<String> postHikeAccomoIds,
             List<String> postHikeRestaurantIds) {
 
         List<String> savedIds = new ArrayList<>();
 
-        // 등산 전 산 ID 처리
-        List<Integer> newPreHikeMountainIds = preHikeMountainIds.stream()
-                .filter(id -> !mountainRepository.existsByMntilistno(id))
-                .collect(Collectors.toList());
-        if (!newPreHikeMountainIds.isEmpty()) {
-            // 등산 전 산 데이터 저장 로직이 필요하면 여기에 추가
-            savedIds.addAll(newPreHikeMountainIds.stream()
-                    .map(id -> "Pre-Hike Mountain ID: " + id)
-                    .collect(Collectors.toList()));
-        }
-
-        // 등산 후 산 ID 처리
-        List<Integer> newPostHikeMountainIds = postHikeMountainIds.stream()
-                .filter(id -> !mountainRepository.existsByMntilistno(id))
-                .collect(Collectors.toList());
-        if (!newPostHikeMountainIds.isEmpty()) {
-            // 등산 후 산 데이터 저장 로직이 필요하면 여기에 추가
-            savedIds.addAll(newPostHikeMountainIds.stream()
-                    .map(id -> "Post-Hike Mountain ID: " + id)
-                    .collect(Collectors.toList()));
-        }
+        savedIds.add(tourTitle);
+        savedIds.add(String.valueOf(mountainId));
 
         // 등산 전 숙박 ID 처리
         List<String> newPreHikeAccomoIds = preHikeAccomoIds.stream()
@@ -60,6 +42,11 @@ public class TourService {
                 .collect(Collectors.toList());
         if (!newPreHikeAccomoIds.isEmpty()) {
             // 등산 전 숙박 데이터 저장 로직이 필요하면 여기에 추가
+//            StoreEntity store = StoreEntity.builder()
+//                    .contentId(newPreHikeAccomoIds)
+//                    .build();
+//            storeRepository.save(store);
+
             savedIds.addAll(newPreHikeAccomoIds.stream()
                     .map(id -> "Pre-Hike Accomo ID: " + id)
                     .collect(Collectors.toList()));

@@ -18,10 +18,10 @@ public class TourController {
     @PostMapping("/save")
     public List<String> saveTour(@RequestBody TourSaveRequestDTO requestDTO) {
         return tourService.saveTourData(
-                requestDTO.getPreHikeMountainIds(),
+                requestDTO.getTourTitle(),
+                requestDTO.getMountainId(),
                 requestDTO.getPreHikeAccomoIds(),
                 requestDTO.getPreHikeRestaurantIds(),
-                requestDTO.getPostHikeMountainIds(),
                 requestDTO.getPostHikeAccomoIds(),
                 requestDTO.getPostHikeRestaurantIds()
         );
