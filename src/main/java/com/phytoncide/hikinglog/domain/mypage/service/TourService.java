@@ -5,6 +5,7 @@ import com.phytoncide.hikinglog.domain.member.repository.MemberRepository;
 import com.phytoncide.hikinglog.domain.mountain.dto.SaveMountainDTO;
 import com.phytoncide.hikinglog.domain.mountain.entity.MountainEntity;
 import com.phytoncide.hikinglog.domain.mountain.repository.MountainRepository;
+import com.phytoncide.hikinglog.domain.mypage.dto.TourDetailResponseDTO;
 import com.phytoncide.hikinglog.domain.mypage.dto.TourResponseDTO;
 import com.phytoncide.hikinglog.domain.mypage.dto.TourSaveRequestDTO;
 import com.phytoncide.hikinglog.domain.mypage.entity.TourEntity;
@@ -34,6 +35,31 @@ public class TourService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    // 특정 관광 코스의 상세 정보 가져오기
+    public TourDetailResponseDTO getTourDetailsById(Integer tourId) {
+        // 관광 코스 조회
+        TourEntity tour = tourRepository.findById(tourId)
+                .orElseThrow(() -> new IllegalArgumentException("관광 코스를 찾을 수 없습니다."));
+
+        // 숙박 및 음식점 ID 목록 가져오기
+        List<StoreEntity> preHikeAccomo = storeRepository.findByContentIdIn(tour.getPreHikeAccomoIds());
+        List<StoreEntity> preHikeRestaurant = storeRepository.findByContentIdIn(tour.getPreHikeRestaurantIds());
+        List<StoreEntity> postHikeAccomo = storeRepository.findByContentIdIn(tour.getPostHikeAccomoIds());
+        List<StoreEntity> postHikeRestaurant = storeRepository.findByContentIdIn(tour.getPostHikeRestaurantIds());
+
+        // DTO로 변환
+        return TourDetailResponseDTO.builder()
+                .tourId(tourId)
+                .tourTitle(tour.getTourTitle())
+                .mountainId(tour.getMountainId())
+                .preHikeAccomo(preHikeAccomo)
+                .preHikeRestaurant(preHikeRestaurant)
+                .postHikeAccomo(postHikeAccomo)
+                .postHikeRestaurant(postHikeRestaurant)
+                .status(tour.getStatus())
+                .build();
+    }
 
     // 사용자가 만든 관광 코스를 불러오는 메서드
     public List<TourResponseDTO> getUserTours(Integer userId) {

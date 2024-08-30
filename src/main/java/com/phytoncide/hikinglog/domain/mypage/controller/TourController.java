@@ -1,5 +1,6 @@
 package com.phytoncide.hikinglog.domain.mypage.controller;
 
+import com.phytoncide.hikinglog.domain.mypage.dto.TourDetailResponseDTO;
 import com.phytoncide.hikinglog.domain.mypage.dto.TourResponseDTO;
 import com.phytoncide.hikinglog.domain.mypage.dto.TourSaveRequestDTO;
 import com.phytoncide.hikinglog.domain.mypage.entity.TourEntity;
@@ -41,5 +42,11 @@ public class TourController {
     @PutMapping("/update-status/{tourId}")
     public void updateTourStatus(@PathVariable Long tourId, @RequestParam TourEntity.Status status) {
         tourService.updateTourStatus(tourId, status);
+    }
+
+    // 특정 관광 코스의 상세 정보 조회
+    @GetMapping("/details/{tourId}")
+    public TourDetailResponseDTO getTourDetailsById(@PathVariable Integer tourId) {
+        return tourService.getTourDetailsById(tourId);
     }
 }
