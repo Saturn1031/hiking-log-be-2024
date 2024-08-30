@@ -172,6 +172,7 @@ public class CustuomExceptionHandler {
         return ResponseEntity
                 .status(ErrorCode.RECORD_NOT_FOUND.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.RECORD_NOT_FOUND));
+    }
 
     @ExceptionHandler(NotificationNotFoundException.class)
     protected ResponseEntity<ErrorResponseDTO> NotificationNotFoundException(final NotificationNotFoundException e) {
