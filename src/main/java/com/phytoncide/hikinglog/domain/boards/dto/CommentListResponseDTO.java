@@ -28,6 +28,8 @@ public class CommentListResponseDTO {
         private Integer id;
         private String content;
         private Integer userid;
+        private String userName;
+        private String userImage;
 
         public static CommentResponseDTO toDTO(CommentEntity entity) {
             return CommentResponseDTO.builder()
@@ -35,6 +37,8 @@ public class CommentListResponseDTO {
                     .id(entity.getCid())
                     .content(entity.getContent())
                     .userid(entity.getMemberEntity().getUid())
+                    .userName(entity.getMemberEntity().getName())
+                    .userImage(entity.getMemberEntity().getImage())
                     .build();
         }
     }
