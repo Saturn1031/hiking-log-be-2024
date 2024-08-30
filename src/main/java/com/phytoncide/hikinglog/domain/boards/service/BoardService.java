@@ -134,6 +134,9 @@ public class BoardService {
 
         Integer commentNum = commentRepository.countByBoardEntity_Bid(boardEntity.getBid()).intValue();
 
+        if (imageEntity == null) {
+            return BoardListResponseDTO.BoardResponseDTO.toDTO(boardEntity, "", likeNum, liked, commentNum);
+        }
         return BoardListResponseDTO.BoardResponseDTO.toDTO(boardEntity, imageEntity.getStoredUrl(), likeNum, liked, commentNum);
     }
 
