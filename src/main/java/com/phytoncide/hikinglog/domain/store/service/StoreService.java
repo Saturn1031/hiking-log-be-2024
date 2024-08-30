@@ -10,9 +10,21 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,6 +35,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +50,8 @@ public class StoreService {
     private String callBackUrl;
 
     private static final String FILE_PATH = "src/main/java/com/phytoncide/hikinglog/domain/store/resource/onlineOutdoorMall.json";
+    private static final String DRIVER_PATH = "src/main/java/com/phytoncide/hikinglog/base/driver/";
+    private static WebDriver DRIVER;
 
     // 숙박 시설 목록 반환
     public List<AccomoListResponseDTO> getAccommodationList(String longitude, String latitude) throws IOException, ParseException {
@@ -132,6 +147,10 @@ public class StoreService {
         JSONObject items = (JSONObject) body.get("items");
         JSONArray itemArray = (JSONArray) items.get("item");
 
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-extensions");
+        DRIVER = new ChromeDriver(options);
+
         for (Object obj : itemArray) {
             JSONObject item = (JSONObject) obj;
 
@@ -139,14 +158,19 @@ public class StoreService {
             dto.setName((String) item.get("title"));
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
-            dto.setImg((String) item.get("firstimage"));
-            dto.setImg2((String) item.get("firstimage2"));
+            dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
+//            dto.setImg((String) item.get("firstimage"));
+            dto.setImg2((String) item.get("firstimage"));
+//            dto.setImg2((String) item.get("firstimage2"));
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
             dto.setTel((String) item.get("tel"));
 
             dtoList.add(dto);
         }
+
+        DRIVER.close();
+        DRIVER.quit();
 
         return dtoList;
 
@@ -242,6 +266,10 @@ public class StoreService {
         JSONObject items = (JSONObject) body.get("items");
         JSONArray itemArray = (JSONArray) items.get("item");
 
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-extensions");
+        DRIVER = new ChromeDriver(options);
+
         for (Object obj : itemArray) {
             JSONObject item = (JSONObject) obj;
 
@@ -249,14 +277,19 @@ public class StoreService {
             dto.setName((String) item.get("title"));
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
-            dto.setImg((String) item.get("firstimage"));
-            dto.setImg2((String) item.get("firstimage2"));
+            dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
+//            dto.setImg((String) item.get("firstimage"));
+            dto.setImg2((String) item.get("firstimage"));
+//            dto.setImg2((String) item.get("firstimage2"));
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
             dto.setTel((String) item.get("tel"));
 
             dtoList.add(dto);
         }
+
+        DRIVER.close();
+        DRIVER.quit();
 
         return dtoList;
 
@@ -514,5 +547,79 @@ public class StoreService {
 
         return dto;
 
+    }
+
+    public String getStoreImage(String addr1, String title) {
+        String chromeDriverPath = getChromeDriverPath();
+
+        System.setProperty("webdriver.chrome.driver", DRIVER_PATH + chromeDriverPath);
+
+        String img = getImageElement(DRIVER, addr1, title);
+
+        return img;
+    }
+
+    private String getChromeDriverPath() {
+        // 운영체제와 아키텍처 확인
+        String os = System.getProperty("os.name").toLowerCase();
+        String arch = System.getProperty("os.arch").toLowerCase();
+        String chromeDriverPath;
+
+        if (os.contains("win")) {
+            if (arch.contains("64")) {
+                // Windows 64-bit
+                chromeDriverPath = "chromedriver-win64/chromedriver.exe";
+            } else {
+                // Windows 32-bit
+                chromeDriverPath = "chromedriver-win32/chromedriver.exe";
+            }
+        } else if (os.contains("mac")) {
+            if (arch.contains("aarch64") || arch.contains("arm64")) {
+                // macOS ARM64 (M1/M2)
+                chromeDriverPath = "chromedriver-mac-arm64/chromedriver";
+            } else {
+                // macOS x86_64 (Intel)
+                chromeDriverPath = "chromedriver-mac-x64/chromedriver";
+            }
+        } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+            // Linux 64-bit
+            chromeDriverPath = "chromedriver-linux64/chromedriver";
+        } else {
+            throw new UnsupportedOperationException("Unsupported operating system: " + os + ", architecture: " + arch);
+        }
+
+        return chromeDriverPath;
+    }
+
+    private String getImageElement(WebDriver driver, String addr1, String title) {
+        String imgUrl;
+
+        System.out.println("검색어: " + addr1 + " " + title);
+        System.out.println("url: " + "https://pcmap.place.naver.com/place/list?query=" + addr1 + " " + title);
+        driver.get("https://pcmap.place.naver.com/place/list?query=" + addr1 + " " + title);
+
+        List<WebElement> imgElements = driver.findElements(By.tagName("img"));
+        if (imgElements.isEmpty()) {
+            imgUrl = "";
+        } else {
+            imgUrl = imgElements.get(0).getAttribute("src");
+        }
+
+        return imgUrl;
+    }
+
+    public String getStoreImage2(String addr1, String title) throws IOException {
+        String imgUrl;
+
+        Document document = Jsoup.connect("https://pcmap.place.naver.com/place/list?query=" + addr1 + " " + title).get();
+
+        Elements imgElements = document.select("img");
+        if (imgElements.isEmpty()) {
+            imgUrl = "";
+        } else {
+            imgUrl = imgElements.get(0).attr("src");
+        }
+
+        return imgUrl;
     }
 }
