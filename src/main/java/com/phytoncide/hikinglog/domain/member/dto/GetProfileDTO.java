@@ -13,6 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetProfileDTO {
+    private Integer userid;
 
     private String email;
 

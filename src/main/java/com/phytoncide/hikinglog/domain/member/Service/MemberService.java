@@ -114,6 +114,7 @@ public class MemberService implements UserDetailsService {
         if (memberRepository.existsByEmail(email)) {
             MemberEntity member = memberRepository.findByEmail(email);
             GetProfileDTO getProfileDTO = new GetProfileDTO();
+            getProfileDTO.setUserid(member.getUid());
             getProfileDTO.setEmail(member.getEmail());
             getProfileDTO.setName(member.getName());
             getProfileDTO.setBirth(member.getBirth());
