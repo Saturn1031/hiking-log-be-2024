@@ -33,12 +33,16 @@ public class BoardListResponseDTO {
         private boolean liked;
         private Integer commentNum;
         private Integer userid;
+        private String userName;
+        private String userImage;
 
 
         public BoardResponseDTO(BoardEntity boardEntity) {
             this.id = boardEntity.getBid();
             this.content = boardEntity.getContent();
-            this.userid = boardEntity.getMemberEntity().getUid(); // 예시로 Author의 name을 가져온다고 가정
+            this.userid = boardEntity.getMemberEntity().getUid();
+            this.userName = boardEntity.getMemberEntity().getName();
+            this.userImage = boardEntity.getMemberEntity().getImage();
         }
 
 
@@ -58,6 +62,8 @@ public class BoardListResponseDTO {
                     .liked(liked)
                     .commentNum(commentNum)
                     .userid(entity.getMemberEntity().getUid())
+                    .userName(entity.getMemberEntity().getName())
+                    .userImage(entity.getMemberEntity().getImage())
                     .build();
         }
     }
