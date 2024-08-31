@@ -16,10 +16,12 @@ import com.phytoncide.hikinglog.domain.record.entity.RecordEntity;
 import com.phytoncide.hikinglog.domain.record.repository.RecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -36,7 +38,11 @@ public class RecordService {
     private final MountainRepository mountainRepository;
     private final MountainService mountainService;
 
-    public String recordHiking(RecordRequestDTO recordRequestDTO, SaveMountainDTO saveMountainDTO) {
+    public String recordHiking(RecordRequestDTO recordRequestDTO) throws IOException, ParseException {
+        System.out.println(recordRequestDTO.getMountainName());
+
+        SaveMountainDTO saveMountainDTO = mountainService.searchMountain(recordRequestDTO.getMountainName());
+        System.out.println(saveMountainDTO);
 
         if (mountainRepository.existsByMntilistno(saveMountainDTO.getMntilistno())) {
             MemberEntity member = memberRepository.findByEmail(recordRequestDTO.getEmail());
