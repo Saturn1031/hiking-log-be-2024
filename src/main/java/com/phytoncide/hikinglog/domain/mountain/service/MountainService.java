@@ -48,6 +48,18 @@ public class MountainService {
     @Value("${openApi.weatherUrl}")
     private String weatherUrl;
 
+    @Value("${openApi.dustServiceKey}")
+    private String dustServiceKey;
+
+    @Value("${openApi.dustUrl}")
+    private String dustUrl;
+
+    @Value("${openApi.serviceKey}")
+    private String serviceKey;
+
+    @Value("${openApi.callBackUrl}")
+    private String callBackUrl;
+
     @Autowired
     public MountainService(MountainRepository mountainRepository, HttpServletRequest httpServletRequest) {
         this.mountainRepository = mountainRepository;
@@ -221,7 +233,7 @@ public class MountainService {
         return trail;
     }
 
-    public WeatherDTO getRealtimeWeather(String longitude, String latitude) throws IOException, ParseException {
+    public WeatherDTO getRealtimeWeather(String address) throws IOException, ParseException {
 
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -301,5 +313,80 @@ public class MountainService {
             case "9","10","11","12","13" -> "바람이 강합니다";
             default -> "바람이 매우 강합니다";
         };
+    }
+
+    public JSONObject getRealTimeDust(String sido) throws IOException, ParseException {
+
+        String urlStr = dustUrl + "/getCtprvnRltmMesureDnsty?" +
+                "sidoName=부산"+
+                "&pageNo=1" +
+                "&numOfRows=10" +
+                "&returnType=json" +
+                "&serviceKey=" + dustServiceKey +
+                "&ver=1.2";
+        URL url = new URL(urlStr);
+
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Content-type", "application/json");
+        urlConnection.setRequestProperty("Accept", "application/json");
+
+        BufferedReader br;
+
+        br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(br);
+
+        br.close();
+        urlConnection.disconnect();
+
+        JSONObject response = (JSONObject) jsonObject.get("response");
+        JSONObject body = (JSONObject) response.get("body");
+        JSONObject items = (JSONObject) body.get("items");
+
+        return jsonObject;
+
+    }
+
+    public SaveMountainDTO searchMountain(String mountainName) throws IOException, ParseException {
+
+        StringBuilder result = new StringBuilder();
+        String mountain_name = URLEncoder.encode(mountainName, StandardCharsets.UTF_8);
+        String urlStr = callBackUrl + "mntInfoOpenAPI2?" +
+                "searchWrd=" + mountain_name +
+                "&ServiceKey=" + serviceKey;
+        URL url = new URL(urlStr);
+
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Content-type", "application/json");
+        urlConnection.setRequestProperty("Accept", "application/json");
+
+        BufferedReader br;
+
+        br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(br);
+
+        System.out.println(jsonObject);
+
+        JSONObject response = (JSONObject) jsonObject.get("response");
+        JSONObject body = (JSONObject) response.get("body");
+        JSONObject items = (JSONObject) body.get("items");
+        JSONObject item = (JSONObject) items.get("item");
+
+        SaveMountainDTO saveMountainDTO = new SaveMountainDTO();
+        saveMountainDTO.setMntilistno(Integer.parseInt(String.valueOf((Long) item.get("mntilistno"))));
+        saveMountainDTO.setMName((String) item.get("mntiname"));
+        saveMountainDTO.setLocation((String) item.get("mntiadd"));
+        saveMountainDTO.setInfo((String) item.get("mntidetails"));
+        saveMountainDTO.setMntiHigh((Double) item.get("mntihigh"));
+        saveMountainDTO.setMImage((String) item.get("mntitop"));
+
+
+
+        return saveMountainDTO;
     }
 }

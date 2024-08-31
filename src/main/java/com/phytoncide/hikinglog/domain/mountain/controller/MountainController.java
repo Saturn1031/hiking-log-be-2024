@@ -277,16 +277,23 @@ public class MountainController {
 
     @GetMapping("/weather")
     public ResponseEntity<ResponseDTO> getWeather(
-            @RequestParam("longitude") String longitude,
-            @RequestParam("latitude") String latitude
+            @RequestParam("address") String address
     ) throws IOException, ParseException {
-//        JSONParser parser = new JSONParser();
-//        JSONObject jsonObject = (JSONObject) parser.parse(mountainService.getRealtimeWeather(longitude, latitude));
 
-        WeatherDTO dto = mountainService.getRealtimeWeather(longitude, latitude);
+        WeatherDTO dto = mountainService.getRealtimeWeather(address);
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_GET_WEATHER.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_WEATHER, dto));
 
     }
+
+//    @GetMapping("/dust")
+//    public ResponseEntity<ResponseDTO> getWeather(@RequestParam("sido") String sido) throws IOException, ParseException {
+//
+//        JSONObject dto = mountainService.getRealTimeDust(sido);
+//        return ResponseEntity
+//                .status(ResponseCode.SUCCESS_GET_WEATHER.getStatus().value())
+//                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_WEATHER, dto));
+//
+//    }
 }
