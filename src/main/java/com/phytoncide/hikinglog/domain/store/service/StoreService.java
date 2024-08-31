@@ -1,6 +1,5 @@
 package com.phytoncide.hikinglog.domain.store.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phytoncide.hikinglog.domain.store.dto.AccomoDetailResponseDTO;
 import com.phytoncide.hikinglog.domain.store.dto.AccomoListResponseDTO;
 import com.phytoncide.hikinglog.domain.store.dto.RestaurantDetailResponseDTO;
@@ -10,21 +9,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StopWatch;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,7 +26,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +47,7 @@ public class StoreService {
     public List<AccomoListResponseDTO> getAccommodationList(String longitude, String latitude) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "locationBasedList1?" +
-                "numOfRows=50" +
+                "numOfRows=10" +
                 "&MobileOS=AND" +
                 "&MobileApp=hikingLog" +
                 "&_type=json" +
@@ -90,6 +80,10 @@ public class StoreService {
         JSONObject items = (JSONObject) body.get("items");
         JSONArray itemArray = (JSONArray) items.get("item");
 
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-extensions");
+        DRIVER = new ChromeDriver(options);
+
         for (Object obj : itemArray) {
             JSONObject item = (JSONObject) obj;
 
@@ -97,14 +91,17 @@ public class StoreService {
             dto.setName((String) item.get("title"));
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
-            dto.setImg((String) item.get("firstimage"));
-            dto.setImg2((String) item.get("firstimage2"));
+            dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
+            dto.setImg2((String) item.get("firstimage"));
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
             dto.setTel((String) item.get("tel"));
 
             dtoList.add(dto);
         }
+
+        DRIVER.close();
+        DRIVER.quit();
 
         return dtoList;
 
@@ -114,7 +111,7 @@ public class StoreService {
     public List<RestaurantListResponseDTO> getRestaurantList(String longitude, String latitude) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "locationBasedList1?" +
-                "numOfRows=50" +
+                "numOfRows=10" +
                 "&MobileOS=AND" +
                 "&MobileApp=hikingLog" +
                 "&_type=json" +
@@ -159,9 +156,7 @@ public class StoreService {
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
             dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
-//            dto.setImg((String) item.get("firstimage"));
             dto.setImg2((String) item.get("firstimage"));
-//            dto.setImg2((String) item.get("firstimage2"));
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
             dto.setTel((String) item.get("tel"));
@@ -180,7 +175,7 @@ public class StoreService {
     public List<AccomoListResponseDTO> searchAccommodationList(String keyword) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "searchKeyword1?" +
-                "numOfRows=50" +
+                "numOfRows=10" +
                 "&MobileOS=AND" +
                 "&MobileApp=hikingLog" +
                 "&_type=json" +
@@ -211,6 +206,10 @@ public class StoreService {
         JSONObject items = (JSONObject) body.get("items");
         JSONArray itemArray = (JSONArray) items.get("item");
 
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-extensions");
+        DRIVER = new ChromeDriver(options);
+
         for (Object obj : itemArray) {
             JSONObject item = (JSONObject) obj;
 
@@ -218,14 +217,17 @@ public class StoreService {
             dto.setName((String) item.get("title"));
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
-            dto.setImg((String) item.get("firstimage"));
-            dto.setImg2((String) item.get("firstimage2"));
+            dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
+            dto.setImg2((String) item.get("firstimage"));
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
             dto.setTel((String) item.get("tel"));
 
             dtoList.add(dto);
         }
+
+        DRIVER.close();
+        DRIVER.quit();
 
         return dtoList;
 
@@ -235,7 +237,7 @@ public class StoreService {
     public List<RestaurantListResponseDTO> searchRestaurantList(String keyword) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "searchKeyword1?" +
-                "numOfRows=50" +
+                "numOfRows=10" +
                 "&MobileOS=AND" +
                 "&MobileApp=hikingLog" +
                 "&_type=json" +
@@ -278,9 +280,7 @@ public class StoreService {
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
             dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
-//            dto.setImg((String) item.get("firstimage"));
             dto.setImg2((String) item.get("firstimage"));
-//            dto.setImg2((String) item.get("firstimage2"));
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
             dto.setTel((String) item.get("tel"));
@@ -334,16 +334,23 @@ public class StoreService {
 
         JSONObject item = (JSONObject) itemArray.get(0);
 
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-extensions");
+        DRIVER = new ChromeDriver(options);
+
         AccomoDetailResponseDTO dto = new AccomoDetailResponseDTO();
         dto.setName((String) item.get("title"));
         dto.setContentId((String) item.get("contentid"));
         dto.setAdd((String) item.get("addr1"));
-        dto.setImg((String) item.get("firstimage"));
-        dto.setImg2((String) item.get("firstimage2"));
+        dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
+        dto.setImg2((String) item.get("firstimage"));
         dto.setMapX((String) item.get("mapx"));
         dto.setMapY((String) item.get("mapy"));
         dto.setTel((String) item.get("tel"));
         dto.setIntro((String) item.get("overview"));
+
+        DRIVER.close();
+        DRIVER.quit();
 
         return dto;
 
@@ -388,16 +395,23 @@ public class StoreService {
 
         JSONObject item = (JSONObject) itemArray.get(0);
 
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-extensions");
+        DRIVER = new ChromeDriver(options);
+
         RestaurantDetailResponseDTO dto = new RestaurantDetailResponseDTO();
         dto.setName((String) item.get("title"));
         dto.setContentId((String) item.get("contentid"));
         dto.setAdd((String) item.get("addr1"));
-        dto.setImg((String) item.get("firstimage"));
-        dto.setImg2((String) item.get("firstimage2"));
+        dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
+        dto.setImg2((String) item.get("firstimage"));
         dto.setMapX((String) item.get("mapx"));
         dto.setMapY((String) item.get("mapy"));
         dto.setTel((String) item.get("tel"));
         dto.setIntro((String) item.get("overview"));
+
+        DRIVER.close();
+        DRIVER.quit();
 
         return dto;
 
@@ -443,7 +457,7 @@ public class StoreService {
     public List<AccomoListResponseDTO> getTourList(String longitude, String latitude) throws IOException, ParseException {
 
         String urlStr = callBackUrl + "locationBasedList1?" +
-                "numOfRows=50" +
+                "numOfRows=10" +
                 "&MobileOS=AND" +
                 "&MobileApp=hikingLog" +
                 "&_type=json" +
@@ -476,6 +490,10 @@ public class StoreService {
         JSONObject items = (JSONObject) body.get("items");
         JSONArray itemArray = (JSONArray) items.get("item");
 
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-extensions");
+        DRIVER = new ChromeDriver(options);
+
         for (Object obj : itemArray) {
             JSONObject item = (JSONObject) obj;
 
@@ -483,14 +501,17 @@ public class StoreService {
             dto.setName((String) item.get("title"));
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
-            dto.setImg((String) item.get("firstimage"));
-            dto.setImg2((String) item.get("firstimage2"));
+            dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
+            dto.setImg2((String) item.get("firstimage"));
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
             dto.setTel((String) item.get("tel"));
 
             dtoList.add(dto);
         }
+
+        DRIVER.close();
+        DRIVER.quit();
 
         return dtoList;
     }
@@ -534,16 +555,23 @@ public class StoreService {
 
         JSONObject item = (JSONObject) itemArray.get(0);
 
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-extensions");
+        DRIVER = new ChromeDriver(options);
+
         AccomoDetailResponseDTO dto = new AccomoDetailResponseDTO();
         dto.setName((String) item.get("title"));
         dto.setContentId((String) item.get("contentid"));
         dto.setAdd((String) item.get("addr1"));
-        dto.setImg((String) item.get("firstimage"));
-        dto.setImg2((String) item.get("firstimage2"));
+        dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
+        dto.setImg2((String) item.get("firstimage"));
         dto.setMapX((String) item.get("mapx"));
         dto.setMapY((String) item.get("mapy"));
         dto.setTel((String) item.get("tel"));
         dto.setIntro((String) item.get("overview"));
+
+        DRIVER.close();
+        DRIVER.quit();
 
         return dto;
 
@@ -603,21 +631,6 @@ public class StoreService {
             imgUrl = "";
         } else {
             imgUrl = imgElements.get(0).getAttribute("src");
-        }
-
-        return imgUrl;
-    }
-
-    public String getStoreImage2(String addr1, String title) throws IOException {
-        String imgUrl;
-
-        Document document = Jsoup.connect("https://pcmap.place.naver.com/place/list?query=" + addr1 + " " + title).get();
-
-        Elements imgElements = document.select("img");
-        if (imgElements.isEmpty()) {
-            imgUrl = "";
-        } else {
-            imgUrl = imgElements.get(0).attr("src");
         }
 
         return imgUrl;

@@ -80,8 +80,6 @@ dependencies {
     implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.24.0'
     testImplementation 'org.seleniumhq.selenium:selenium-java:4.24.0'
 
-    implementation 'org.jsoup:jsoup:1.18.1'
-
     runtimeOnly 'com.mysql:mysql-connector-j'
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
