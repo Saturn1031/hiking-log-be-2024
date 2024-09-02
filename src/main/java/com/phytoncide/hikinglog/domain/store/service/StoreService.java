@@ -41,7 +41,6 @@ public class StoreService {
 
     private static final String FILE_PATH = "src/main/java/com/phytoncide/hikinglog/domain/store/resource/onlineOutdoorMall.json";
     private static final String DRIVER_PATH = "src/main/java/com/phytoncide/hikinglog/base/driver/";
-    private static WebDriver DRIVER;
 
     // 숙박 시설 목록 반환
     public List<AccomoListResponseDTO> getAccommodationList(String longitude, String latitude) throws IOException, ParseException {
@@ -82,7 +81,7 @@ public class StoreService {
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-extensions");
-        DRIVER = new ChromeDriver(options);
+        WebDriver chromeDriver = new ChromeDriver(options);
 
         for (Object obj : itemArray) {
             JSONObject item = (JSONObject) obj;
@@ -91,7 +90,7 @@ public class StoreService {
             dto.setName((String) item.get("title"));
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
-            dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
+            dto.setImg(getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title")));
             dto.setImg2((String) item.get("firstimage"));
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
@@ -100,8 +99,8 @@ public class StoreService {
             dtoList.add(dto);
         }
 
-        DRIVER.close();
-        DRIVER.quit();
+        chromeDriver.close();
+        chromeDriver.quit();
 
         return dtoList;
 
@@ -146,7 +145,7 @@ public class StoreService {
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-extensions");
-        DRIVER = new ChromeDriver(options);
+        WebDriver chromeDriver = new ChromeDriver(options);
 
         for (Object obj : itemArray) {
             JSONObject item = (JSONObject) obj;
@@ -155,7 +154,7 @@ public class StoreService {
             dto.setName((String) item.get("title"));
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
-            dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
+            dto.setImg(getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title")));
             dto.setImg2((String) item.get("firstimage"));
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
@@ -164,8 +163,8 @@ public class StoreService {
             dtoList.add(dto);
         }
 
-        DRIVER.close();
-        DRIVER.quit();
+        chromeDriver.close();
+        chromeDriver.quit();
 
         return dtoList;
 
@@ -208,7 +207,7 @@ public class StoreService {
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-extensions");
-        DRIVER = new ChromeDriver(options);
+        WebDriver chromeDriver = new ChromeDriver(options);
 
         for (Object obj : itemArray) {
             JSONObject item = (JSONObject) obj;
@@ -217,7 +216,7 @@ public class StoreService {
             dto.setName((String) item.get("title"));
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
-            dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
+            dto.setImg(getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title")));
             dto.setImg2((String) item.get("firstimage"));
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
@@ -226,8 +225,8 @@ public class StoreService {
             dtoList.add(dto);
         }
 
-        DRIVER.close();
-        DRIVER.quit();
+        chromeDriver.close();
+        chromeDriver.quit();
 
         return dtoList;
 
@@ -270,7 +269,7 @@ public class StoreService {
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-extensions");
-        DRIVER = new ChromeDriver(options);
+        WebDriver chromeDriver = new ChromeDriver(options);
 
         for (Object obj : itemArray) {
             JSONObject item = (JSONObject) obj;
@@ -279,7 +278,7 @@ public class StoreService {
             dto.setName((String) item.get("title"));
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
-            dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
+            dto.setImg(getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title")));
             dto.setImg2((String) item.get("firstimage"));
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
@@ -288,8 +287,8 @@ public class StoreService {
             dtoList.add(dto);
         }
 
-        DRIVER.close();
-        DRIVER.quit();
+        chromeDriver.close();
+        chromeDriver.quit();
 
         return dtoList;
 
@@ -336,21 +335,21 @@ public class StoreService {
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-extensions");
-        DRIVER = new ChromeDriver(options);
+        WebDriver chromeDriver = new ChromeDriver(options);
 
         AccomoDetailResponseDTO dto = new AccomoDetailResponseDTO();
         dto.setName((String) item.get("title"));
         dto.setContentId((String) item.get("contentid"));
         dto.setAdd((String) item.get("addr1"));
-        dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
+        dto.setImg(getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title")));
         dto.setImg2((String) item.get("firstimage"));
         dto.setMapX((String) item.get("mapx"));
         dto.setMapY((String) item.get("mapy"));
         dto.setTel((String) item.get("tel"));
         dto.setIntro((String) item.get("overview"));
 
-        DRIVER.close();
-        DRIVER.quit();
+        chromeDriver.close();
+        chromeDriver.quit();
 
         return dto;
 
@@ -397,21 +396,21 @@ public class StoreService {
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-extensions");
-        DRIVER = new ChromeDriver(options);
+        WebDriver chromeDriver = new ChromeDriver(options);
 
         RestaurantDetailResponseDTO dto = new RestaurantDetailResponseDTO();
         dto.setName((String) item.get("title"));
         dto.setContentId((String) item.get("contentid"));
         dto.setAdd((String) item.get("addr1"));
-        dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
+        dto.setImg(getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title")));
         dto.setImg2((String) item.get("firstimage"));
         dto.setMapX((String) item.get("mapx"));
         dto.setMapY((String) item.get("mapy"));
         dto.setTel((String) item.get("tel"));
         dto.setIntro((String) item.get("overview"));
 
-        DRIVER.close();
-        DRIVER.quit();
+        chromeDriver.close();
+        chromeDriver.quit();
 
         return dto;
 
@@ -492,7 +491,7 @@ public class StoreService {
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-extensions");
-        DRIVER = new ChromeDriver(options);
+        WebDriver chromeDriver = new ChromeDriver(options);
 
         for (Object obj : itemArray) {
             JSONObject item = (JSONObject) obj;
@@ -501,7 +500,7 @@ public class StoreService {
             dto.setName((String) item.get("title"));
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
-            dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
+            dto.setImg(getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title")));
             dto.setImg2((String) item.get("firstimage"));
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
@@ -510,8 +509,8 @@ public class StoreService {
             dtoList.add(dto);
         }
 
-        DRIVER.close();
-        DRIVER.quit();
+        chromeDriver.close();
+        chromeDriver.quit();
 
         return dtoList;
     }
@@ -557,32 +556,32 @@ public class StoreService {
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-extensions");
-        DRIVER = new ChromeDriver(options);
+        WebDriver chromeDriver = new ChromeDriver(options);
 
         AccomoDetailResponseDTO dto = new AccomoDetailResponseDTO();
         dto.setName((String) item.get("title"));
         dto.setContentId((String) item.get("contentid"));
         dto.setAdd((String) item.get("addr1"));
-        dto.setImg(getStoreImage((String) item.get("addr1"), (String) item.get("title")));
+        dto.setImg(getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title")));
         dto.setImg2((String) item.get("firstimage"));
         dto.setMapX((String) item.get("mapx"));
         dto.setMapY((String) item.get("mapy"));
         dto.setTel((String) item.get("tel"));
         dto.setIntro((String) item.get("overview"));
 
-        DRIVER.close();
-        DRIVER.quit();
+        chromeDriver.close();
+        chromeDriver.quit();
 
         return dto;
 
     }
 
-    public String getStoreImage(String addr1, String title) {
+    public String getStoreImage(WebDriver chromeDriver, String addr1, String title) {
         String chromeDriverPath = getChromeDriverPath();
 
         System.setProperty("webdriver.chrome.driver", DRIVER_PATH + chromeDriverPath);
 
-        String img = getImageElement(DRIVER, addr1, title);
+        String img = getImageElement(chromeDriver, addr1, title);
 
         return img;
     }
@@ -619,14 +618,14 @@ public class StoreService {
         return chromeDriverPath;
     }
 
-    private String getImageElement(WebDriver driver, String addr1, String title) {
+    private String getImageElement(WebDriver chromeDriver, String addr1, String title) {
         String imgUrl;
 
         System.out.println("검색어: " + addr1 + " " + title);
         System.out.println("url: " + "https://pcmap.place.naver.com/place/list?query=" + addr1 + " " + title);
-        driver.get("https://pcmap.place.naver.com/place/list?query=" + addr1 + " " + title);
+        chromeDriver.get("https://pcmap.place.naver.com/place/list?query=" + addr1 + " " + title);
 
-        List<WebElement> imgElements = driver.findElements(By.tagName("img"));
+        List<WebElement> imgElements = chromeDriver.findElements(By.tagName("img"));
         if (imgElements.isEmpty()) {
             imgUrl = "";
         } else {
