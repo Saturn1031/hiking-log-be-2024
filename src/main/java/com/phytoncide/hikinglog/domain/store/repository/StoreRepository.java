@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface StoreRepository extends JpaRepository<StoreEntity, Integer> {
     StoreEntity findByContentId(Integer contentId);
+    boolean existsByContentId(Integer contentId);
+
+    List<StoreEntity> findByContentIdIn(List<String> contentIds);
 }

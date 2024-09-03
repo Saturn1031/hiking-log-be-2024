@@ -1,5 +1,7 @@
 package com.phytoncide.hikinglog.domain.mountain.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phytoncide.hikinglog.base.code.ErrorCode;
 import com.phytoncide.hikinglog.base.exception.RegisterException;
 import com.phytoncide.hikinglog.domain.member.entity.MemberEntity;
@@ -10,17 +12,24 @@ import com.phytoncide.hikinglog.domain.mountain.entity.MountainEntity;
 import com.phytoncide.hikinglog.domain.mountain.repository.MountainRepository;
 import com.phytoncide.hikinglog.domain.store.dto.AccomoDetailResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.json.XML;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -30,11 +39,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.client.RestTemplate;
+
+import static io.netty.resolver.HostsFileEntriesProvider.parser;
 
 @Service
 public class MountainService {
     private final MountainRepository mountainRepository;
     private final HttpServletRequest httpServletRequest;
+    private RestTemplate restTemplate;
 
     @Value("${openApi.trailServiceKey}")
     private String trailServiceKey;
@@ -60,11 +73,99 @@ public class MountainService {
     @Value("${openApi.callBackUrl}")
     private String callBackUrl;
 
+    @Value("${openApi.top100serviceKey}")
+    private String top100serviceKey;
+
+    @Value("${openApi.top100callBackUrl}")
+    private String top100callBackUrl;
+
     @Autowired
     public MountainService(MountainRepository mountainRepository, HttpServletRequest httpServletRequest) {
         this.mountainRepository = mountainRepository;
         this.httpServletRequest = httpServletRequest;
+        this.restTemplate = restTemplate;
     }
+
+    public SaveMountainDTO getMountains(String mName) throws IOException {
+        String mountainName = URLEncoder.encode(mName, StandardCharsets.UTF_8);
+
+        // URL1: 산의 고유 ID 가져오기 (JSON)
+        StringBuilder result1 = new StringBuilder();
+        String urlStr1 = callBackUrl + "mntInfoOpenAPI2?" +
+                "searchWrd=" + mountainName +
+                "&ServiceKey=" + serviceKey;
+        URL url1 = new URL(urlStr1);
+
+        HttpURLConnection urlConnection1 = (HttpURLConnection) url1.openConnection();
+        urlConnection1.setRequestMethod("GET");
+        urlConnection1.setRequestProperty("Content-type", "application/json");
+        urlConnection1.setRequestProperty("Accept", "application/json");
+
+        BufferedReader br1 = new BufferedReader(new InputStreamReader(urlConnection1.getInputStream(), StandardCharsets.UTF_8));
+        String returnLine1;
+
+        while ((returnLine1 = br1.readLine()) != null) {
+            result1.append(returnLine1).append("\n\r");
+        }
+        br1.close();
+        urlConnection1.disconnect();
+        System.out.println("Converted JSON: " + result1);
+
+        // JSON 파싱
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode1 = mapper.readTree(result1.toString());
+        JsonNode itemsNode = rootNode1.path("response").path("body").path("items").path("item");
+
+        // 필요한 값 추출
+        Integer mntilistno = itemsNode.path("mntilistno").asInt();
+        System.out.println("mntilistno: " + mntilistno);
+
+        // URL2: 나머지 정보 가져오기 (XML)
+        StringBuilder result2 = new StringBuilder();
+        String urlStr2 = top100callBackUrl + top100serviceKey + "&pageNo=1&numOfRows=100&srchFrtrlNm=" + mountainName;
+//        ResponseEntity<String> response2 = restTemplate.getForEntity(urlStr2, String.class);
+        URL url2 = new URL(urlStr2);
+
+        HttpURLConnection urlConnection2 = (HttpURLConnection) url2.openConnection();
+        urlConnection2.setRequestMethod("GET");
+        urlConnection2.setRequestProperty("Content-type", "application/json");
+        urlConnection2.setRequestProperty("Accept", "application/json");
+
+        BufferedReader br2 = new BufferedReader(new InputStreamReader(urlConnection2.getInputStream(), StandardCharsets.UTF_8));
+        String returnLine2;
+
+        while ((returnLine2 = br2.readLine()) != null) {
+            result2.append(returnLine2).append("\n\r");
+
+        }
+        br2.close();
+        urlConnection2.disconnect();
+
+        // XML을 JSON으로 변환
+        String xmlResponse = result2.toString();
+        org.json.JSONObject jsonObject2 = XML.toJSONObject(xmlResponse);
+
+        // JSON 문자열로 변환
+        String jsonString2 = jsonObject2.toString();
+        System.out.println("Converted JSON: " + jsonString2);
+
+        // JSON 파서로 JSON 객체로 변환
+        JsonNode rootNode2 = mapper.readTree(jsonString2);
+        JsonNode rows = rootNode2.path("response").path("body").path("items").path("item");
+
+        // DTO 리스트 생성
+        SaveMountainDTO saveMountainDTO = SaveMountainDTO.builder()
+                .mntilistno(mntilistno)
+                .mName(rows.path("frtrlNm").asText())  // 산 이름
+                .location(rows.path("addrNm").asText()) // 주소
+                .info(rows.path("ctpvNm").asText() + " (" + rows.path("mtnCd").asText() + ")") // 산 코드 정보
+                .mntiHigh(rows.path("aslAltide").asDouble()) // 고도
+                .mImage(null) // 이미지 URL이 있을 경우 추가
+                .build();
+
+        return saveMountainDTO;
+    }
+
 
     public MountainDTO convertToDTO(){
         MountainDTO mountainDTO = new MountainDTO();

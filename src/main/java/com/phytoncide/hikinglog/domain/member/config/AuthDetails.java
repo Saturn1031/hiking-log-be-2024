@@ -27,9 +27,7 @@ public class AuthDetails implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return  memberEntity.getPassword();
-    }
+    public String getPassword() { return  memberEntity.getPassword(); }
 
     @Override
     public String getUsername() {

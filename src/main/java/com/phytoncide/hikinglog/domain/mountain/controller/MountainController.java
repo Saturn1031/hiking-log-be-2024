@@ -3,6 +3,7 @@ package com.phytoncide.hikinglog.domain.mountain.controller;
 import com.phytoncide.hikinglog.base.code.ResponseCode;
 import com.phytoncide.hikinglog.base.dto.ResponseDTO;
 import com.phytoncide.hikinglog.domain.member.config.AuthDetails;
+import com.phytoncide.hikinglog.domain.mountain.dto.SaveMountainDTO;
 import com.phytoncide.hikinglog.domain.mountain.dto.SearchTrailDTO;
 import com.phytoncide.hikinglog.domain.mountain.dto.WeatherDTO;
 import com.phytoncide.hikinglog.domain.mountain.service.MountainService;
@@ -23,6 +24,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -108,29 +110,33 @@ public class MountainController {
 
     // 100대 명산 검색
     @GetMapping("/getTop100Mountains/{mountain_Name}")
-    public String searchTop100Mountains(@PathVariable(value = "mountain_Name") String mountain_Name) throws IOException {
-        StringBuilder result = new StringBuilder();
-        String mountain_name = URLEncoder.encode(mountain_Name, StandardCharsets.UTF_8);
-        String urlStr = top100callBackUrl + top100serviceKey + "&pageNo=1&numOfRows=100&srchFrtrlNm=" + mountain_name;
-        URL url = new URL(urlStr);
-
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        urlConnection.setRequestMethod("GET");
-        urlConnection.setRequestProperty("Content-type", "application/json");
-        urlConnection.setRequestProperty("Accept", "application/json");
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8));
-        String returnLine;
-
-        while ((returnLine = br.readLine()) != null) {
-            result.append(returnLine).append("\n\r");
-
-        }
-        br.close();
-        urlConnection.disconnect();
-
-        return result.toString();
+    public ResponseEntity<SaveMountainDTO> getMountainList(@PathVariable("mountain_Name") String mountain_Name) throws IOException {
+        SaveMountainDTO saveMountainList = mountainService.getMountains(mountain_Name);
+        return ResponseEntity.ok(saveMountainList);
     }
+//    public String searchTop100Mountains(@PathVariable(value = "mountain_Name") String mountain_Name) throws IOException {
+//        StringBuilder result = new StringBuilder();
+//        String mountain_name = URLEncoder.encode(mountain_Name, StandardCharsets.UTF_8);
+//        String urlStr = top100callBackUrl + top100serviceKey + "&pageNo=1&numOfRows=100&srchFrtrlNm=" + mountain_name;
+//        URL url = new URL(urlStr);
+//
+//        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+//        urlConnection.setRequestMethod("GET");
+//        urlConnection.setRequestProperty("Content-type", "application/json");
+//        urlConnection.setRequestProperty("Accept", "application/json");
+//
+//        BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8));
+//        String returnLine;
+//
+//        while ((returnLine = br.readLine()) != null) {
+//            result.append(returnLine).append("\n\r");
+//
+//        }
+//        br.close();
+//        urlConnection.disconnect();
+//
+//        return result.toString();
+//    }
 
     private String fetchMountainData(String mountain_Name) throws IOException {
 
