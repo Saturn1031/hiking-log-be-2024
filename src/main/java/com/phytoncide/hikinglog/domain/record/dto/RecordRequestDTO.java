@@ -17,6 +17,8 @@ import java.time.LocalDate;
 public class RecordRequestDTO {
 
     @NotNull
+    private String mountainName;
+
     private String email;
 
     @NotNull

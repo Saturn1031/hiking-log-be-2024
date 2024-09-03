@@ -36,6 +36,9 @@ public enum ResponseCode {
     SUCCESS_COMMENT_READ(HttpStatus.OK, "댓글 조회를 성공했습니다."),
     SUCCESS_BOARD_LIKE(HttpStatus.OK, "게시글 좋아요 등록을 성공했습니다."),
     SUCCESS_BOARD_UNLIKE(HttpStatus.OK, "게시글 좋아요 삭제를 성공했습니다."),
+    SUCCESS_SAVE_NOTIFICATION(HttpStatus.OK, "알림 저장을 성공했습니다."),
+    SUCCESS_READ_NOTIFICATION(HttpStatus.OK, "알림 조회를 성공했습니다."),
+    SUCCESS_DELETE_NOTIFICATION(HttpStatus.OK, "알림 삭제를 성공했습니다."),
 
     SUCCESS_RESTAURANT_BOOKMARK_CREATE(HttpStatus.OK, "음식점 북마크 추가를 성공했습니다."),
     SUCCESS_ACCOMMODATION_BOOKMARK_CREATE(HttpStatus.OK, "숙박시설 북마크 추가를 성공했습니다."),
@@ -49,10 +52,14 @@ public enum ResponseCode {
     SUCCESS_BOOKMARK_READ_RESTAURANT(HttpStatus.OK, "음식점 북마크 조회를 성공했습니다."),
     SUCCESS_BOOKMARK_READ_ACCOMMODATION(HttpStatus.OK, "숙박시설 북마크 조회를 성공했습니다."),
     SUCCESS_BOOKMARK_READ_ONLINESTORE(HttpStatus.OK, "등산용품 가게 북마크 조회를 성공했습니다."),
+    SUCCESS_GET_WEATHER(HttpStatus.OK, "날씨 정보 조회를 성공했습니다."),
 
     SUCCESS_RECORD_HIKINGLOG(HttpStatus.OK, "등산 정보 기록에 성공했습니다."),
     SUCCESS_GET_RECORD_LIST(HttpStatus.OK, "등산 정보 기록 목록 조회를 성공했습니다."),
     SUCCESS_SEARCH_TRAIL(HttpStatus.OK, "등산로 조회를 성공했습니다."),
+    SUCCESS_DELETE_RECORD(HttpStatus.OK, "등산 기록 삭제를 성공했습니다."),
+    SUCCESS_GET_RECORD_DETAIL(HttpStatus.OK, "등산 기록 상세 조회를 성공했습니다."),
+
 
     ;
 

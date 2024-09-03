@@ -5,8 +5,11 @@ import com.phytoncide.hikinglog.base.dto.ResponseDTO;
 import com.phytoncide.hikinglog.domain.member.config.AuthDetails;
 import com.phytoncide.hikinglog.domain.mountain.dto.SaveMountainDTO;
 import com.phytoncide.hikinglog.domain.mountain.dto.SearchTrailDTO;
+import com.phytoncide.hikinglog.domain.mountain.dto.WeatherDTO;
 import com.phytoncide.hikinglog.domain.mountain.service.MountainService;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -276,4 +279,27 @@ public class MountainController {
                 .status(ResponseCode.SUCCESS_SEARCH_TRAIL.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_SEARCH_TRAIL, trail));
     }
+
+
+    @GetMapping("/weather")
+    public ResponseEntity<ResponseDTO> getWeather(
+            @RequestParam("address") String address
+    ) throws IOException, ParseException {
+
+        WeatherDTO dto = mountainService.getRealtimeWeather(address);
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_GET_WEATHER.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_WEATHER, dto));
+
+    }
+
+//    @GetMapping("/dust")
+//    public ResponseEntity<ResponseDTO> getWeather(@RequestParam("sido") String sido) throws IOException, ParseException {
+//
+//        JSONObject dto = mountainService.getRealTimeDust(sido);
+//        return ResponseEntity
+//                .status(ResponseCode.SUCCESS_GET_WEATHER.getStatus().value())
+//                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_WEATHER, dto));
+//
+//    }
 }

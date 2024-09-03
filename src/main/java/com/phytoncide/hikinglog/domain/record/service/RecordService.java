@@ -2,6 +2,7 @@ package com.phytoncide.hikinglog.domain.record.service;
 
 import com.phytoncide.hikinglog.base.code.ErrorCode;
 import com.phytoncide.hikinglog.base.exception.MemberNotFoundException;
+import com.phytoncide.hikinglog.base.exception.RecordNotFoundException;
 import com.phytoncide.hikinglog.base.exception.RegisterException;
 import com.phytoncide.hikinglog.domain.member.entity.MemberEntity;
 import com.phytoncide.hikinglog.domain.member.repository.MemberRepository;
@@ -15,14 +16,17 @@ import com.phytoncide.hikinglog.domain.record.entity.RecordEntity;
 import com.phytoncide.hikinglog.domain.record.repository.RecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +38,11 @@ public class RecordService {
     private final MountainRepository mountainRepository;
     private final MountainService mountainService;
 
-    public String recordHiking(RecordRequestDTO recordRequestDTO, SaveMountainDTO saveMountainDTO) {
+    public String recordHiking(RecordRequestDTO recordRequestDTO) throws IOException, ParseException {
+        System.out.println(recordRequestDTO.getMountainName());
+
+        SaveMountainDTO saveMountainDTO = mountainService.searchMountain(recordRequestDTO.getMountainName());
+        System.out.println(saveMountainDTO);
 
         if (mountainRepository.existsByMntilistno(saveMountainDTO.getMntilistno())) {
             MemberEntity member = memberRepository.findByEmail(recordRequestDTO.getEmail());
@@ -89,4 +97,37 @@ public class RecordService {
 
         return dtoList;
     }
+
+    public RecordListResponseDTO getRecord(Integer rid) {
+
+        Optional<RecordEntity> record = recordRepository.findByRid(rid);
+
+        RecordListResponseDTO dto = new RecordListResponseDTO();
+        dto.setMName(record.get().getMid().getMName());
+        dto.setNumber(record.get().getNumber());
+        dto.setTime(record.get().getTime());
+        dto.setDate(record.get().getDate());
+
+        return dto;
+    }
+
+    public String deleteRecord(Integer rid) {
+        if (recordRepository.findByRid(rid).isPresent()) {
+            Optional<RecordEntity> findRecord = recordRepository.findByRid(rid);
+            List<RecordEntity> recordUpdateList = recordRepository.findByMidAndUidAndRidGreaterThan(findRecord.get().getMid(), findRecord.get().getUid(), rid);
+
+            for (RecordEntity record: recordUpdateList) {
+                record.setNumber(record.getNumber() - 1);
+            }
+
+            recordRepository.saveAll(recordUpdateList);
+
+            recordRepository.deleteById(rid);
+        } else {
+            throw new RecordNotFoundException(ErrorCode.RECORD_NOT_FOUND);
+        }
+        return "등산 기록 삭제 성공";
+    }
+
+
 }
