@@ -16,6 +16,9 @@ import java.time.LocalDate;
 public class RecordListResponseDTO {
 
     @NotNull
+    private Integer rid;
+
+    @NotNull
     private String mName;
 
     @NotNull

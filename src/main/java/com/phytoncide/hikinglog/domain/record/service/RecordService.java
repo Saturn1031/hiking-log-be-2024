@@ -6,6 +6,7 @@ import com.phytoncide.hikinglog.base.exception.RecordNotFoundException;
 import com.phytoncide.hikinglog.base.exception.RegisterException;
 import com.phytoncide.hikinglog.domain.member.entity.MemberEntity;
 import com.phytoncide.hikinglog.domain.member.repository.MemberRepository;
+import com.phytoncide.hikinglog.domain.mountain.dto.DetailMountainDTO;
 import com.phytoncide.hikinglog.domain.mountain.dto.SaveMountainDTO;
 import com.phytoncide.hikinglog.domain.mountain.entity.MountainEntity;
 import com.phytoncide.hikinglog.domain.mountain.repository.MountainRepository;
@@ -41,7 +42,15 @@ public class RecordService {
     public String recordHiking(RecordRequestDTO recordRequestDTO) throws IOException, ParseException {
         System.out.println(recordRequestDTO.getMountainName());
 
-        SaveMountainDTO saveMountainDTO = mountainService.searchMountain(recordRequestDTO.getMountainName(), recordRequestDTO.getMountainNumber());
+        DetailMountainDTO detailMountainDTO = mountainService.searchMountain(recordRequestDTO.getMountainName(), recordRequestDTO.getMountainNumber());
+
+        SaveMountainDTO saveMountainDTO = new SaveMountainDTO();
+        saveMountainDTO.setMntilistno(Integer.parseInt(String.valueOf(detailMountainDTO.getMntilistno())));
+        saveMountainDTO.setLocation(detailMountainDTO.getMntiadd());
+        saveMountainDTO.setInfo(detailMountainDTO.getMntidetails());
+        saveMountainDTO.setMName(detailMountainDTO.getMntiname());
+        saveMountainDTO.setMntiHigh(detailMountainDTO.getMntihigh());
+
         System.out.println(saveMountainDTO);
 
         if (mountainRepository.existsByMntilistno(saveMountainDTO.getMntilistno())) {
@@ -86,6 +95,7 @@ public class RecordService {
         for (RecordEntity item : list) {
 
             RecordListResponseDTO dto = new RecordListResponseDTO();
+            dto.setRid(item.getRid());
             dto.setMName(item.getMid().getMName());
             dto.setNumber(item.getNumber());
             dto.setTime(item.getTime());
@@ -103,6 +113,7 @@ public class RecordService {
         Optional<RecordEntity> record = recordRepository.findByRid(rid);
 
         RecordListResponseDTO dto = new RecordListResponseDTO();
+        dto.setRid(record.get().getRid());
         dto.setMName(record.get().getMid().getMName());
         dto.setNumber(record.get().getNumber());
         dto.setTime(record.get().getTime());

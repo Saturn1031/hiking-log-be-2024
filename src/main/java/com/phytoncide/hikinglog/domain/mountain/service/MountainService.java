@@ -7,6 +7,7 @@ import com.phytoncide.hikinglog.base.exception.DataNotFoundException;
 import com.phytoncide.hikinglog.base.exception.RecordNotFoundException;
 import com.phytoncide.hikinglog.base.exception.RegisterException;
 import com.phytoncide.hikinglog.domain.member.entity.MemberEntity;
+import com.phytoncide.hikinglog.domain.mountain.dto.DetailMountainDTO;
 import com.phytoncide.hikinglog.domain.mountain.dto.MountainDTO;
 import com.phytoncide.hikinglog.domain.mountain.dto.SaveMountainDTO;
 import com.phytoncide.hikinglog.domain.mountain.dto.WeatherDTO;
@@ -480,7 +481,7 @@ public class MountainService {
 
     }
 
-    public SaveMountainDTO searchMountain(String mountainName, String mountainNum) throws IOException, ParseException {
+    public DetailMountainDTO searchMountain(String mountainName, String mountainNum) throws IOException, ParseException {
 
         StringBuilder result = new StringBuilder();
         String mountain_name = URLEncoder.encode(mountainName, StandardCharsets.UTF_8);
@@ -536,16 +537,15 @@ public class MountainService {
         String image = getMountainImage(mountainNum);
 
         System.out.println(item);
-        SaveMountainDTO saveMountainDTO = new SaveMountainDTO();
-        saveMountainDTO.setMntilistno(Integer.parseInt(String.valueOf((Long) item.get("mntilistno"))));
-        saveMountainDTO.setMName((String) item.get("mntiname"));
-        saveMountainDTO.setLocation((String) item.get("mntiadd"));
-        saveMountainDTO.setInfo((String) item.get("mntidetails"));
-        saveMountainDTO.setMntiHigh(Double.parseDouble(String.valueOf(item.get("mntihigh"))));
-        saveMountainDTO.setMImage(image);
+        DetailMountainDTO detailMountainDTO = new DetailMountainDTO();
+        detailMountainDTO.setMntilistno((Long) item.get("mntilistno"));
+        detailMountainDTO.setMntiname((String) item.get("mntiname"));
+        detailMountainDTO.setMntiadd((String) item.get("mntiadd"));
+        detailMountainDTO.setMntidetails((String) item.get("mntidetails"));
+        detailMountainDTO.setMntihigh(Double.parseDouble(String.valueOf(item.get("mntihigh"))));
 
 
-        return saveMountainDTO;
+        return detailMountainDTO;
     }
 
     public String getMountainImage(String mntilistno) throws IOException, ParseException {
