@@ -41,7 +41,7 @@ public class RecordService {
     public String recordHiking(RecordRequestDTO recordRequestDTO) throws IOException, ParseException {
         System.out.println(recordRequestDTO.getMountainName());
 
-        SaveMountainDTO saveMountainDTO = mountainService.searchMountain(recordRequestDTO.getMountainName());
+        SaveMountainDTO saveMountainDTO = mountainService.searchMountain(recordRequestDTO.getMountainName(), recordRequestDTO.getMountainNumber());
         System.out.println(saveMountainDTO);
 
         if (mountainRepository.existsByMntilistno(saveMountainDTO.getMntilistno())) {

@@ -190,4 +190,12 @@ public class CustuomExceptionHandler {
                 .body(new ErrorResponseDTO(ErrorCode.COMMENT_NOT_FOUND));
 
     }
+
+    @ExceptionHandler(DataNotFoundException.class)
+    protected ResponseEntity<ErrorResponseDTO> DataNotFoundException(final DataNotFoundException e) {
+        log.error("DataNotFoundException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.DATA_NOT_FOUND.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.DATA_NOT_FOUND));
+    }
 }

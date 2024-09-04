@@ -3,6 +3,8 @@ package com.phytoncide.hikinglog.domain.mountain.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phytoncide.hikinglog.base.code.ErrorCode;
+import com.phytoncide.hikinglog.base.exception.DataNotFoundException;
+import com.phytoncide.hikinglog.base.exception.RecordNotFoundException;
 import com.phytoncide.hikinglog.base.exception.RegisterException;
 import com.phytoncide.hikinglog.domain.member.entity.MemberEntity;
 import com.phytoncide.hikinglog.domain.mountain.dto.MountainDTO;
@@ -450,7 +452,7 @@ public class MountainService {
 
     }
 
-    public SaveMountainDTO searchMountain(String mountainName) throws IOException, ParseException {
+    public SaveMountainDTO searchMountain(String mountainName, String mountainNum) throws IOException, ParseException {
 
         StringBuilder result = new StringBuilder();
         String mountain_name = URLEncoder.encode(mountainName, StandardCharsets.UTF_8);
@@ -475,19 +477,101 @@ public class MountainService {
 
         JSONObject response = (JSONObject) jsonObject.get("response");
         JSONObject body = (JSONObject) response.get("body");
-        JSONObject items = (JSONObject) body.get("items");
-        JSONObject item = (JSONObject) items.get("item");
 
+        if (body.get("items").equals("")) { // 데이터가 없는 경우
+            throw new DataNotFoundException(ErrorCode.DATA_NOT_FOUND);
+        }
+
+        JSONObject items = (JSONObject) body.get("items");
+        JSONObject item = null;
+
+        Object itemObject = items.get("item");
+        JSONArray itemArray;
+
+        if (itemObject instanceof JSONArray) {
+            itemArray = (JSONArray) itemObject;
+        } else {
+            itemArray = new JSONArray();
+            itemArray.add(itemObject);
+        }
+
+        for (int i = 0; i< itemArray.size(); i++) {
+            JSONObject findItem = (JSONObject) itemArray.get(i);
+            String mntimname = (String) findItem.get("mntiname");
+            String mntilistno = String.valueOf((Long) findItem.get("mntilistno"));
+
+            if (mntimname.equals(mountainName) && mntilistno.equals(mountainNum)) {
+                item = findItem;
+            }
+        }
+
+        String image = getMountainImage(mountainNum);
+
+        System.out.println(item);
         SaveMountainDTO saveMountainDTO = new SaveMountainDTO();
         saveMountainDTO.setMntilistno(Integer.parseInt(String.valueOf((Long) item.get("mntilistno"))));
         saveMountainDTO.setMName((String) item.get("mntiname"));
         saveMountainDTO.setLocation((String) item.get("mntiadd"));
         saveMountainDTO.setInfo((String) item.get("mntidetails"));
-        saveMountainDTO.setMntiHigh((Double) item.get("mntihigh"));
-        saveMountainDTO.setMImage((String) item.get("mntitop"));
-
+        saveMountainDTO.setMntiHigh(Double.parseDouble(String.valueOf(item.get("mntihigh"))));
+        saveMountainDTO.setMImage(image);
 
 
         return saveMountainDTO;
+    }
+
+    public String getMountainImage(String mntilistno) throws IOException, ParseException {
+
+        String urlStr = callBackUrl + "mntInfoImgOpenAPI2?" +
+                "mntiListNo=" + mntilistno +
+                "&ServiceKey=" + serviceKey;
+        URL url = new URL(urlStr);
+
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Content-type", "application/json");
+        urlConnection.setRequestProperty("Accept", "application/json");
+
+        BufferedReader br;
+
+        br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(br);
+
+        System.out.println("\n here \n");
+        System.out.println(jsonObject);
+
+        JSONObject response = (JSONObject) jsonObject.get("response");
+        JSONObject body = (JSONObject) response.get("body");
+
+        if (body.get("items").equals("")) {
+            return "";
+
+        } else {
+            JSONObject items = (JSONObject) body.get("items");
+            Object itemObject = items.get("item");
+
+            String image = "";
+
+            if (itemObject instanceof JSONObject) { // 단일객체
+                JSONObject item = (JSONObject) itemObject;
+                image = (String) item.get("imgfilename");
+            } else if (itemObject instanceof JSONArray) { // 배열
+                JSONArray itemArray = (JSONArray) itemObject;
+                JSONObject firstItem = (JSONObject) itemArray.get(0);
+                image = (String) firstItem.get("imgfilename");
+            }
+
+            System.out.println("iomagesdj");
+            System.out.println(image);
+
+            if (image == null) {
+                return "";
+            } else {
+                return "www.forest.go.kr/images/data/down/mountain/" + image;
+            }
+        }
+
     }
 }
