@@ -3,6 +3,7 @@ package com.phytoncide.hikinglog.domain.mountain.controller;
 import com.phytoncide.hikinglog.base.code.ResponseCode;
 import com.phytoncide.hikinglog.base.dto.ResponseDTO;
 import com.phytoncide.hikinglog.domain.member.config.AuthDetails;
+import com.phytoncide.hikinglog.domain.mountain.dto.DetailMountainDTO;
 import com.phytoncide.hikinglog.domain.mountain.dto.SaveMountainDTO;
 import com.phytoncide.hikinglog.domain.mountain.dto.SearchTrailDTO;
 import com.phytoncide.hikinglog.domain.mountain.dto.WeatherDTO;
@@ -309,7 +310,7 @@ public class MountainController {
             @RequestParam("number") String mountainNumber
     ) throws IOException, ParseException {
 
-        SaveMountainDTO dto = mountainService.searchMountain(mountainName, mountainNumber);
+        DetailMountainDTO dto = mountainService.searchMountain(mountainName, mountainNumber);
 
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_GET_MOUNTAIN_DETAIL.getStatus().value())
