@@ -302,4 +302,18 @@ public class MountainController {
 //                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_WEATHER, dto));
 //
 //    }
+
+    @GetMapping("/mountain/detail")
+    public ResponseEntity<ResponseDTO> getMountainDetail(
+            @RequestParam("name") String mountainName,
+            @RequestParam("number") String mountainNumber
+    ) throws IOException, ParseException {
+
+        SaveMountainDTO dto = mountainService.searchMountain(mountainName, mountainNumber);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_GET_MOUNTAIN_DETAIL.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_MOUNTAIN_DETAIL, dto));
+
+    }
 }

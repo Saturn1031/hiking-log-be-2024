@@ -60,6 +60,8 @@ public enum ResponseCode {
     SUCCESS_DELETE_RECORD(HttpStatus.OK, "등산 기록 삭제를 성공했습니다."),
     SUCCESS_GET_RECORD_DETAIL(HttpStatus.OK, "등산 기록 상세 조회를 성공했습니다."),
 
+    SUCCESS_GET_MOUNTAIN_DETAIL(HttpStatus.OK, "산 상세 조회를 성공했습니다.")
+
 
     ;
 

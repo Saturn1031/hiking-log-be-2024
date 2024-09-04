@@ -19,6 +19,9 @@ public class RecordRequestDTO {
     @NotNull
     private String mountainName;
 
+    @NotNull
+    private String mountainNumber;
+
     private String email;
 
     @NotNull
