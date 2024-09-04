@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Builder
@@ -42,9 +43,11 @@ public class BookmarkListResponseDTO {
 
         public static BookmarkResponseDTO storeToDTO(BookmarkEntity bookmarkEntity,
                                                      StoreEntity storeEntity) {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm");
+
             return BookmarkResponseDTO.builder()
-                    .createdAt(bookmarkEntity.getCreatedAt().toString())
-                    .updatedAt(bookmarkEntity.getUpdatedAt().toString())
+                    .createdAt(bookmarkEntity.getCreatedAt().format(dateTimeFormatter))
+                    .updatedAt(bookmarkEntity.getUpdatedAt().format(dateTimeFormatter))
                     .id(storeEntity.getSid())
                     .storeId(storeEntity.getContentId())
                     .name(storeEntity.getSName())
@@ -57,9 +60,11 @@ public class BookmarkListResponseDTO {
 
         public static BookmarkResponseDTO onlineOutdoorMallToDTO(BookmarkEntity bookmarkEntity,
                                                                  OnlineOutdoorMallEntity onlineOutdoorMallEntity) {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm");
+
             return BookmarkResponseDTO.builder()
-                    .createdAt(bookmarkEntity.getCreatedAt().toString())
-                    .updatedAt(bookmarkEntity.getUpdatedAt().toString())
+                    .createdAt(bookmarkEntity.getCreatedAt().format(dateTimeFormatter))
+                    .updatedAt(bookmarkEntity.getUpdatedAt().format(dateTimeFormatter))
                     .id(onlineOutdoorMallEntity.getOid())
                     .storeId(onlineOutdoorMallEntity.getStoreId())
                     .name(onlineOutdoorMallEntity.getOName())
@@ -71,9 +76,11 @@ public class BookmarkListResponseDTO {
 
         public static BookmarkResponseDTO mountainToDTO(BookmarkEntity bookmarkEntity,
                                                         MountainEntity mountainEntity) {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm");
+
             return BookmarkResponseDTO.builder()
-                    .createdAt(bookmarkEntity.getCreatedAt().toString())
-                    .updatedAt(bookmarkEntity.getUpdatedAt().toString())
+                    .createdAt(bookmarkEntity.getCreatedAt().format(dateTimeFormatter))
+                    .updatedAt(bookmarkEntity.getUpdatedAt().format(dateTimeFormatter))
                     .id(mountainEntity.getMid())
                     .mntilistno(mountainEntity.getMntilistno())
                     .name(mountainEntity.getMName())

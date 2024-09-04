@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Builder
@@ -35,9 +36,11 @@ public class OnlinestoreBookmarkListResponseDTO {
 
         public static OnlinestoreBookmarkResponseDTO toDTO(BookmarkEntity bookmarkEntity,
                                                                             OnlineOutdoorMallEntity onlineOutdoorMallEntity) {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm");
+
             return OnlinestoreBookmarkResponseDTO.builder()
-                    .createdAt(bookmarkEntity.getCreatedAt().toString())
-                    .updatedAt(bookmarkEntity.getUpdatedAt().toString())
+                    .createdAt(bookmarkEntity.getCreatedAt().format(dateTimeFormatter))
+                    .updatedAt(bookmarkEntity.getUpdatedAt().format(dateTimeFormatter))
                     .id(onlineOutdoorMallEntity.getOid())
                     .storeId(onlineOutdoorMallEntity.getStoreId())
                     .name(onlineOutdoorMallEntity.getOName())
