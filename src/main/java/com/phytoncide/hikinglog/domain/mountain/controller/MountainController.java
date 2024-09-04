@@ -1,13 +1,16 @@
 package com.phytoncide.hikinglog.domain.mountain.controller;
 
+import com.phytoncide.hikinglog.base.code.ErrorCode;
 import com.phytoncide.hikinglog.base.code.ResponseCode;
 import com.phytoncide.hikinglog.base.dto.ResponseDTO;
+import com.phytoncide.hikinglog.base.exception.RegionIndexNotFoundException;
 import com.phytoncide.hikinglog.domain.member.config.AuthDetails;
 import com.phytoncide.hikinglog.domain.mountain.dto.SaveMountainDTO;
 import com.phytoncide.hikinglog.domain.mountain.dto.SearchTrailDTO;
 import com.phytoncide.hikinglog.domain.mountain.dto.WeatherDTO;
 import com.phytoncide.hikinglog.domain.mountain.service.MountainService;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -20,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -106,6 +110,74 @@ public class MountainController {
         urlConnection.disconnect();
 
         return result.toString();
+    }
+
+    // 100대 명산 지역 필터링
+    @GetMapping("/getTop100MountainsByRegion/{region_array_index}")
+    public ResponseEntity<ResponseDTO> getTop100MountainsByRegion(
+            @PathVariable("region_array_index") Integer region_array_index
+    ) throws IOException, ParseException {
+        JSONArray res;
+
+        switch (region_array_index) {
+            case 0:
+                res = mountainService.getTop100MountainsByRegion("");
+                break;
+            case 1:
+                res = mountainService.getTop100MountainsByRegion("서울특별시");
+                break;
+            case 2:
+                res = mountainService.getTop100MountainsByRegion("경기도");
+                break;
+            case 3:
+                res = mountainService.getTop100MountainsByRegion("강원특별자치도");
+                break;
+            case 4:
+                res = mountainService.getTop100MountainsByRegion("충청북도");
+                break;
+            case 5:
+                res = mountainService.getTop100MountainsByRegion("충청남도");
+                break;
+            case 6:
+                res = mountainService.getTop100MountainsByRegion("전라북도");
+                break;
+            case 7:
+                res = mountainService.getTop100MountainsByRegion("전라남도");
+                break;
+            case 8:
+                res = mountainService.getTop100MountainsByRegion("경상북도");
+                break;
+            case 9:
+                res = mountainService.getTop100MountainsByRegion("경상남도");
+                break;
+            case 10:
+                res = mountainService.getTop100MountainsByRegion("제주특별자치도");
+                break;
+            case 11:
+                res = mountainService.getTop100MountainsByRegion("부산광역시");
+                break;
+            case 12:
+                res = mountainService.getTop100MountainsByRegion("대구광역시");
+                break;
+            case 13:
+                res = mountainService.getTop100MountainsByRegion("인천광역시");
+                break;
+            case 14:
+                res = mountainService.getTop100MountainsByRegion("광주광역시");
+                break;
+            case 15:
+                res = mountainService.getTop100MountainsByRegion("대전광역시");
+                break;
+            case 16:
+                res = mountainService.getTop100MountainsByRegion("울산광역시");
+                break;
+            default:
+                throw new RegionIndexNotFoundException(ErrorCode.REGION_INDEX_NOT_FOUND);
+        }
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_GET_TOP100MOUNTAIN_BY_REGION_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_TOP100MOUNTAIN_BY_REGION_LIST, res));
     }
 
     // 100대 명산 검색

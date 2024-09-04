@@ -165,6 +165,14 @@ public class CustuomExceptionHandler {
                 .body(new ErrorResponseDTO(ErrorCode.MOUNTAIN_NOT_FOUND));
     }
 
+    @ExceptionHandler(RegionIndexNotFoundException.class)
+    protected ResponseEntity<ErrorResponseDTO> RegionIndexNotFoundException(final RegionIndexNotFoundException e) {
+        log.error("handlePasswordNotMatchException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.REGION_INDEX_NOT_FOUND.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.REGION_INDEX_NOT_FOUND));
+    }
+
 
     @ExceptionHandler(RecordNotFoundException.class)
     protected ResponseEntity<ErrorResponseDTO> RecordNotFoundException(final RecordNotFoundException e) {

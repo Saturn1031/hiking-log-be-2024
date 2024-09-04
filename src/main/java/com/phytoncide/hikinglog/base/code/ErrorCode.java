@@ -25,6 +25,7 @@ public enum ErrorCode {
 
     STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 가게를 찾을 수 없습니다."),
     MOUNTAIN_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 산을 찾을 수 없습니다."),
+    REGION_INDEX_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 인덱스의 지역을 찾을 수 없습니다."),
 
     BOOKMARK_EXISTS(HttpStatus.BAD_REQUEST, "이미 동일한 북마크가 존재합니다."),
     BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 북마크를 찾을 수 없습니다."),
