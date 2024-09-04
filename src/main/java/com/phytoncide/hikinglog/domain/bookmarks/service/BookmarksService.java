@@ -14,12 +14,17 @@ import com.phytoncide.hikinglog.domain.store.entity.OnlineOutdoorMallEntity;
 import com.phytoncide.hikinglog.domain.store.entity.StoreEntity;
 import com.phytoncide.hikinglog.domain.store.repository.OnlineOutdoorMallRepository;
 import com.phytoncide.hikinglog.domain.store.repository.StoreRepository;
+import com.phytoncide.hikinglog.domain.store.service.StoreService;
 import com.phytoncide.hikinglog.global.enums.BookmarkType;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +32,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class BookmarksService {
+    private final StoreService storeService;
     private final MemberRepository memberRepository;
     private final StoreRepository storeRepository;
     private final OnlineOutdoorMallRepository onlineOutdoorMallRepository;
@@ -89,16 +95,19 @@ public class BookmarksService {
         return "숙박시설 북마크 추가에 성공했습니다.";
     }
 
-    public String onlinestoreBookmarkCreate(Integer storeId, OnlinestoreBookmarkCreateDTO onlinestoreBookmarkCreateDto, AuthDetails authDetails) {
-        if (onlinestoreBookmarkCreateDto.getName().isEmpty()) {
-            throw new BookmarkOnlineMallNameException(ErrorCode.BOOKMARK_ONLINEMALL_NAME_IS_EMPTY);
-        }
-        if (onlinestoreBookmarkCreateDto.getLink().isEmpty()) {
-            throw new BookmarkOnlineMallLinkException(ErrorCode.BOOKMARK_ONLINEMALL_LINK_IS_EMPTY);
-        }
-
+    public String onlinestoreBookmarkCreate(Integer storeId, AuthDetails authDetails) throws IOException, ParseException {
         String email = authDetails.getUsername();
         MemberEntity memberEntity = memberRepository.findByEmail(email);
+
+        OnlinestoreBookmarkCreateDTO onlinestoreBookmarkCreateDto = new OnlinestoreBookmarkCreateDTO();
+
+        String onlineOutdoorMallString = storeService.getOnlineMallDetail(storeId.toString());
+
+        JSONParser parser = new JSONParser();
+        JSONObject onlineOutdoorMallJson = (JSONObject) parser.parse(onlineOutdoorMallString);
+        onlinestoreBookmarkCreateDto.setName(onlineOutdoorMallJson.get("name").toString());
+        onlinestoreBookmarkCreateDto.setLink(onlineOutdoorMallJson.get("link").toString());
+        onlinestoreBookmarkCreateDto.setImage(onlineOutdoorMallJson.get("image").toString());
 
         OnlineOutdoorMallEntity onlineOutdoorMallEntity = onlineOutdoorMallRepository.findByStoreId(storeId);
 
