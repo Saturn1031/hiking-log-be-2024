@@ -1,13 +1,11 @@
 package com.phytoncide.hikinglog.domain.boards.dto;
 
-import com.phytoncide.hikinglog.domain.boards.entity.BoardEntity;
 import com.phytoncide.hikinglog.domain.boards.entity.CommentEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -24,7 +22,7 @@ public class CommentListResponseDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CommentResponseDTO {
-        private LocalDateTime createdAt;
+        private String createdAt;
         private Integer id;
         private String content;
         private Integer userid;
@@ -33,7 +31,7 @@ public class CommentListResponseDTO {
 
         public static CommentResponseDTO toDTO(CommentEntity entity) {
             return CommentResponseDTO.builder()
-                    .createdAt(entity.getCreatedAt())
+                    .createdAt(entity.getCreatedAt().toString())
                     .id(entity.getCid())
                     .content(entity.getContent())
                     .userid(entity.getMemberEntity().getUid())

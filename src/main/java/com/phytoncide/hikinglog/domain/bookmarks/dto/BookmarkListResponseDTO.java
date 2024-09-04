@@ -1,6 +1,5 @@
 package com.phytoncide.hikinglog.domain.bookmarks.dto;
 
-import com.phytoncide.hikinglog.domain.boards.entity.BoardEntity;
 import com.phytoncide.hikinglog.domain.bookmarks.entity.BookmarkEntity;
 import com.phytoncide.hikinglog.domain.mountain.entity.MountainEntity;
 import com.phytoncide.hikinglog.domain.store.entity.OnlineOutdoorMallEntity;
@@ -11,7 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -28,8 +26,8 @@ public class BookmarkListResponseDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class BookmarkResponseDTO {
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
+        private String createdAt;
+        private String updatedAt;
         private Integer id;
         private Integer storeId;
         private Integer mntilistno;
@@ -45,8 +43,8 @@ public class BookmarkListResponseDTO {
         public static BookmarkResponseDTO storeToDTO(BookmarkEntity bookmarkEntity,
                                                      StoreEntity storeEntity) {
             return BookmarkResponseDTO.builder()
-                    .createdAt(bookmarkEntity.getCreatedAt())
-                    .updatedAt(bookmarkEntity.getUpdatedAt())
+                    .createdAt(bookmarkEntity.getCreatedAt().toString())
+                    .updatedAt(bookmarkEntity.getUpdatedAt().toString())
                     .id(storeEntity.getSid())
                     .storeId(storeEntity.getContentId())
                     .name(storeEntity.getSName())
@@ -60,8 +58,8 @@ public class BookmarkListResponseDTO {
         public static BookmarkResponseDTO onlineOutdoorMallToDTO(BookmarkEntity bookmarkEntity,
                                                                  OnlineOutdoorMallEntity onlineOutdoorMallEntity) {
             return BookmarkResponseDTO.builder()
-                    .createdAt(bookmarkEntity.getCreatedAt())
-                    .updatedAt(bookmarkEntity.getUpdatedAt())
+                    .createdAt(bookmarkEntity.getCreatedAt().toString())
+                    .updatedAt(bookmarkEntity.getUpdatedAt().toString())
                     .id(onlineOutdoorMallEntity.getOid())
                     .storeId(onlineOutdoorMallEntity.getStoreId())
                     .name(onlineOutdoorMallEntity.getOName())
@@ -74,8 +72,8 @@ public class BookmarkListResponseDTO {
         public static BookmarkResponseDTO mountainToDTO(BookmarkEntity bookmarkEntity,
                                                         MountainEntity mountainEntity) {
             return BookmarkResponseDTO.builder()
-                    .createdAt(bookmarkEntity.getCreatedAt())
-                    .updatedAt(bookmarkEntity.getUpdatedAt())
+                    .createdAt(bookmarkEntity.getCreatedAt().toString())
+                    .updatedAt(bookmarkEntity.getUpdatedAt().toString())
                     .id(mountainEntity.getMid())
                     .mntilistno(mountainEntity.getMntilistno())
                     .name(mountainEntity.getMName())

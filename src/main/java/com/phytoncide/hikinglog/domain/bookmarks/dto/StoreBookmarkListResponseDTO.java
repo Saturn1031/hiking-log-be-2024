@@ -1,7 +1,6 @@
 package com.phytoncide.hikinglog.domain.bookmarks.dto;
 
 import com.phytoncide.hikinglog.domain.bookmarks.entity.BookmarkEntity;
-import com.phytoncide.hikinglog.domain.mountain.entity.MountainEntity;
 import com.phytoncide.hikinglog.domain.store.entity.StoreEntity;
 import com.phytoncide.hikinglog.global.enums.BookmarkType;
 import lombok.AllArgsConstructor;
@@ -9,7 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -26,8 +24,8 @@ public class StoreBookmarkListResponseDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class StoreBookmarkResponseDTO {
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
+        private String createdAt;
+        private String updatedAt;
         private Integer id;
         private Integer storeId;
         private String name;
@@ -39,8 +37,8 @@ public class StoreBookmarkListResponseDTO {
         public static StoreBookmarkResponseDTO toDTO(BookmarkEntity bookmarkEntity,
                                                      StoreEntity storeEntity) {
             return StoreBookmarkListResponseDTO.StoreBookmarkResponseDTO.builder()
-                    .createdAt(bookmarkEntity.getCreatedAt())
-                    .updatedAt(bookmarkEntity.getUpdatedAt())
+                    .createdAt(bookmarkEntity.getCreatedAt().toString())
+                    .updatedAt(bookmarkEntity.getUpdatedAt().toString())
                     .id(storeEntity.getSid())
                     .storeId(storeEntity.getContentId())
                     .name(storeEntity.getSName())
