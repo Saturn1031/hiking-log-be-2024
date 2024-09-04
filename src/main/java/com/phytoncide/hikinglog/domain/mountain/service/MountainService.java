@@ -155,7 +155,7 @@ public class MountainService {
 
         // DTO 리스트 생성
         SaveMountainDTO saveMountainDTO = SaveMountainDTO.builder()
-                .mntilistno(mntilistno)
+                .mntilistno(rows.path("mtnCd").asInt())
                 .mName(rows.path("frtrlNm").asText())  // 산 이름
                 .location(rows.path("addrNm").asText()) // 주소
                 .info(rows.path("ctpvNm").asText() + " (" + rows.path("mtnCd").asText() + ")") // 산 코드 정보
