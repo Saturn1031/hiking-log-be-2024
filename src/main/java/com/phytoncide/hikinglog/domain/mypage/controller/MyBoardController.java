@@ -28,13 +28,28 @@ public class MyBoardController {
     }
 
     @GetMapping("/my")
-    public ResponseEntity<ResponseDTO> readMyBoards(@AuthenticationPrincipal AuthDetails authDetails) {
-        List<BoardListResponseDTO.BoardResponseDTO> boardList = boardService.readMyBoards(authDetails);
+    public ResponseEntity<ResponseDTO> readMyBoards(CursorPageRequestDto cursorPageRequestDto,
+                                                    @AuthenticationPrincipal AuthDetails authDetails) {
+
+        Long size = cursorPageRequestDto.getSize();
+        Integer page = cursorPageRequestDto.getPage();
+        List<BoardListResponseDTO.BoardResponseDTO> boardList = boardService.readMyBoards(size, page, authDetails);
 
         BoardListResponseDTO res;
-        res = BoardListResponseDTO.builder()
-                .boardList(boardList)
-                .build();
+//        res = BoardListResponseDTO.builder()
+//                .boardList(boardList)
+//                .build();
+        if (!boardService.hasNextBoards(size, page)) {
+            res = BoardListResponseDTO.builder()
+                    .boardList(boardList)
+                    .hasNext(false)
+                    .build();
+        } else {
+            res = BoardListResponseDTO.builder()
+                    .boardList(boardList)
+                    .hasNext(true)
+                    .build();
+        }
 
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_BOARD_READ.getStatus().value())
