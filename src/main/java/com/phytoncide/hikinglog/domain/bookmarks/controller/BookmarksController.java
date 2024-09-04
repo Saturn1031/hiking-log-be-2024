@@ -8,6 +8,7 @@ import com.phytoncide.hikinglog.domain.bookmarks.dto.*;
 import com.phytoncide.hikinglog.domain.bookmarks.service.BookmarksService;
 import com.phytoncide.hikinglog.domain.member.config.AuthDetails;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.parser.ParseException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -52,11 +53,10 @@ public class BookmarksController {
     @PostMapping("/onlinestore/{storeId}")
     public ResponseEntity<ResponseDTO> onlinestoreBookmarkCreate(
             @PathVariable("storeId") Integer storeId,
-            @RequestBody OnlinestoreBookmarkCreateDTO onlinestoreBookmarkCreateDto,
             @AuthenticationPrincipal AuthDetails authDetails
-    ) {
+    ) throws IOException, ParseException {
 
-        String res = bookmarksService.onlinestoreBookmarkCreate(storeId, onlinestoreBookmarkCreateDto, authDetails);
+        String res = bookmarksService.onlinestoreBookmarkCreate(storeId, authDetails);
 
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_ONLINESTORE_BOOKMARK_CREATE.getStatus().value())
