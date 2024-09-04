@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Builder
@@ -37,9 +38,11 @@ public class MountainBookmarkListResponseDTO {
 
         public static MountainBookmarkResponseDTO toDTO(BookmarkEntity bookmarkEntity,
                                                         MountainEntity mountainEntity) {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm");
+
             return MountainBookmarkResponseDTO.builder()
-                    .createdAt(bookmarkEntity.getCreatedAt().toString())
-                    .updatedAt(bookmarkEntity.getUpdatedAt().toString())
+                    .createdAt(bookmarkEntity.getCreatedAt().format(dateTimeFormatter))
+                    .updatedAt(bookmarkEntity.getUpdatedAt().format(dateTimeFormatter))
                     .id(mountainEntity.getMid())
                     .mntilistno(mountainEntity.getMntilistno())
                     .name(mountainEntity.getMName())

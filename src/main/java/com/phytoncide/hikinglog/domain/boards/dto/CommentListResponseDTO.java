@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Builder
@@ -30,8 +31,10 @@ public class CommentListResponseDTO {
         private String userImage;
 
         public static CommentResponseDTO toDTO(CommentEntity entity) {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm");
+
             return CommentResponseDTO.builder()
-                    .createdAt(entity.getCreatedAt().toString())
+                    .createdAt(entity.getCreatedAt().format(dateTimeFormatter))
                     .id(entity.getCid())
                     .content(entity.getContent())
                     .userid(entity.getMemberEntity().getUid())

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Builder
@@ -50,9 +51,11 @@ public class BoardListResponseDTO {
                                              Integer likeNum,
                                              boolean liked,
                                              Integer commentNum) {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm");
+
             return BoardResponseDTO.builder()
-                    .createdAt(entity.getCreatedAt().toString())
-                    .updatedAt(entity.getUpdatedAt().toString())
+                    .createdAt(entity.getCreatedAt().format(dateTimeFormatter))
+                    .updatedAt(entity.getUpdatedAt().format(dateTimeFormatter))
                     .id(entity.getBid())
                     .content(entity.getContent())
                     .image(image)
