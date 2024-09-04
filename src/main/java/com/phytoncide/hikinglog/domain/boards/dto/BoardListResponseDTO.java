@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -23,8 +22,8 @@ public class BoardListResponseDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class BoardResponseDTO {
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
+        private String createdAt;
+        private String updatedAt;
         private Integer id;
         private String content;
         private String image;
@@ -52,8 +51,8 @@ public class BoardListResponseDTO {
                                              boolean liked,
                                              Integer commentNum) {
             return BoardResponseDTO.builder()
-                    .createdAt(entity.getCreatedAt())
-                    .updatedAt(entity.getUpdatedAt())
+                    .createdAt(entity.getCreatedAt().toString())
+                    .updatedAt(entity.getUpdatedAt().toString())
                     .id(entity.getBid())
                     .content(entity.getContent())
                     .image(image)

@@ -1,16 +1,13 @@
 package com.phytoncide.hikinglog.domain.bookmarks.dto;
 
 import com.phytoncide.hikinglog.domain.bookmarks.entity.BookmarkEntity;
-import com.phytoncide.hikinglog.domain.mountain.entity.MountainEntity;
 import com.phytoncide.hikinglog.domain.store.entity.OnlineOutdoorMallEntity;
-import com.phytoncide.hikinglog.domain.store.entity.StoreEntity;
 import com.phytoncide.hikinglog.global.enums.BookmarkType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -27,8 +24,8 @@ public class OnlinestoreBookmarkListResponseDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class OnlinestoreBookmarkResponseDTO {
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
+        private String createdAt;
+        private String updatedAt;
         private Integer id;
         private Integer storeId;
         private String name;
@@ -39,8 +36,8 @@ public class OnlinestoreBookmarkListResponseDTO {
         public static OnlinestoreBookmarkResponseDTO toDTO(BookmarkEntity bookmarkEntity,
                                                                             OnlineOutdoorMallEntity onlineOutdoorMallEntity) {
             return OnlinestoreBookmarkResponseDTO.builder()
-                    .createdAt(bookmarkEntity.getCreatedAt())
-                    .updatedAt(bookmarkEntity.getUpdatedAt())
+                    .createdAt(bookmarkEntity.getCreatedAt().toString())
+                    .updatedAt(bookmarkEntity.getUpdatedAt().toString())
                     .id(onlineOutdoorMallEntity.getOid())
                     .storeId(onlineOutdoorMallEntity.getStoreId())
                     .name(onlineOutdoorMallEntity.getOName())

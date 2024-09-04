@@ -2,15 +2,12 @@ package com.phytoncide.hikinglog.domain.bookmarks.dto;
 
 import com.phytoncide.hikinglog.domain.bookmarks.entity.BookmarkEntity;
 import com.phytoncide.hikinglog.domain.mountain.entity.MountainEntity;
-import com.phytoncide.hikinglog.domain.store.entity.OnlineOutdoorMallEntity;
-import com.phytoncide.hikinglog.domain.store.entity.StoreEntity;
 import com.phytoncide.hikinglog.global.enums.BookmarkType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -27,8 +24,8 @@ public class MountainBookmarkListResponseDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class MountainBookmarkResponseDTO {
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
+        private String createdAt;
+        private String updatedAt;
         private Integer id;
         private Integer mntilistno;
         private String name;
@@ -41,8 +38,8 @@ public class MountainBookmarkListResponseDTO {
         public static MountainBookmarkResponseDTO toDTO(BookmarkEntity bookmarkEntity,
                                                         MountainEntity mountainEntity) {
             return MountainBookmarkResponseDTO.builder()
-                    .createdAt(bookmarkEntity.getCreatedAt())
-                    .updatedAt(bookmarkEntity.getUpdatedAt())
+                    .createdAt(bookmarkEntity.getCreatedAt().toString())
+                    .updatedAt(bookmarkEntity.getUpdatedAt().toString())
                     .id(mountainEntity.getMid())
                     .mntilistno(mountainEntity.getMntilistno())
                     .name(mountainEntity.getMName())

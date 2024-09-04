@@ -1,13 +1,11 @@
 package com.phytoncide.hikinglog.domain.boards.dto;
 
-import com.phytoncide.hikinglog.domain.boards.entity.CommentEntity;
 import com.phytoncide.hikinglog.domain.boards.entity.NotificationEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -24,7 +22,7 @@ public class NotificationListResponseDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class NotificationResponseDTO {
-        private LocalDateTime createdAt;
+        private String createdAt;
         private Integer id;
         private String title;
         private String content;
@@ -33,7 +31,7 @@ public class NotificationListResponseDTO {
 
         public static NotificationResponseDTO toDTO(NotificationEntity entity) {
             return NotificationResponseDTO.builder()
-                    .createdAt(entity.getCreatedAt())
+                    .createdAt(entity.getCreatedAt().toString())
                     .id(entity.getNid())
                     .title(entity.getTitle())
                     .content(entity.getContent())
