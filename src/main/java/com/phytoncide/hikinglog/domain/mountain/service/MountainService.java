@@ -50,7 +50,6 @@ import static io.netty.resolver.HostsFileEntriesProvider.parser;
 @Service
 public class MountainService {
     private final MountainRepository mountainRepository;
-    private final HttpServletRequest httpServletRequest;
     private RestTemplate restTemplate;
 
     @Value("${openApi.trailServiceKey}")
@@ -84,9 +83,8 @@ public class MountainService {
     private String top100callBackUrl;
 
     @Autowired
-    public MountainService(MountainRepository mountainRepository, HttpServletRequest httpServletRequest) {
+    public MountainService(MountainRepository mountainRepository) {
         this.mountainRepository = mountainRepository;
-        this.httpServletRequest = httpServletRequest;
         this.restTemplate = restTemplate;
     }
 
@@ -317,6 +315,8 @@ public class MountainService {
     }
 
     public ArrayList<ArrayList<Float>> searchTrail(String mntiname, String emdCd) throws IOException, ParseException {
+        ArrayList<ArrayList<Float>> trail = new ArrayList<ArrayList<Float>>();
+
         String mntinameKor = URLEncoder.encode(mntiname, StandardCharsets.UTF_8);
         String urlStr = trailUrl + "?"
                 + "request=GetFeature" + "&data=LT_L_FRSTCLIMB" + "&crs=EPSG:4326" + "&format=json&errorformat=json"
@@ -341,11 +341,16 @@ public class MountainService {
         urlConnection.disconnect();
 
         JSONObject response = (JSONObject) jsonObject.get("response");
+
+        if (!response.containsKey("result")) {
+            return trail;
+        }
+
         JSONObject result = (JSONObject) response.get("result");
         JSONObject featureCollection = (JSONObject) result.get("featureCollection");
         JSONArray features = (JSONArray) featureCollection.get("features");
 
-        ArrayList<ArrayList<Float>> trail = new ArrayList<ArrayList<Float>>();
+
 
         for (int i = 0; i < features.size(); i++) {
             JSONObject feature = (JSONObject) features.get(i);
