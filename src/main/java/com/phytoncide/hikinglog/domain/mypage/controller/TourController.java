@@ -6,6 +6,7 @@ import com.phytoncide.hikinglog.domain.mypage.dto.TourSaveRequestDTO;
 import com.phytoncide.hikinglog.domain.mypage.entity.TourEntity;
 import com.phytoncide.hikinglog.domain.mypage.service.TourService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,5 +49,22 @@ public class TourController {
     @GetMapping("/details/{tourId}")
     public TourDetailResponseDTO getTourDetailsById(@PathVariable Integer tourId) {
         return tourService.getTourDetailsById(tourId);
+    }
+
+    // 특정 마이관광 삭제 메서드
+    @DeleteMapping("/delete/{tourId}")
+    public ResponseEntity<String> deleteTour(@PathVariable Integer tourId) {
+        try {
+            // 투어 삭제
+            tourService.deleteTourById(tourId);
+            // 성공 시 응답 반환
+            return ResponseEntity.ok("Tour deleted successfully.");
+        } catch (IllegalArgumentException e) {
+            // 예외 처리: 투어를 찾지 못한 경우
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            // 예외 처리: 다른 예외 발생 시
+            return ResponseEntity.status(500).body("An error occurred while deleting the tour.");
+        }
     }
 }
