@@ -79,19 +79,30 @@ public class StoreService {
         JSONObject items = (JSONObject) body.get("items");
         JSONArray itemArray = (JSONArray) items.get("item");
 
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--disable-extensions");
-        WebDriver chromeDriver = new ChromeDriver(options);
+        WebDriver chromeDriver = null;
 
         for (Object obj : itemArray) {
+            String firstImg;
             JSONObject item = (JSONObject) obj;
+
+            if(!item.get("firstimage").toString().isEmpty()) {
+                firstImg = (String) item.get("firstimage");
+            } else if (chromeDriver == null) {
+                ChromeOptions options = new ChromeOptions();
+                options.addArguments("--disable-extensions");
+                chromeDriver = new ChromeDriver(options);
+
+                firstImg = getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title"));
+            } else {
+                firstImg = getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title"));
+            }
 
             AccomoListResponseDTO dto = new AccomoListResponseDTO();
             dto.setName((String) item.get("title"));
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
-            dto.setImg(getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title")));
-            dto.setImg2((String) item.get("firstimage"));
+            dto.setImg(firstImg);
+            dto.setImg2("");
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
             dto.setTel((String) item.get("tel"));
@@ -99,8 +110,10 @@ public class StoreService {
             dtoList.add(dto);
         }
 
-        chromeDriver.close();
-        chromeDriver.quit();
+        if (chromeDriver != null) {
+            chromeDriver.close();
+            chromeDriver.quit();
+        }
 
         return dtoList;
 
@@ -143,19 +156,30 @@ public class StoreService {
         JSONObject items = (JSONObject) body.get("items");
         JSONArray itemArray = (JSONArray) items.get("item");
 
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--disable-extensions");
-        WebDriver chromeDriver = new ChromeDriver(options);
+        WebDriver chromeDriver = null;
 
         for (Object obj : itemArray) {
+            String firstImg;
             JSONObject item = (JSONObject) obj;
+
+            if(!item.get("firstimage").toString().isEmpty()) {
+                firstImg = (String) item.get("firstimage");
+            } else if (chromeDriver == null) {
+                ChromeOptions options = new ChromeOptions();
+                options.addArguments("--disable-extensions");
+                chromeDriver = new ChromeDriver(options);
+
+                firstImg = getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title"));
+            } else {
+                firstImg = getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title"));
+            }
 
             RestaurantListResponseDTO dto = new RestaurantListResponseDTO();
             dto.setName((String) item.get("title"));
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
-            dto.setImg(getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title")));
-            dto.setImg2((String) item.get("firstimage"));
+            dto.setImg(firstImg);
+            dto.setImg2("");
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
             dto.setTel((String) item.get("tel"));
@@ -163,8 +187,10 @@ public class StoreService {
             dtoList.add(dto);
         }
 
-        chromeDriver.close();
-        chromeDriver.quit();
+        if (chromeDriver != null) {
+            chromeDriver.close();
+            chromeDriver.quit();
+        }
 
         return dtoList;
 
@@ -205,19 +231,30 @@ public class StoreService {
         JSONObject items = (JSONObject) body.get("items");
         JSONArray itemArray = (JSONArray) items.get("item");
 
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--disable-extensions");
-        WebDriver chromeDriver = new ChromeDriver(options);
+        WebDriver chromeDriver = null;
 
         for (Object obj : itemArray) {
+            String firstImg;
             JSONObject item = (JSONObject) obj;
+
+            if(!item.get("firstimage").toString().isEmpty()) {
+                firstImg = (String) item.get("firstimage");
+            } else if (chromeDriver == null) {
+                ChromeOptions options = new ChromeOptions();
+                options.addArguments("--disable-extensions");
+                chromeDriver = new ChromeDriver(options);
+
+                firstImg = getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title"));
+            } else {
+                firstImg = getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title"));
+            }
 
             AccomoListResponseDTO dto = new AccomoListResponseDTO();
             dto.setName((String) item.get("title"));
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
-            dto.setImg(getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title")));
-            dto.setImg2((String) item.get("firstimage"));
+            dto.setImg(firstImg);
+            dto.setImg2("");
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
             dto.setTel((String) item.get("tel"));
@@ -225,8 +262,10 @@ public class StoreService {
             dtoList.add(dto);
         }
 
-        chromeDriver.close();
-        chromeDriver.quit();
+        if (chromeDriver != null) {
+            chromeDriver.close();
+            chromeDriver.quit();
+        }
 
         return dtoList;
 
@@ -267,19 +306,30 @@ public class StoreService {
         JSONObject items = (JSONObject) body.get("items");
         JSONArray itemArray = (JSONArray) items.get("item");
 
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--disable-extensions");
-        WebDriver chromeDriver = new ChromeDriver(options);
+        WebDriver chromeDriver = null;
 
         for (Object obj : itemArray) {
+            String firstImg;
             JSONObject item = (JSONObject) obj;
+
+            if(!item.get("firstimage").toString().isEmpty()) {
+                firstImg = (String) item.get("firstimage");
+            } else if (chromeDriver == null) {
+                ChromeOptions options = new ChromeOptions();
+                options.addArguments("--disable-extensions");
+                chromeDriver = new ChromeDriver(options);
+
+                firstImg = getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title"));
+            } else {
+                firstImg = getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title"));
+            }
 
             RestaurantListResponseDTO dto = new RestaurantListResponseDTO();
             dto.setName((String) item.get("title"));
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
-            dto.setImg(getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title")));
-            dto.setImg2((String) item.get("firstimage"));
+            dto.setImg(firstImg);
+            dto.setImg2("");
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
             dto.setTel((String) item.get("tel"));
@@ -287,8 +337,10 @@ public class StoreService {
             dtoList.add(dto);
         }
 
-        chromeDriver.close();
-        chromeDriver.quit();
+        if (chromeDriver != null) {
+            chromeDriver.close();
+            chromeDriver.quit();
+        }
 
         return dtoList;
 
@@ -333,23 +385,34 @@ public class StoreService {
 
         JSONObject item = (JSONObject) itemArray.get(0);
 
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--disable-extensions");
-        WebDriver chromeDriver = new ChromeDriver(options);
+        WebDriver chromeDriver = null;
+        String firstImg;
+
+        if(!item.get("firstimage").toString().isEmpty()) {
+            firstImg = (String) item.get("firstimage");
+        } else {
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--disable-extensions");
+            chromeDriver = new ChromeDriver(options);
+
+            firstImg = getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title"));
+        }
 
         AccomoDetailResponseDTO dto = new AccomoDetailResponseDTO();
         dto.setName((String) item.get("title"));
         dto.setContentId((String) item.get("contentid"));
         dto.setAdd((String) item.get("addr1"));
-        dto.setImg(getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title")));
-        dto.setImg2((String) item.get("firstimage"));
+        dto.setImg(firstImg);
+        dto.setImg2("");
         dto.setMapX((String) item.get("mapx"));
         dto.setMapY((String) item.get("mapy"));
         dto.setTel((String) item.get("tel"));
         dto.setIntro((String) item.get("overview"));
 
-        chromeDriver.close();
-        chromeDriver.quit();
+        if (chromeDriver != null) {
+            chromeDriver.close();
+            chromeDriver.quit();
+        }
 
         return dto;
 
@@ -394,23 +457,34 @@ public class StoreService {
 
         JSONObject item = (JSONObject) itemArray.get(0);
 
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--disable-extensions");
-        WebDriver chromeDriver = new ChromeDriver(options);
+        WebDriver chromeDriver = null;
+        String firstImg;
+
+        if(!item.get("firstimage").toString().isEmpty()) {
+            firstImg = (String) item.get("firstimage");
+        } else {
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--disable-extensions");
+            chromeDriver = new ChromeDriver(options);
+
+            firstImg = getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title"));
+        }
 
         RestaurantDetailResponseDTO dto = new RestaurantDetailResponseDTO();
         dto.setName((String) item.get("title"));
         dto.setContentId((String) item.get("contentid"));
         dto.setAdd((String) item.get("addr1"));
-        dto.setImg(getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title")));
-        dto.setImg2((String) item.get("firstimage"));
+        dto.setImg(firstImg);
+        dto.setImg2("");
         dto.setMapX((String) item.get("mapx"));
         dto.setMapY((String) item.get("mapy"));
         dto.setTel((String) item.get("tel"));
         dto.setIntro((String) item.get("overview"));
 
-        chromeDriver.close();
-        chromeDriver.quit();
+        if (chromeDriver != null) {
+            chromeDriver.close();
+            chromeDriver.quit();
+        }
 
         return dto;
 
@@ -489,19 +563,30 @@ public class StoreService {
         JSONObject items = (JSONObject) body.get("items");
         JSONArray itemArray = (JSONArray) items.get("item");
 
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--disable-extensions");
-        WebDriver chromeDriver = new ChromeDriver(options);
+        WebDriver chromeDriver = null;
 
         for (Object obj : itemArray) {
+            String firstImg;
             JSONObject item = (JSONObject) obj;
+
+            if(!item.get("firstimage").toString().isEmpty()) {
+                firstImg = (String) item.get("firstimage");
+            } else if (chromeDriver == null) {
+                ChromeOptions options = new ChromeOptions();
+                options.addArguments("--disable-extensions");
+                chromeDriver = new ChromeDriver(options);
+
+                firstImg = getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title"));
+            } else {
+                firstImg = getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title"));
+            }
 
             AccomoListResponseDTO dto = new AccomoListResponseDTO();
             dto.setName((String) item.get("title"));
             dto.setContentId((String) item.get("contentid"));
             dto.setAdd((String) item.get("addr1"));
-            dto.setImg(getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title")));
-            dto.setImg2((String) item.get("firstimage"));
+            dto.setImg(firstImg);
+            dto.setImg2("");
             dto.setMapX((String) item.get("mapx"));
             dto.setMapY((String) item.get("mapy"));
             dto.setTel((String) item.get("tel"));
@@ -509,8 +594,10 @@ public class StoreService {
             dtoList.add(dto);
         }
 
-        chromeDriver.close();
-        chromeDriver.quit();
+        if (chromeDriver != null) {
+            chromeDriver.close();
+            chromeDriver.quit();
+        }
 
         return dtoList;
     }
@@ -554,23 +641,34 @@ public class StoreService {
 
         JSONObject item = (JSONObject) itemArray.get(0);
 
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--disable-extensions");
-        WebDriver chromeDriver = new ChromeDriver(options);
+        WebDriver chromeDriver = null;
+        String firstImg;
+
+        if(!item.get("firstimage").toString().isEmpty()) {
+            firstImg = (String) item.get("firstimage");
+        } else {
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--disable-extensions");
+            chromeDriver = new ChromeDriver(options);
+
+            firstImg = getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title"));
+        }
 
         AccomoDetailResponseDTO dto = new AccomoDetailResponseDTO();
         dto.setName((String) item.get("title"));
         dto.setContentId((String) item.get("contentid"));
         dto.setAdd((String) item.get("addr1"));
-        dto.setImg(getStoreImage(chromeDriver, (String) item.get("addr1"), (String) item.get("title")));
-        dto.setImg2((String) item.get("firstimage"));
+        dto.setImg(firstImg);
+        dto.setImg2("");
         dto.setMapX((String) item.get("mapx"));
         dto.setMapY((String) item.get("mapy"));
         dto.setTel((String) item.get("tel"));
         dto.setIntro((String) item.get("overview"));
 
-        chromeDriver.close();
-        chromeDriver.quit();
+        if (chromeDriver != null) {
+            chromeDriver.close();
+            chromeDriver.quit();
+        }
 
         return dto;
 
