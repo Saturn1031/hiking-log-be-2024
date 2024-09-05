@@ -186,4 +186,14 @@ public class TourService {
         tourRepository.save(tour);
     }
 
+    // 특정 마이관광 삭제 메서드
+    public void deleteTourById(Integer tourId) {
+        // 투어 존재 여부 확인
+        TourEntity tour = tourRepository.findById(tourId)
+                .orElseThrow(() -> new IllegalArgumentException("삭제할 관광 코스를 찾을 수 없습니다."));
+
+        // 투어 삭제
+        tourRepository.delete(tour);
+    }
+
 }
