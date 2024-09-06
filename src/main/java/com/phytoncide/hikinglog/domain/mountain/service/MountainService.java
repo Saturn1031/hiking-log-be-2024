@@ -7,10 +7,7 @@ import com.phytoncide.hikinglog.base.exception.DataNotFoundException;
 import com.phytoncide.hikinglog.base.exception.RecordNotFoundException;
 import com.phytoncide.hikinglog.base.exception.RegisterException;
 import com.phytoncide.hikinglog.domain.member.entity.MemberEntity;
-import com.phytoncide.hikinglog.domain.mountain.dto.DetailMountainDTO;
-import com.phytoncide.hikinglog.domain.mountain.dto.MountainDTO;
-import com.phytoncide.hikinglog.domain.mountain.dto.SaveMountainDTO;
-import com.phytoncide.hikinglog.domain.mountain.dto.WeatherDTO;
+import com.phytoncide.hikinglog.domain.mountain.dto.*;
 import com.phytoncide.hikinglog.domain.mountain.entity.MountainEntity;
 import com.phytoncide.hikinglog.domain.mountain.repository.MountainRepository;
 import com.phytoncide.hikinglog.domain.store.dto.AccomoDetailResponseDTO;
@@ -23,6 +20,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +48,7 @@ import static io.netty.resolver.HostsFileEntriesProvider.parser;
 @Service
 public class MountainService {
     private final MountainRepository mountainRepository;
+    private final WeatherService weatherService;
     private RestTemplate restTemplate;
 
     @Value("${openApi.trailServiceKey}")
@@ -82,9 +81,19 @@ public class MountainService {
     @Value("${openApi.top100callBackUrl}")
     private String top100callBackUrl;
 
+    @Value("${openApi.observeServiceKey}")
+    private String observeServiceKey;
+
+    @Value("${openApi.observeUrl}")
+    private String observeUrl;
+
+    @Value("${openApi.kakaoAPIKey}")
+    private String kakaoAPIKey;
+
     @Autowired
-    public MountainService(MountainRepository mountainRepository) {
+    public MountainService(MountainRepository mountainRepository, WeatherService weatherService) {
         this.mountainRepository = mountainRepository;
+        this.weatherService = weatherService;
         this.restTemplate = restTemplate;
     }
 
@@ -370,6 +379,7 @@ public class MountainService {
         return trail;
     }
 
+    // 날씨 정보
     public WeatherDTO getRealtimeWeather(String address) throws IOException, ParseException {
 
         LocalDate currentDate = LocalDate.now();
@@ -385,6 +395,12 @@ public class MountainService {
             formattedDate = String.valueOf(nowDate - 1);
         }
 
+        // 주소 위도 경도 변환
+        AddressXYDTO xydto = changeAddressTOXY(address);
+
+        // 위도 경도를 행정구역 x,y 값으로 변환
+        WeatherXYDTO weatherXYDTO = weatherService.getWeatherXY(xydto.getLongitude(), xydto.getLatitude());
+
         String urlStr = weatherUrl + "/getUltraSrtNcst?" +
                 "&serviceKey=" + weatherServiceKey +
                 "&numOfRows=20" +
@@ -392,8 +408,8 @@ public class MountainService {
                 "&dataType=JSON" +
                 "&base_date="+ formattedDate +
                 "&base_time=0600" +
-                "&nx=55"+
-                "&ny=127";
+                "&nx="+ weatherXYDTO.getX() +
+                "&ny="+ weatherXYDTO.getY();
         URL url = new URL(urlStr);
 
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -418,6 +434,8 @@ public class MountainService {
         JSONObject temperature = (JSONObject) itemArray.get(3); //T1H
         JSONObject rain = (JSONObject) itemArray.get(0); //PTY
         JSONObject wind = (JSONObject) itemArray.get(7); //WSD
+
+        System.out.println(itemArray);
 
 
         WeatherDTO dto = new WeatherDTO();
@@ -486,6 +504,7 @@ public class MountainService {
 
     }
 
+    // 산 상세
     public DetailMountainDTO searchMountain(String mountainName, String mountainNum) throws IOException, ParseException {
 
         StringBuilder result = new StringBuilder();
@@ -607,4 +626,76 @@ public class MountainService {
         }
 
     }
+
+    public String getCoordinate (String longitude, String latitude) throws IOException, ParseException {
+
+        String urlStr = observeUrl + "/getNearbyMsrstnList?" +
+                "sidoName=부산"+
+                "&pageNo=1" +
+                "&numOfRows=10" +
+                "&returnType=json" +
+                "&serviceKey=" + observeServiceKey +
+                "&ver=1.2";
+        URL url = new URL(urlStr);
+
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Content-type", "application/json");
+        urlConnection.setRequestProperty("Accept", "application/json");
+
+        BufferedReader br;
+
+        br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(br);
+
+        br.close();
+        urlConnection.disconnect();
+
+        JSONObject response = (JSONObject) jsonObject.get("response");
+        JSONObject body = (JSONObject) response.get("body");
+        JSONArray items = (JSONArray) body.get("items");
+        JSONObject item = (JSONObject) items.get(0);
+
+        System.out.println("");
+        System.out.println(item);
+
+        return "wow";
+    }
+
+    public AddressXYDTO changeAddressTOXY (String address) {
+
+        String apiUrl = "https://dapi.kakao.com/v2/local/search/address.json?query=" + address;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "KakaoAK " + kakaoAPIKey);
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(apiUrl, org.springframework.http.HttpMethod.GET, entity, String.class);
+
+        AddressXYDTO xydto = new AddressXYDTO();
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(response.getBody());
+
+            JsonNode documents = jsonNode.get("documents");
+            if (documents.isArray() && documents.size() > 0) {
+                JsonNode location = documents.get(0);
+                String x = String.valueOf(location.get("x"));
+                String y = String.valueOf(location.get("y"));
+
+                xydto.setLongitude(x);
+                xydto.setLatitude(y);
+                return xydto;
+            } else {
+                throw new DataNotFoundException(ErrorCode.DATA_NOT_FOUND);
+            }
+        } catch (Exception e) {
+            throw new DataNotFoundException(ErrorCode.DATA_NOT_FOUND);
+        }
+    }
+
 }
