@@ -14,4 +14,5 @@ public class WeatherDTO {
     public String temperature;
     public String rain;
     public String wind;
+    public String dust;
 }

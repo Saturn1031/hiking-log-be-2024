@@ -442,6 +442,8 @@ public class MountainService {
         dto.setTemperature((String) temperature.get("obsrValue"));
         dto.setRain(returnRain((String)rain.get("obsrValue")));
         dto.setWind(returnWind((String)wind.get("obsrValue")));
+        dto.setDust("좋음");
+//        dto.setDust(getRealTimeDust(xydto));
 
         return dto;
 
@@ -470,15 +472,19 @@ public class MountainService {
         };
     }
 
-    public JSONObject getRealTimeDust(String sido) throws IOException, ParseException {
+    // 미세 먼지
+    public String getRealTimeDust(AddressXYDTO xydto) throws IOException, ParseException {
 
-        String urlStr = dustUrl + "/getCtprvnRltmMesureDnsty?" +
-                "sidoName=부산"+
-                "&pageNo=1" +
-                "&numOfRows=10" +
+        AddressXYDTO tmXtmYdto = changeAddressTOtnXtnY(xydto);
+        String stationName = getCoordinate(tmXtmYdto.getLongitude(), tmXtmYdto.getLatitude());
+        System.out.println(stationName);
+
+        String urlStr = dustUrl + "/getMsrstnAcctoRltmMesureDnsty?" +
+                "serviceKey=" + dustServiceKey +
                 "&returnType=json" +
-                "&serviceKey=" + dustServiceKey +
-                "&ver=1.2";
+                "&stationName=" + stationName +
+                "&dataTerm=DAILY" +
+                "&ver=1.3";
         URL url = new URL(urlStr);
 
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -493,15 +499,35 @@ public class MountainService {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject = (JSONObject) parser.parse(br);
 
+        System.out.println(jsonObject);
+
         br.close();
         urlConnection.disconnect();
 
         JSONObject response = (JSONObject) jsonObject.get("response");
         JSONObject body = (JSONObject) response.get("body");
-        JSONObject items = (JSONObject) body.get("items");
+        JSONArray items = (JSONArray) body.get("items");
+        JSONObject item = (JSONObject) items.get(0);
 
-        return jsonObject;
+        String grade = (String) item.get("pm10Grade1h");
 
+
+        return returnDust(grade);
+
+    }
+
+    public String returnDust(String grade) {
+        Integer numGrade = Integer.parseInt(grade);
+
+        if (numGrade >= 0 && numGrade <= 30) {
+            return "좋음";
+        } else if (numGrade >= 31 && numGrade <= 80) {
+            return "보통";
+        } else if (numGrade >= 81 && numGrade <= 150) {
+            return "나쁨";
+        } else {
+            return "매우나쁨";
+        }
     }
 
     // 산 상세
@@ -627,15 +653,14 @@ public class MountainService {
 
     }
 
-    public String getCoordinate (String longitude, String latitude) throws IOException, ParseException {
+    // 관측소 이름 구하기
+    public String getCoordinate (String tmX, String tmy) throws IOException, ParseException {
 
         String urlStr = observeUrl + "/getNearbyMsrstnList?" +
-                "sidoName=부산"+
-                "&pageNo=1" +
-                "&numOfRows=10" +
+                "tmX=" + tmX +
+                "&tmY=" + tmy +
                 "&returnType=json" +
-                "&serviceKey=" + observeServiceKey +
-                "&ver=1.2";
+                "&serviceKey=" + observeServiceKey;
         URL url = new URL(urlStr);
 
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -653,17 +678,17 @@ public class MountainService {
         br.close();
         urlConnection.disconnect();
 
+        System.out.println(jsonObject);
+
         JSONObject response = (JSONObject) jsonObject.get("response");
         JSONObject body = (JSONObject) response.get("body");
         JSONArray items = (JSONArray) body.get("items");
         JSONObject item = (JSONObject) items.get(0);
 
-        System.out.println("");
-        System.out.println(item);
-
-        return "wow";
+        return (String) item.get("stationName");
     }
 
+    // 위도 경도 반환
     public AddressXYDTO changeAddressTOXY (String address) {
 
         String apiUrl = "https://dapi.kakao.com/v2/local/search/address.json?query=" + address;
@@ -690,6 +715,47 @@ public class MountainService {
                 xydto.setLongitude(x);
                 xydto.setLatitude(y);
                 return xydto;
+            } else {
+                throw new DataNotFoundException(ErrorCode.DATA_NOT_FOUND);
+            }
+        } catch (Exception e) {
+            throw new DataNotFoundException(ErrorCode.DATA_NOT_FOUND);
+        }
+    }
+
+    // tmx, tmy 반환
+    public AddressXYDTO changeAddressTOtnXtnY (AddressXYDTO addressXYDTO) {
+        String lonStr = addressXYDTO.getLongitude().trim().replace("\"", "");
+        String latStr = addressXYDTO.getLatitude().trim().replace("\"", "");
+
+        String apiUrl = "https://dapi.kakao.com/v2/local/geo/transcoord.json?x=" + lonStr + "&y=" + latStr + "&input_coord=WGS84&output_coord=TM";
+
+        System.out.println(apiUrl);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "KakaoAK " + kakaoAPIKey);
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(apiUrl, org.springframework.http.HttpMethod.GET, entity, String.class);
+
+        AddressXYDTO tmxtmydto = new AddressXYDTO();
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(response.getBody());
+
+            JsonNode documents = jsonNode.get("documents");
+            if (documents.isArray() && documents.size() > 0) {
+                JsonNode location = documents.get(0);
+                String x = String.valueOf(location.get("x"));
+                String y = String.valueOf(location.get("y"));
+
+                tmxtmydto.setLongitude(x);
+                tmxtmydto.setLatitude(y);
+                System.out.println(x);
+                System.out.println(y);
+                return tmxtmydto;
             } else {
                 throw new DataNotFoundException(ErrorCode.DATA_NOT_FOUND);
             }
