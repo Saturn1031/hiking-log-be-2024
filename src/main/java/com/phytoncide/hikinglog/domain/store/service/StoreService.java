@@ -407,7 +407,6 @@ public class StoreService {
         dto.setMapX((String) item.get("mapx"));
         dto.setMapY((String) item.get("mapy"));
         dto.setTel((String) item.get("tel"));
-        dto.setIntro((String) item.get("overview"));
 
         if (chromeDriver != null) {
             chromeDriver.close();
@@ -663,7 +662,6 @@ public class StoreService {
         dto.setMapX((String) item.get("mapx"));
         dto.setMapY((String) item.get("mapy"));
         dto.setTel((String) item.get("tel"));
-        dto.setIntro((String) item.get("overview"));
 
         if (chromeDriver != null) {
             chromeDriver.close();

@@ -42,10 +42,10 @@ public class TourService {
         TourEntity tour = tourRepository.findById(tourId)
                 .orElseThrow(() -> new IllegalArgumentException("관광 코스를 찾을 수 없습니다."));
 
-        // 숙박 및 음식점 ID 목록 가져오기
-        List<StoreEntity> preHikeAccomo = storeRepository.findByContentIdIn(tour.getPreHikeAccomoIds());
+        // 관광 및 음식점 ID 목록 가져오기
+        List<StoreEntity> preHikeTour = storeRepository.findByContentIdIn(tour.getPreHikeTourIds());
         List<StoreEntity> preHikeRestaurant = storeRepository.findByContentIdIn(tour.getPreHikeRestaurantIds());
-        List<StoreEntity> postHikeAccomo = storeRepository.findByContentIdIn(tour.getPostHikeAccomoIds());
+        List<StoreEntity> postHikeTour = storeRepository.findByContentIdIn(tour.getPostHikeTourIds());
         List<StoreEntity> postHikeRestaurant = storeRepository.findByContentIdIn(tour.getPostHikeRestaurantIds());
 
         // DTO로 변환
@@ -53,9 +53,9 @@ public class TourService {
                 .tourId(tourId)
                 .tourTitle(tour.getTourTitle())
                 .mountainId(tour.getMountainId())
-                .preHikeAccomo(preHikeAccomo)
+                .preHikeTour(preHikeTour)
                 .preHikeRestaurant(preHikeRestaurant)
-                .postHikeAccomo(postHikeAccomo)
+                .postHikeTour(postHikeTour)
                 .postHikeRestaurant(postHikeRestaurant)
                 .status(tour.getStatus())
                 .build();
@@ -78,9 +78,9 @@ public class TourService {
                 .tourId(Math.toIntExact(tour.getTourId()))
                 .tourTitle(tour.getTourTitle())
                 .mountainId(tour.getMountainId())
-                .preHikeAccomoIds(tour.getPreHikeAccomoIds())
+                .preHikeTourIds(tour.getPreHikeTourIds())
                 .preHikeRestaurantIds(tour.getPreHikeRestaurantIds())
-                .postHikeAccomoIds(tour.getPostHikeAccomoIds())
+                .postHikeTourIds(tour.getPostHikeTourIds())
                 .postHikeRestaurantIds(tour.getPostHikeRestaurantIds())
                 .userId(tour.getUserId())
                 .status(tour.getStatus())
@@ -91,11 +91,11 @@ public class TourService {
     public List<String> saveTourData(Integer userId,
                                      String tourTitle,
                                      Integer mountainId,
-                                     List<String> preHikeAccomoIds,
+                                     List<String> preHikeTourIds,
                                      List<String> preHikeRestaurantIds,
-                                     List<String> postHikeAccomoIds,
+                                     List<String> postHikeTourIds,
                                      List<String> postHikeRestaurantIds,
-                                     List<AccomoDetailResponseDTO> accomoDetails,
+                                     List<AccomoDetailResponseDTO> tourDetails,
                                      List<RestaurantDetailResponseDTO> restaurantDetails) {
 
         List<String> savedIds = new ArrayList<>();
@@ -108,24 +108,25 @@ public class TourService {
         TourEntity tour = TourEntity.builder()
                 .tourTitle(tourTitle)
                 .mountainId(mountainId)
-                .preHikeAccomoIds(preHikeAccomoIds)
+                .preHikeTourIds(preHikeTourIds)
                 .preHikeRestaurantIds(preHikeRestaurantIds)
-                .postHikeAccomoIds(postHikeAccomoIds)
+                .postHikeTourIds(postHikeTourIds)
                 .postHikeRestaurantIds(postHikeRestaurantIds)
                 .userId(user.getUid()) // 사용자 설정
                 .status(TourEntity.Status.PREPARING) // 기본 상태로 예정 설정
                 .build();
 
         // 투어 데이터 저장
-        tourRepository.save(tour);
+        TourEntity savedTour = tourRepository.save(tour);
 
         // 투어 및 산 정보 저장
+        savedIds.add(savedTour.getTourId().toString()); // 저장된 투어의 ID 추가
         savedIds.add(tourTitle);
         savedIds.add(String.valueOf(mountainId));
 
         // 숙박 및 음식점 정보를 처리하고 저장
-        processAndSaveStoreData(preHikeAccomoIds, accomoDetails, "Pre-Hike Accomo ID: ", savedIds);
-        processAndSaveStoreData(postHikeAccomoIds, accomoDetails, "Post-Hike Accomo ID: ", savedIds);
+        processAndSaveStoreData(preHikeTourIds, tourDetails, "Pre-Hike Tour ID: ", savedIds);
+        processAndSaveStoreData(postHikeTourIds, tourDetails, "Post-Hike Tour ID: ", savedIds);
         processAndSaveStoreData(preHikeRestaurantIds, restaurantDetails, "Pre-Hike Restaurant ID: ", savedIds);
         processAndSaveStoreData(postHikeRestaurantIds, restaurantDetails, "Post-Hike Restaurant ID: ", savedIds);
 
@@ -163,8 +164,8 @@ public class TourService {
     }
 
     // 숙박 DTO를 contentId로 찾는 메서드
-    private AccomoDetailResponseDTO findAccomoDetailById(String id, List<AccomoDetailResponseDTO> accomoDetails) {
-        return accomoDetails.stream()
+    private AccomoDetailResponseDTO findAccomoDetailById(String id, List<AccomoDetailResponseDTO> tourDetails) {
+        return tourDetails.stream()
                 .filter(dto -> dto.getContentId().equals(id))
                 .findFirst()
                 .orElse(null);

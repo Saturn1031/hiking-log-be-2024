@@ -13,9 +13,9 @@ public class TourDetailResponseDTO {
     private Integer tourId;
     private String tourTitle;
     private Integer mountainId;
-    private List<StoreEntity> preHikeAccomo;
+    private List<StoreEntity> preHikeTour;
     private List<StoreEntity> preHikeRestaurant;
-    private List<StoreEntity> postHikeAccomo;
+    private List<StoreEntity> postHikeTour;
     private List<StoreEntity> postHikeRestaurant;
     private Enum<TourEntity.Status> status; // 'PREPARING' 또는 'COMPLETED'
 }

@@ -30,7 +30,7 @@ public class TourEntity {
 
     @ElementCollection
     @Column(name = "accommodation_id")
-    private List<String> preHikeAccomoIds;
+    private List<String> preHikeTourIds;
 
     @ElementCollection
     @Column(name = "restaurant_id")
@@ -38,7 +38,7 @@ public class TourEntity {
 
     @ElementCollection
     @Column(name = "accommodation_id")
-    private List<String> postHikeAccomoIds;
+    private List<String> postHikeTourIds;
 
     @ElementCollection
     @Column(name = "restaurant_id")

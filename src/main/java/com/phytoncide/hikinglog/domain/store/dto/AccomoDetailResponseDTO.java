@@ -27,6 +27,4 @@ public class AccomoDetailResponseDTO {
     public String mapY;
 
     public String tel;
-
-    public String intro;
 }
