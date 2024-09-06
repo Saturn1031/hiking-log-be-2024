@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WeatherDTO {
+public class WeatherXYDTO {
 
-    public String temperature;
-    public String rain;
-    public String wind;
-    public String dust;
+    private String x;
+    private String y;
 }
