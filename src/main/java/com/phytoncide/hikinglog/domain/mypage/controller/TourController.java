@@ -31,11 +31,11 @@ public class TourController {
                 requestDTO.getUserId(), // 사용자 ID 추가
                 requestDTO.getTourTitle(),
                 requestDTO.getMountainId(),
-                requestDTO.getPreHikeAccomoIds(),
+                requestDTO.getPreHikeTourIds(),
                 requestDTO.getPreHikeRestaurantIds(),
-                requestDTO.getPostHikeAccomoIds(),
+                requestDTO.getPostHikeTourIds(),
                 requestDTO.getPostHikeRestaurantIds(),
-                requestDTO.getAccomoDetails(), // 숙박 DTO 리스트
+                requestDTO.getTourDetails(), // 관광 DTO 리스트
                 requestDTO.getRestaurantDetails() // 음식점 DTO 리스트
         );
     }
