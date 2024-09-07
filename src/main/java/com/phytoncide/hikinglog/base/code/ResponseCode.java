@@ -62,6 +62,7 @@ public enum ResponseCode {
 
     SUCCESS_GET_MOUNTAIN_DETAIL(HttpStatus.OK, "산 상세 조회를 성공했습니다."),
     SUCCESS_GET_TOP100MOUNTAIN_BY_REGION_LIST(HttpStatus.OK, "100대 명산 지역별 목록 조회를 성공했습니다."),
+    SUCCESS_GET_ALL_MOUNTAIN_BY_REGION_LIST(HttpStatus.OK, "전국 산 지역별 목록 조회를 성공했습니다."),
 
 
     ;

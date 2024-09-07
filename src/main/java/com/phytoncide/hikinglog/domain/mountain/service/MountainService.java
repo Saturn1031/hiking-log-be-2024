@@ -204,6 +204,47 @@ public class MountainService {
         return item;
     }
 
+    public JSONArray getMByRegion(String regionName) throws IOException, ParseException {
+        JSONArray mountainsResponse = new JSONArray();
+
+        String urlStr = callBackUrl + "mntInfoOpenAPI2?" +
+                "pageNo=1"
+                + "&numOfRows=5000" + "&ServiceKey=" + serviceKey;
+        URL url = new URL(urlStr);
+
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Content-type", "application/json");
+        urlConnection.setRequestProperty("Accept", "application/json");
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8));
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(br);
+
+        br.close();
+        urlConnection.disconnect();
+
+        JSONObject response = (JSONObject) jsonObject.get("response");
+        JSONObject body = (JSONObject) response.get("body");
+        JSONObject items = (JSONObject) body.get("items");
+        JSONArray item = (JSONArray) items.get("item");
+
+        for (int i = 0; i < item.size(); i++) {
+            JSONObject mountain = (JSONObject) item.get(i);
+            String mountainAddress = mountain.get("mntiadd").toString();
+
+            if (mountainAddress.contains(regionName)) {
+                mountainsResponse.add(mountain);
+
+                if (mountainsResponse.size() == 100) {
+                    break;
+                }
+            }
+        }
+
+        return mountainsResponse;
+    }
 
     public MountainDTO convertToDTO(){
         MountainDTO mountainDTO = new MountainDTO();

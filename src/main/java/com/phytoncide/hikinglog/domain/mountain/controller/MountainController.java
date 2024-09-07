@@ -88,6 +88,75 @@ public class MountainController {
         return result.toString();
     }
 
+    // 지역별 전국 산 목록 가져오기
+    @GetMapping("/getMByRegion/{region_array_index}")
+    public ResponseEntity<ResponseDTO> getMByRegion(
+            @PathVariable("region_array_index") Integer region_array_index
+    ) throws IOException, ParseException {
+        JSONArray res;
+
+        switch (region_array_index) {
+            case 0:
+                res = mountainService.getMByRegion("");
+                break;
+            case 1:
+                res = mountainService.getMByRegion("서울특별시");
+                break;
+            case 2:
+                res = mountainService.getMByRegion("경기도");
+                break;
+            case 3:
+                res = mountainService.getMByRegion("강원특별자치도");
+                break;
+            case 4:
+                res = mountainService.getMByRegion("충청북도");
+                break;
+            case 5:
+                res = mountainService.getMByRegion("충청남도");
+                break;
+            case 6:
+                res = mountainService.getMByRegion("전라북도");
+                break;
+            case 7:
+                res = mountainService.getMByRegion("전라남도");
+                break;
+            case 8:
+                res = mountainService.getMByRegion("경상북도");
+                break;
+            case 9:
+                res = mountainService.getMByRegion("경상남도");
+                break;
+            case 10:
+                res = mountainService.getMByRegion("제주도");
+                break;
+            case 11:
+                res = mountainService.getMByRegion("부산광역시");
+                break;
+            case 12:
+                res = mountainService.getMByRegion("대구광역시");
+                break;
+            case 13:
+                res = mountainService.getMByRegion("인천광역시");
+                break;
+            case 14:
+                res = mountainService.getMByRegion("광주광역시");
+                break;
+            case 15:
+                res = mountainService.getMByRegion("대전광역시");
+                break;
+            case 16:
+                res = mountainService.getMByRegion("울산광역시");
+                break;
+            default:
+                throw new RegionIndexNotFoundException(ErrorCode.REGION_INDEX_NOT_FOUND);
+        }
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_GET_ALL_MOUNTAIN_BY_REGION_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_ALL_MOUNTAIN_BY_REGION_LIST, res));
+    }
+
+
     // 100대 명산 목록
     @GetMapping("/getTop100Mountains")
     public String getTop100Mountains() throws IOException {
