@@ -433,7 +433,7 @@ public class MountainService {
 
         if(Integer.parseInt(formattedTime) < 611) {
             Integer nowDate = Integer.parseInt(formattedDate) - 1;
-            formattedDate = String.valueOf(nowDate - 1);
+            formattedDate = String.valueOf(nowDate);
         }
 
         // 주소 위도 경도 변환
