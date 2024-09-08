@@ -476,15 +476,12 @@ public class MountainService {
         JSONObject rain = (JSONObject) itemArray.get(0); //PTY
         JSONObject wind = (JSONObject) itemArray.get(7); //WSD
 
-        System.out.println(itemArray);
-
 
         WeatherDTO dto = new WeatherDTO();
         dto.setTemperature((String) temperature.get("obsrValue"));
         dto.setRain(returnRain((String)rain.get("obsrValue")));
         dto.setWind(returnWind((String)wind.get("obsrValue")));
-        dto.setDust("좋음");
-//        dto.setDust(getRealTimeDust(xydto));
+        dto.setDust(getRealTimeDust(xydto));
 
         return dto;
 
@@ -516,17 +513,21 @@ public class MountainService {
     // 미세 먼지
     public String getRealTimeDust(AddressXYDTO xydto) throws IOException, ParseException {
 
+        String encodedServiceKey = URLEncoder.encode(dustServiceKey, "UTF-8");
+
         AddressXYDTO tmXtmYdto = changeAddressTOtnXtnY(xydto);
         String stationName = getCoordinate(tmXtmYdto.getLongitude(), tmXtmYdto.getLatitude());
-        System.out.println(stationName);
+
+        String encodedStationName = URLEncoder.encode(stationName, "UTF-8");
 
         String urlStr = dustUrl + "/getMsrstnAcctoRltmMesureDnsty?" +
-                "serviceKey=" + dustServiceKey +
                 "&returnType=json" +
-                "&stationName=" + stationName +
+                "&stationName=" + encodedStationName +
                 "&dataTerm=DAILY" +
-                "&ver=1.3";
+                "&ver=1.3" +
+                "&serviceKey=" + dustServiceKey;
         URL url = new URL(urlStr);
+
 
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setRequestMethod("GET");
@@ -540,8 +541,6 @@ public class MountainService {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject = (JSONObject) parser.parse(br);
 
-        System.out.println(jsonObject);
-
         br.close();
         urlConnection.disconnect();
 
@@ -550,7 +549,7 @@ public class MountainService {
         JSONArray items = (JSONArray) body.get("items");
         JSONObject item = (JSONObject) items.get(0);
 
-        String grade = (String) item.get("pm10Grade1h");
+        String grade = (String) item.get("pm10Value");
 
 
         return returnDust(grade);
@@ -593,7 +592,6 @@ public class MountainService {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject = (JSONObject) parser.parse(br);
 
-        System.out.println(jsonObject);
 
         JSONObject response = (JSONObject) jsonObject.get("response");
         JSONObject body = (JSONObject) response.get("body");
@@ -624,8 +622,6 @@ public class MountainService {
                 item = findItem;
             }
         }
-
-        String image = getMountainImage(mountainNum);
 
         System.out.println(item);
         DetailMountainDTO detailMountainDTO = new DetailMountainDTO();
@@ -719,7 +715,6 @@ public class MountainService {
         br.close();
         urlConnection.disconnect();
 
-        System.out.println(jsonObject);
 
         JSONObject response = (JSONObject) jsonObject.get("response");
         JSONObject body = (JSONObject) response.get("body");
