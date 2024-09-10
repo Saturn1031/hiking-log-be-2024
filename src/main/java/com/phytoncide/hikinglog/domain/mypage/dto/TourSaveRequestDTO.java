@@ -11,6 +11,7 @@ public class TourSaveRequestDTO {
 
     private String tourTitle;
     private Integer mountainId;
+    private String mountainName;
 
     private List<String> preHikeTourIds;      // 등산 전 관광 ID 리스트
     private List<String> preHikeRestaurantIds;  // 등산 전 음식점 ID 리스트

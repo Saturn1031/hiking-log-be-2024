@@ -53,6 +53,7 @@ public class TourService {
                 .tourId(tourId)
                 .tourTitle(tour.getTourTitle())
                 .mountainId(tour.getMountainId())
+                .mountainName(tour.getMountainName())
                 .preHikeTour(preHikeTour)
                 .preHikeRestaurant(preHikeRestaurant)
                 .postHikeTour(postHikeTour)
@@ -78,6 +79,7 @@ public class TourService {
                 .tourId(Math.toIntExact(tour.getTourId()))
                 .tourTitle(tour.getTourTitle())
                 .mountainId(tour.getMountainId())
+                .mountainName(tour.getMountainName())
                 .preHikeTourIds(tour.getPreHikeTourIds())
                 .preHikeRestaurantIds(tour.getPreHikeRestaurantIds())
                 .postHikeTourIds(tour.getPostHikeTourIds())
@@ -91,6 +93,7 @@ public class TourService {
     public List<String> saveTourData(Integer userId,
                                      String tourTitle,
                                      Integer mountainId,
+                                     String mountainName,
                                      List<String> preHikeTourIds,
                                      List<String> preHikeRestaurantIds,
                                      List<String> postHikeTourIds,
@@ -108,6 +111,7 @@ public class TourService {
         TourEntity tour = TourEntity.builder()
                 .tourTitle(tourTitle)
                 .mountainId(mountainId)
+                .mountainName(mountainName)
                 .preHikeTourIds(preHikeTourIds)
                 .preHikeRestaurantIds(preHikeRestaurantIds)
                 .postHikeTourIds(postHikeTourIds)
@@ -123,6 +127,7 @@ public class TourService {
         savedIds.add(savedTour.getTourId().toString()); // 저장된 투어의 ID 추가
         savedIds.add(tourTitle);
         savedIds.add(String.valueOf(mountainId));
+        savedIds.add(mountainName);
 
         // 숙박 및 음식점 정보를 처리하고 저장
         processAndSaveStoreData(preHikeTourIds, tourDetails, "Pre-Hike Tour ID: ", savedIds);
