@@ -28,6 +28,9 @@ public class TourEntity {
     @Column(nullable = false)
     private Integer mountainId;
 
+    @Column(nullable = false)
+    private String mountainName;
+
     @ElementCollection
     @Column(name = "accommodation_id")
     private List<String> preHikeTourIds;

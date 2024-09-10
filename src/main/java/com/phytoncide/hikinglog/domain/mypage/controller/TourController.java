@@ -31,6 +31,7 @@ public class TourController {
                 requestDTO.getUserId(), // 사용자 ID 추가
                 requestDTO.getTourTitle(),
                 requestDTO.getMountainId(),
+                requestDTO.getMountainName(),
                 requestDTO.getPreHikeTourIds(),
                 requestDTO.getPreHikeRestaurantIds(),
                 requestDTO.getPostHikeTourIds(),
@@ -40,10 +41,23 @@ public class TourController {
         );
     }
 
+//    @PutMapping("/update-status/{tourId}")
+//    public void updateTourStatus(@PathVariable Long tourId, @RequestParam TourEntity.Status status) {
+//        tourService.updateTourStatus(tourId, status);
+//    }
+
     @PutMapping("/update-status/{tourId}")
-    public void updateTourStatus(@PathVariable Long tourId, @RequestParam TourEntity.Status status) {
+    public ResponseEntity<TourEntity.Status> updateTourStatus(
+            @PathVariable Long tourId,
+            @RequestParam TourEntity.Status status) {
+
+        // 서비스 호출하여 상태 업데이트
         tourService.updateTourStatus(tourId, status);
+
+        // 업데이트된 상태값을 반환
+        return ResponseEntity.ok(status);
     }
+
 
     // 특정 관광 코스의 상세 정보 조회
     @GetMapping("/details/{tourId}")

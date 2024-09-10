@@ -13,6 +13,7 @@ public class TourDetailResponseDTO {
     private Integer tourId;
     private String tourTitle;
     private Integer mountainId;
+    private String mountainName;
     private List<StoreEntity> preHikeTour;
     private List<StoreEntity> preHikeRestaurant;
     private List<StoreEntity> postHikeTour;
