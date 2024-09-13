@@ -15,17 +15,17 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,9 +38,6 @@ public class StoreService {
 
     @Value("${openApi.stayUrl}")
     private String callBackUrl;
-
-    private static final String FILE_PATH = "src/main/java/com/phytoncide/hikinglog/domain/store/resource/onlineOutdoorMall.json";
-    private static final String DRIVER_PATH = "src/main/java/com/phytoncide/hikinglog/base/driver/";
 
     // 숙박 시설 목록 반환
     public List<AccomoListResponseDTO> getAccommodationList(String longitude, String latitude) throws IOException, ParseException {
@@ -491,16 +488,27 @@ public class StoreService {
 
     //등산 용품 온라인 몰 목록
     public String getOnlineMallList() throws IOException {
-        byte[] jsonData = Files.readAllBytes(Paths.get(FILE_PATH));
-        String jsonString = new String(jsonData, StandardCharsets.UTF_8);
+        ResourceLoader resourceLoader = new DefaultResourceLoader();
+        Resource resource = resourceLoader.getResource("classpath:static/onlineOutdoorMall.json");
+        StringBuilder content = new StringBuilder();
 
-        return jsonString;
+        try (InputStream inputStream = resource.getInputStream();
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append(System.lineSeparator());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return content.toString();
     }
 
     //등산 용품 온라인 몰 상세
     public String getOnlineMallDetail(String idNum) throws IOException, ParseException {
-        byte[] jsonData = Files.readAllBytes(Paths.get(FILE_PATH));
-        String jsonString = new String(jsonData, StandardCharsets.UTF_8);
+        String jsonString = getOnlineMallList();
 
         JSONParser parser = new JSONParser();
         JSONArray jsonArray = (JSONArray) parser.parse(jsonString);
@@ -672,46 +680,66 @@ public class StoreService {
 
     }
 
-    public String getStoreImage(WebDriver chromeDriver, String addr1, String title) {
+    public String getStoreImage(WebDriver chromeDriver, String addr1, String title) throws IOException {
         String chromeDriverPath = getChromeDriverPath();
 
-        System.setProperty("webdriver.chrome.driver", DRIVER_PATH + chromeDriverPath);
+        System.setProperty("webdriver.chrome.driver", chromeDriverPath);
 
         String img = getImageElement(chromeDriver, addr1, title);
 
         return img;
     }
 
-    private String getChromeDriverPath() {
+    private String getChromeDriverPath() throws IOException {
         // 운영체제와 아키텍처 확인
         String os = System.getProperty("os.name").toLowerCase();
         String arch = System.getProperty("os.arch").toLowerCase();
-        String chromeDriverPath;
+
+        ResourceLoader resourceLoader = new DefaultResourceLoader();
+        Resource resource;
+        String resourcePath;
 
         if (os.contains("win")) {
             if (arch.contains("64")) {
                 // Windows 64-bit
-                chromeDriverPath = "chromedriver-win64/chromedriver.exe";
+                resourcePath = "classpath:static/driver/chromedriver-win64/chromedriver.exe";
             } else {
                 // Windows 32-bit
-                chromeDriverPath = "chromedriver-win32/chromedriver.exe";
+                resourcePath = "classpath:static/driver/chromedriver-win32/chromedriver.exe";
             }
         } else if (os.contains("mac")) {
             if (arch.contains("aarch64") || arch.contains("arm64")) {
                 // macOS ARM64 (M1/M2)
-                chromeDriverPath = "chromedriver-mac-arm64/chromedriver";
+                resourcePath = "classpath:static/driver/chromedriver-mac-arm64/chromedriver";
             } else {
                 // macOS x86_64 (Intel)
-                chromeDriverPath = "chromedriver-mac-x64/chromedriver";
+                resourcePath = "classpath:static/driver/chromedriver-mac-x64/chromedriver";
             }
         } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
             // Linux 64-bit
-            chromeDriverPath = "chromedriver-linux64/chromedriver";
+            resourcePath = "classpath:static/driver/chromedriver-linux64/chromedriver";
         } else {
             throw new UnsupportedOperationException("Unsupported operating system: " + os + ", architecture: " + arch);
         }
 
-        return chromeDriverPath;
+        resource = resourceLoader.getResource(resourcePath);
+
+        return copyResourceToTempFile(resource);
+    }
+
+    private String copyResourceToTempFile(Resource resource) throws IOException {
+        try (InputStream in = resource.getInputStream()) {
+            File tempFile = Files.createTempFile("chromedriver", ".exe").toFile();
+            tempFile.deleteOnExit();  // 프로그램 종료 시 임시 파일 삭제
+            try (FileOutputStream out = new FileOutputStream(tempFile)) {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytesRead);
+                }
+            }
+            return tempFile.getAbsolutePath();
+        }
     }
 
     private String getImageElement(WebDriver chromeDriver, String addr1, String title) {
