@@ -4,6 +4,8 @@ import com.phytoncide.hikinglog.domain.member.entity.MemberEntity;
 import com.phytoncide.hikinglog.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class BoardEntity extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "uid")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private MemberEntity memberEntity;
 
     @Column(name = "content", nullable = false, length = 1000)

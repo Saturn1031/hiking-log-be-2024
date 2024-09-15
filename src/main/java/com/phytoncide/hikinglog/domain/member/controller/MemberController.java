@@ -117,4 +117,16 @@ public class MemberController {
                 .status(ResponseCode.SUCCESS_GET_PROFILE.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_GET_PROFILE, profile));
     }
+
+    @DeleteMapping("delete")
+    public ResponseEntity<ResponseDTO> deleteMember() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        String res = memberService.deleteUser(email);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_DELETE_USER.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_DELETE_USER, res));
+    }
 }

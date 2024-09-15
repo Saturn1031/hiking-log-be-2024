@@ -134,4 +134,16 @@ public class MemberService implements UserDetailsService {
         }
         return sb.toString();
     }
+
+    public String deleteUser(String email) {
+        if (memberRepository.existsByEmail(email)) {
+            MemberEntity member = memberRepository.findByEmail(email);
+
+            memberRepository.delete(member);
+
+            return "회원 탈퇴를 성공했습니다.";
+        } else {
+            throw new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+    }
 }
