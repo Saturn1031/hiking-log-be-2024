@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "image")
@@ -24,6 +26,7 @@ public class ImageEntity {
 
     @ManyToOne
     @JoinColumn(name = "bid", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private BoardEntity boardEntity;
 
 }
