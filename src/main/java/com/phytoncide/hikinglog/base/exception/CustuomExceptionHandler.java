@@ -206,4 +206,20 @@ public class CustuomExceptionHandler {
                 .status(ErrorCode.DATA_NOT_FOUND.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.DATA_NOT_FOUND));
     }
+
+    @ExceptionHandler(WrongFormatException.class)
+    protected ResponseEntity<ErrorResponseDTO> WrongFormatException(final WrongFormatException e) {
+        log.error("WrongFormatException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.INVALID_EMAIL_FORMAT.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.INVALID_EMAIL_FORMAT));
+    }
+
+    @ExceptionHandler(WrongPhoneFormatException.class)
+    protected ResponseEntity<ErrorResponseDTO> WrongPhoneFormatException(final WrongPhoneFormatException e) {
+        log.error("WrongPhoneFormatException.: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.INVALID_PHONE_FORMAT.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.INVALID_PHONE_FORMAT));
+    }
 }

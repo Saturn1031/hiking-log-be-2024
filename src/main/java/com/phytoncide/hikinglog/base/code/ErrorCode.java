@@ -37,7 +37,10 @@ public enum ErrorCode {
     BOOKMARK_ONLINEMALL_LINK_IS_EMPTY(HttpStatus.BAD_REQUEST, "등산용품 가게 링크 속성(link)이 작성되지 않았습니다."),
 
     RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "등산 기록을 찾을 수 없습니다."),
-    DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "데이터를 찾을 수 없습니다.")
+    DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "데이터를 찾을 수 없습니다."),
+
+    INVALID_EMAIL_FORMAT(HttpStatus.BAD_REQUEST, "이메일 형식이 올바르지 않습니다."),
+    INVALID_PHONE_FORMAT(HttpStatus.BAD_REQUEST, "전화번호 형식이 올바르지 않습니다."),
 
     ;
 

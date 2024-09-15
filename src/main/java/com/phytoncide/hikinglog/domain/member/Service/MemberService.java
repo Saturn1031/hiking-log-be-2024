@@ -1,9 +1,7 @@
 package com.phytoncide.hikinglog.domain.member.Service;
 
 import com.phytoncide.hikinglog.base.code.ErrorCode;
-import com.phytoncide.hikinglog.base.exception.MemberNotFoundException;
-import com.phytoncide.hikinglog.base.exception.PasswordNotMatchException;
-import com.phytoncide.hikinglog.base.exception.RegisterException;
+import com.phytoncide.hikinglog.base.exception.*;
 import com.phytoncide.hikinglog.domain.member.config.AuthDetails;
 import com.phytoncide.hikinglog.domain.member.dto.ChangePasswordDTO;
 import com.phytoncide.hikinglog.domain.member.dto.GetProfileDTO;
@@ -30,10 +28,23 @@ public class MemberService implements UserDetailsService {
 
 
     public String join(JoinDTO joinDTO) {
+
+        // 이메일 유효성 검사용 정규식
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@(naver\\.com|gmail\\.com|daum\\.net|hanmail\\.net|nate\\.com)$";
+        // 핸드폰 번호 유효성 검사용 정규식
+        String phoneRegex = "^010\\d{8}$";
+
         if(memberRepository.existsByEmail(joinDTO.getEmail())) {
             throw new RegisterException(ErrorCode.DUPLICATED_EMAIL);
 
+        } else if (!joinDTO.getEmail().matches(emailRegex)) { // 이메일 형식 검사
+            throw new WrongFormatException(ErrorCode.INVALID_EMAIL_FORMAT);
+
+        } else if (!joinDTO.getPhone().matches(phoneRegex)) { // 핸드폰 번호 형식 검사
+            throw new WrongPhoneFormatException(ErrorCode.INVALID_PHONE_FORMAT);
+
         } else {
+
             MemberEntity member = MemberEntity.builder()
                     .email(joinDTO.getEmail())
                     .password(bCryptPasswordEncoder.encode(joinDTO.getPassword()))
