@@ -81,8 +81,8 @@ dependencies {
     implementation 'com.sun.mail:jakarta.mail:2.0.1'
 
 
-    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.24.0'
-    testImplementation 'org.seleniumhq.selenium:selenium-java:4.24.0'
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.29.0'
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.29.0'
 
     runtimeOnly 'com.mysql:mysql-connector-j'
 
