@@ -86,6 +86,8 @@ public class StoreService {
                 firstImg = (String) item.get("firstimage");
             } else if (chromeDriver == null) {
                 ChromeOptions options = new ChromeOptions();
+                options.addArguments("--headless");
+                options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36");
                 options.addArguments("--disable-extensions");
                 chromeDriver = new ChromeDriver(options);
 
@@ -108,7 +110,6 @@ public class StoreService {
         }
 
         if (chromeDriver != null) {
-            chromeDriver.close();
             chromeDriver.quit();
         }
 
@@ -163,6 +164,8 @@ public class StoreService {
                 firstImg = (String) item.get("firstimage");
             } else if (chromeDriver == null) {
                 ChromeOptions options = new ChromeOptions();
+                options.addArguments("--headless");
+                options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36");
                 options.addArguments("--disable-extensions");
                 chromeDriver = new ChromeDriver(options);
 
@@ -185,7 +188,6 @@ public class StoreService {
         }
 
         if (chromeDriver != null) {
-            chromeDriver.close();
             chromeDriver.quit();
         }
 
@@ -238,6 +240,8 @@ public class StoreService {
                 firstImg = (String) item.get("firstimage");
             } else if (chromeDriver == null) {
                 ChromeOptions options = new ChromeOptions();
+                options.addArguments("--headless");
+                options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36");
                 options.addArguments("--disable-extensions");
                 chromeDriver = new ChromeDriver(options);
 
@@ -260,7 +264,6 @@ public class StoreService {
         }
 
         if (chromeDriver != null) {
-            chromeDriver.close();
             chromeDriver.quit();
         }
 
@@ -313,6 +316,8 @@ public class StoreService {
                 firstImg = (String) item.get("firstimage");
             } else if (chromeDriver == null) {
                 ChromeOptions options = new ChromeOptions();
+                options.addArguments("--headless");
+                options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36");
                 options.addArguments("--disable-extensions");
                 chromeDriver = new ChromeDriver(options);
 
@@ -335,7 +340,6 @@ public class StoreService {
         }
 
         if (chromeDriver != null) {
-            chromeDriver.close();
             chromeDriver.quit();
         }
 
@@ -389,6 +393,8 @@ public class StoreService {
             firstImg = (String) item.get("firstimage");
         } else {
             ChromeOptions options = new ChromeOptions();
+            options.addArguments("--headless");
+            options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36");
             options.addArguments("--disable-extensions");
             chromeDriver = new ChromeDriver(options);
 
@@ -406,7 +412,6 @@ public class StoreService {
         dto.setTel((String) item.get("tel"));
 
         if (chromeDriver != null) {
-            chromeDriver.close();
             chromeDriver.quit();
         }
 
@@ -460,6 +465,8 @@ public class StoreService {
             firstImg = (String) item.get("firstimage");
         } else {
             ChromeOptions options = new ChromeOptions();
+            options.addArguments("--headless");
+            options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36");
             options.addArguments("--disable-extensions");
             chromeDriver = new ChromeDriver(options);
 
@@ -478,7 +485,6 @@ public class StoreService {
         dto.setIntro((String) item.get("overview"));
 
         if (chromeDriver != null) {
-            chromeDriver.close();
             chromeDriver.quit();
         }
 
@@ -580,6 +586,8 @@ public class StoreService {
                 firstImg = (String) item.get("firstimage");
             } else if (chromeDriver == null) {
                 ChromeOptions options = new ChromeOptions();
+                options.addArguments("--headless");
+                options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36");
                 options.addArguments("--disable-extensions");
                 chromeDriver = new ChromeDriver(options);
 
@@ -602,7 +610,6 @@ public class StoreService {
         }
 
         if (chromeDriver != null) {
-            chromeDriver.close();
             chromeDriver.quit();
         }
 
@@ -655,6 +662,8 @@ public class StoreService {
             firstImg = (String) item.get("firstimage");
         } else {
             ChromeOptions options = new ChromeOptions();
+            options.addArguments("--headless");
+            options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36");
             options.addArguments("--disable-extensions");
             chromeDriver = new ChromeDriver(options);
 
@@ -672,7 +681,6 @@ public class StoreService {
         dto.setTel((String) item.get("tel"));
 
         if (chromeDriver != null) {
-            chromeDriver.close();
             chromeDriver.quit();
         }
 
